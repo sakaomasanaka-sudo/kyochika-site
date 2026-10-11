@@ -9,16 +9,16 @@ $lock = fopen($home . '/.kyochika-pull.lock', 'c');
 if (!$lock || !flock($lock, LOCK_EX | LOCK_NB)) exit(0);
 if (!is_dir($dest)) exit(1);
 
+// GitHub API が使えるときはコミットが変わったかで判断し、使えないとき（回数制限など）は zip の中身で判断する。
 $ctx = stream_context_create(['http' => ['header' => "User-Agent: kyochika-pull\r\nAccept: application/vnd.github+json\r\n", 'timeout' => 30]]);
 $info = @file_get_contents('https://api.github.com/repos/sakaomasanaka-sudo/kyochika-site/commits/main', false, $ctx);
-if ($info === false) exit(1);
-$j = json_decode($info, true);
-$sha = is_array($j) && isset($j['sha']) ? $j['sha'] : '';
-if (!preg_match('/^[0-9a-f]{40}$/', $sha)) exit(1);
-if (is_file($state) && trim(file_get_contents($state)) === $sha) exit(0);
-
-$zipData = @file_get_contents('https://codeload.github.com/sakaomasanaka-sudo/kyochika-site/zip/' . $sha, false, stream_context_create(['http' => ['header' => "User-Agent: kyochika-pull\r\n", 'timeout' => 120]]));
+$j = $info === false ? null : json_decode($info, true);
+$sha = is_array($j) && isset($j['sha']) && preg_match('/^[0-9a-f]{40}$/', $j['sha']) ? $j['sha'] : '';
+$prev = is_file($state) ? trim(file_get_contents($state)) : '';
+if ($sha !== '' && $prev === $sha) exit(0);
+$zipData = @file_get_contents('https://codeload.github.com/sakaomasanaka-sudo/kyochika-site/zip/' . ($sha !== '' ? $sha : 'refs/heads/main'), false, stream_context_create(['http' => ['header' => "User-Agent: kyochika-pull\r\n", 'timeout' => 120]]));
 if ($zipData === false || strlen($zipData) < 1000) exit(1);
+if ($sha === '') { $sha = 'zip-' . md5($zipData); if ($prev === $sha) exit(0); }
 $tmp = tempnam(sys_get_temp_dir(), 'kyz');
 file_put_contents($tmp, $zipData);
 $zip = new ZipArchive();
