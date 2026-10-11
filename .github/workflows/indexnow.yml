@@ -1,0 +1,48 @@
+# site/ が変わる push のたびに、変わったページを IndexNow（Bing など）に知らせる。
+# サーバーが site/ を取り込む（10分おき）のを待ってから送る。鍵は公開してよい値（tools/indexnow-key.txt）。
+name: IndexNow
+on:
+  push:
+    branches: [main]
+    paths: ['site/**']
+  workflow_dispatch:
+    inputs:
+      base:
+        description: 'このコミットからの差分を送る（空なら直前のコミット）'
+        required: false
+        default: ''
+      wait:
+        description: '送る前に待つ秒数'
+        required: false
+        default: '0'
+permissions:
+  contents: read
+concurrency:
+  group: indexnow
+  cancel-in-progress: false
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BASE: ${{ github.event_name == 'push' && github.event.before || inputs.base }}
+      WAIT: ${{ github.event_name == 'push' && '780' || inputs.wait }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: サーバーが取り込むのを待つ
+        run: |
+          case "$WAIT" in ''|*[!0-9]*) WAIT=0 ;; esac
+          if [ "$WAIT" -gt 1500 ]; then WAIT=1500; fi
+          sleep "$WAIT"
+      - name: 変わったページを知らせる
+        run: |
+          node -v
+          if printf '%s' "$BASE" | grep -Eq '^[0-9a-f]{7,40}$' && git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            out=$(node tools/indexnow.js "$BASE")
+          else
+            out=$(node tools/indexnow.js)
+          fi
+          echo "$out"
+          echo "$out" | grep -Eq '^(no urls|indexnow (200|202) )' || { echo "::error::IndexNow に送れませんでした"; exit 1; }
