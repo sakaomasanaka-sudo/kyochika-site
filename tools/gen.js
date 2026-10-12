@@ -8,6 +8,6 @@ const D = new Function(src('data.js') + ';return {EV,SPOTS,GENRES,CRED,HOLIDAYS}
 const T = JSON.parse(src('tr.json'));
 const today = process.argv[2] || new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
 const r = kyochikaAll(build, kyochikaIntl, D, T, src('about_main.html'), today, process.argv[3] || '12');
-const out = Object.assign({}, r.files, { 'data.js': src('data.js'), 'app.js': src('app.js'), 'style.css': src('style.css') });
+const out = Object.assign({}, r.files, { 'data.js': src('data.js'), 'app.js': src('app.js'), 'style.css': src('style.css'), 'config.js': src('config.js') });
 for (const [p, t] of Object.entries(out)) { const f = path.join(R, 'site', p); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, t); }
 console.log(Object.keys(out).length, 'files', today);
