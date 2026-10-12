@@ -406,7 +406,14 @@ ${sc}</body>
 `;
     const dramaBan = `  <a class="dban" href="/drama/" style="display:flex;align-items:center;gap:12px;border:2px solid var(--ink);border-radius:4px;padding:8px 14px;margin:12px 0;text-decoration:none;color:inherit;background:#fff8cc"><img src="/photos/chara/pochika.png?v=${VER}" alt="" width="56" style="flex:none;height:auto"><span><b>連続アニメ『東京、あと80日』</b><br><small>ミカは東京に残る？ 帰る？ 登場人物とあらすじ →</small></span></a>
 `;
-    write('/', head(title, desc, '/', [siteLd, itemList(order(CURRENT))]) + sign(null, '/') + hero + dramaBan + body + ways() + foot(['config.js', 'data.js', 'app.js']));
+    const pochi = `  <section class="pochi" id="pochi" aria-labelledby="pochiH">
+    <div class="pc-head"><img src="/photos/chara/pochika.png?v=${VER}" alt="ポチカ" width="72" height="72" id="pochiImg"><p class="pc-say"><b id="pochiH">ボクのおすすめ、きょうの3つ</b><small id="pochiSub">駅に住む案内役ポチカが、えらんだよ</small></p></div>
+    <ol class="pc-list" id="pochiList"></ol>
+    <div class="pc-pick"><button type="button" class="pc-btn" data-act="pick" id="pickBtn">迷ったら、ポチカに決めてもらう</button><div id="pickOut" aria-live="polite"></div></div>
+    <a class="pc-ig" href="https://www.instagram.com/kyochika.tokyo/" target="_blank" rel="noopener">ポチカとミカのアニメは、インスタで3日おきに更新中 → @kyochika.tokyo</a>
+  </section>
+`;
+    write('/', head(title, desc, '/', [siteLd, itemList(order(CURRENT))]) + sign(null, '/') + hero + pochi + dramaBan + body + ways() + foot(['config.js', 'data.js', 'app.js']));
   }
 
   // ── 連続アニメ『東京、あと80日』とキャラクター ──

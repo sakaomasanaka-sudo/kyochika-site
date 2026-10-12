@@ -54,10 +54,47 @@
       const note=tN(ev);const dist=r.dist<0.1?U.near:trav(r.dist);
       return `<li class="ev" style="--c:var(--${ev.g})"><span class="sn" aria-hidden="true"><b>${LT}</b>${no}</span><div class="hd"><p class="kd">${tG(ev.g)}</p><h2><a href="${PRE}/event/${ev.id}/">${esc(tT(ev))}</a></h2><p class="where">${esc(tV(ev))}${esc(f(U.sta,{s:tS(ev.st)}))}</p></div>${ev.ph?`<a class="th" href="${PRE}/event/${ev.id}/" tabindex="-1" aria-hidden="true"><img src="/photos/${ev.ph}.jpg" alt="" width="384" height="216" loading="lazy"></a>`:''}<div class="rest"><p class="when">${when}${span?'<span>'+span+'</span>':''}</p><p class="meta"><span class="exit">${esc(f(U.walkTo,{s:tS(st.from)}))} ${dist}<small>${r.dist<0.1?'':r.dist.toFixed(1)+'km'}</small></span><span class="price">${esc(tP(ev))}</span>${bd.join('')}</p>${note?`<p class="note">${esc(note)}</p>`:''}<a class="off" href="${esc(ev.url)}" target="_blank" rel="noopener">${ev.ig?U.igpost:U.official}</a></div></li>`;
     }).join(''):`<li class="empty">${U.empty}</li>`;
+    pochi();
+  }
+  // ── ポチカのおすすめ（日本語のトップだけ）。えらんだ日と駅に合わせて、ジャンルが重ならないように3つ。
+  const hsh=s=>{let h=2166136261;for(const c of s)h=Math.imul(h^c.charCodeAt(0),16777619);return (h>>>0)/4294967296;};
+  const GCM={art:'ゆっくり見たい展示だよ',live:'生で聴くと、ぜんぜん違うよ',food:'おなかがすいたら、ここ',market:'掘り出しものが、あるかも',festival:'にぎやかで、楽しいよ',popup:'期間限定。いまだけだよ'};
+  const why=(r,d)=>{const ev=r.ev,left=daysLeft(ev,d),wk=dowOf(d)===0||dowOf(d)===6||HOLIDAYS[d],c=[];
+    if(longRun(ev)&&left===0)c.push([5,'きょうが最終日！ 間に合ううちに']);
+    else if(longRun(ev)&&left<=3)c.push([4,'あと'+left+'日で終わっちゃうよ']);
+    if(ev.s===ev.e&&ev.g!=='live')c.push([3,'この日だけの催しだよ']);
+    if(ev.free)c.push([3,'無料で入れるよ']);
+    if(ev.ig)c.push([2,'インスタだけで告知してる、知る人ぞ知る催し']);
+    if(mins(closeOn(ev,d))>=20*60&&ev.g!=='live')c.push([1.5,closeOn(ev,d)+'まで開いてるよ']);
+    if(wk&&(ev.g==='food'||ev.g==='market'||ev.g==='festival'))c.push([1.5,'お休みの日にぴったり']);
+    if(r.dist!=null&&r.dist<1.2)c.push([1,tS(st.from)+'から歩いて行けるよ']);
+    c.sort((a,b)=>b[0]-a[0]);return {sc:c.reduce((s,x)=>s+x[0],0),say:c.length?c[0][1]:GCM[ev.g]};};
+  const pool=()=>{const isT=st.day===todayIso;return search({day:st.day,from:st.from,genres:new Set(Object.keys(GENRES)),nowOnly:isT,nowMin:isT?now.getHours()*60+now.getMinutes():null}).filter(r=>r.state!=='over');};
+  const mini=(r,say,cls)=>{const ev=r.ev;return `<li class="${cls}" style="--c:var(--${ev.g})"><p class="pc-kd">${tG(ev.g)}</p><a class="pc-t" href="${PRE}/event/${ev.id}/">${esc(tT(ev))}</a><p class="pc-bub">${esc(say)}</p><p class="pc-w">${esc(tV(ev))}${esc(f(U.sta,{s:tS(ev.st)}))}・${r.dist<0.1?U.near:trav(r.dist)}・${esc(tP(ev))}</p></li>`;};
+  function pochi(){
+    if(LG!=='ja'||!$('pochi'))return;
+    const i=dayNum(st.day)-dayNum(todayIso),dn=i===0?'きょう':i===1?'あした':md(st.day);
+    $('pochiH').textContent='ボクのおすすめ、'+dn+'の3つ';
+    $('pochiSub').textContent=tS(st.from)+'から行きやすい順に、駅に住む案内役ポチカがえらんだよ';
+    const rows=pool().map(r=>{const w=why(r,st.day);return {r,say:w.say,sc:w.sc-(r.dist||0)*0.25+hsh(st.day+ev2id(r))*1.2};}).sort((a,b)=>b.sc-a.sc);
+    const pick=[],used=new Set();for(const x of rows){if(used.has(x.r.ev.g))continue;used.add(x.r.ev.g);pick.push(x);if(pick.length===3)break;}
+    $('pochi').hidden=!pick.length;
+    $('pochiList').innerHTML=pick.map(x=>mini(x.r,x.say,'pc-i')).join('');
+    $('pickOut').innerHTML='';$('pickBtn').textContent='迷ったら、ポチカに決めてもらう';
+  }
+  const ev2id=r=>r.ev.id;
+  let lastPick=null;
+  function pickOne(){
+    const rows=pool().slice(0,20);if(!rows.length){$('pickOut').innerHTML='<p class="pc-none">この日は、もう行ける催しがないみたい。ほかの日にしてみて！</p>';return;}
+    let r;do{r=rows[Math.floor(Math.random()*rows.length)];}while(rows.length>1&&r.ev.id===lastPick);lastPick=r.ev.id;
+    const img=$('pochiImg');img.classList.remove('hop');void img.offsetWidth;img.classList.add('hop');
+    $('pickOut').innerHTML=`<p class="pc-dd">ポチカのお告げ…<b>ここに決まり！</b></p><ul class="pc-one">${mini(r,why(r,st.day).say,'pc-i big')}</ul>`;
+    $('pickBtn').textContent='もう1回、えらんでもらう';
   }
   document.addEventListener('click',e=>{
     const b=e.target.closest('[data-act]');if(!b)return;
     const a=b.dataset.act;
+    if(a==='pick'){pickOne();return;}
     if(a==='day'||a==='dstep')st.day=b.dataset.d;
     else if(a==='from'){st.from=b.dataset.k;save();}
     else if(a==='here'){const msg=$('fromMsg');if(!navigator.geolocation){msg.textContent=U.locFail;msg.hidden=false;return;}msg.textContent=U.locating;msg.hidden=false;navigator.geolocation.getCurrentPosition(p=>{SPOTS.__here=[p.coords.latitude,p.coords.longitude];st.from='__here';msg.hidden=true;render();},()=>{msg.textContent=U.locFail;msg.hidden=false;},{enableHighAccuracy:false,timeout:10000,maximumAge:300000});return;}

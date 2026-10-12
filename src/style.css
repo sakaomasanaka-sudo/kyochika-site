@@ -208,3 +208,31 @@ h1.pt{font-weight:700;font-size:clamp(26px,6.6vw,40px);line-height:1.35;margin:0
 .ev .rest .when{margin-top:0}
 @media (max-width:380px){ .ev{grid-template-columns:44px minmax(0,1fr) 76px} .th{width:76px} }
 @media (min-width:900px){ .ev{grid-template-columns:52px minmax(0,1fr) 112px} .th{width:112px} }
+
+/* ポチカのおすすめ（トップ） */
+.pochi{border:2px solid var(--ink);border-radius:4px;padding:14px 16px 16px;background:#fffbe0;display:flex;flex-direction:column;gap:12px}
+.pc-head{display:flex;align-items:center;gap:10px}
+.pc-head img{flex:none;width:64px;height:auto}
+.pc-say{margin:0;position:relative;background:var(--paper);border:2px solid var(--ink);border-radius:14px;padding:6px 12px;line-height:1.4;display:flex;flex-direction:column}
+.pc-say::before{content:"";position:absolute;left:-9px;top:50%;margin-top:-7px;border:7px solid transparent;border-right:9px solid var(--ink);border-left:0}
+.pc-say b{font-size:17px}
+.pc-say small{font-size:12px;color:var(--ink-2)}
+.pc-list,.pc-one{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+@media (min-width:760px){.pc-list{grid-template-columns:repeat(3,1fr)}}
+.pc-i{background:var(--paper);border:1.5px solid var(--rule);border-top:5px solid var(--c);border-radius:4px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.pc-kd{margin:0;font-size:12px;font-weight:700;color:var(--ink-2)}
+.pc-t{font-weight:700;line-height:1.4;text-decoration:none;overflow-wrap:anywhere}
+.pc-t:hover{text-decoration:underline}
+.pc-bub{margin:2px 0 0;font-size:14px;font-weight:700;background:var(--sign);border-radius:10px;padding:3px 10px;align-self:flex-start;line-height:1.5}
+.pc-bub::before{content:"ポチカ「"}.pc-bub::after{content:"」"}
+.pc-w{margin:0;font-size:12px;color:var(--ink-2);line-height:1.5;overflow-wrap:anywhere}
+.pc-pick{display:flex;flex-direction:column;gap:10px}
+.pc-btn{align-self:flex-start;border:2px solid var(--ink);background:var(--ink);color:var(--paper);font-weight:700;border-radius:4px;padding:10px 16px;min-height:44px}
+.pc-btn:hover{background:#333}
+.pc-dd{margin:0;font-size:14px}.pc-dd b{margin-left:6px;font-size:16px}
+.pc-i.big .pc-t{font-size:18px}
+.pc-none{margin:0;font-size:14px}
+@keyframes hop{0%,100%{transform:none}30%{transform:translateY(-14px) rotate(-8deg)}60%{transform:translateY(0) rotate(6deg)}80%{transform:translateY(-5px)}}
+.hop{animation:hop .6s ease}
+@media (prefers-reduced-motion:reduce){.hop{animation:none}}
+.pc-ig{font-size:13px;font-weight:700;color:var(--ink-2);text-decoration:underline;align-self:flex-start}
