@@ -177,13 +177,15 @@ ${sc}</body>
     return `<div class="pic none"><span class="kind">${g}</span></div>`;
   };
 
-  const card = (ev, eager = false) =>
-    `<li class="ev" style="--c:var(--${ev.g})" data-e="${ev.e}">${pic(ev, eager)}<div class="body">`
-    + `<h2><a href="/event/${ev.id}/">${esc(ev.t)}</a></h2><div class="where">${esc(ev.v)}（${esc(ev.st)}駅）</div>`
-    + `<dl class="facts"><dt>時間</dt><dd>${when(ev)}</dd><dt>料金</dt><dd>${esc(ev.price)}</dd></dl>`
-    + (ev.ig ? '<div class="badges"><span class="bd ig">インスタで告知</span></div>' : '')
+  // 一覧の1件。トップの app.js と同じ形（駅名標の番号・見出し・写真・時間と料金）にする。
+  const LTM = { art: 'A', live: 'L', food: 'F', market: 'M', festival: 'S', popup: 'P' };
+  const card = (ev, eager = false, i = 0) =>
+    `<li class="ev" style="--c:var(--${ev.g})" data-e="${ev.e}"><span class="sn" aria-hidden="true"><b>${LTM[ev.g] || 'E'}</b>${String(i + 1).padStart(2, '0')}</span>`
+    + `<div class="hd"><p class="kd">${GENRES[ev.g].n}</p><h2><a href="/event/${ev.id}/">${esc(ev.t)}</a></h2><p class="where">${esc(ev.v)}（${esc(ev.st)}駅）</p></div>`
+    + (ev.ph ? `<a class="th" href="/event/${ev.id}/" tabindex="-1" aria-hidden="true"><img src="/photos/${ev.ph}.jpg" alt="" width="384" height="216"${eager ? '' : ' loading="lazy"'}></a>` : '')
+    + `<div class="rest"><p class="when">${when(ev)}</p><p class="meta"><span class="price">${esc(ev.price)}</span>${ev.free ? '<span class="bd free">無料</span>' : ''}${ev.ig ? '<span class="bd ig">インスタで告知</span>' : ''}</p>`
     + (ev.note ? `<p class="note">${esc(ev.note)}</p>` : '')
-    + `<div class="row"><a class="go pri" href="/event/${ev.id}/">くわしく見る</a><a class="go" href="${esc(ev.url)}" target="_blank" rel="noopener">${ev.ig ? 'インスタの告知' : '公式ページ'}</a></div></div></li>`;
+    + `<a class="off" href="${esc(ev.url)}" target="_blank" rel="noopener">${ev.ig ? 'インスタの告知' : '公式ページ'}</a></div></li>`;
 
   const itemList = evs => ({ '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: evs.map((e, i) => ({ '@type': 'ListItem', position: i + 1, url: url(`/event/${e.id}/`), name: e.t })) });
 
@@ -256,7 +258,7 @@ ${sc}</body>
   const listPage = (path, h1, title, desc, evs0, crumbName, intro) => {
     const evs = order(evs0);
     const [cr, crLd] = crumbs([['トップ', '/'], [crumbName, null]]);
-    const cards = evs.map((e, i) => card(e, i < 2)).join('');
+    const cards = evs.map((e, i) => card(e, i < 2, i)).join('');
     const body = `${cr}  <h1 class="pt">${esc(h1)}</h1>
   <p class="intro">${esc(intro)}</p>
   <div class="board"><span>終わりが近い順</span><b>${evs.length}件</b></div>
@@ -378,7 +380,7 @@ ${sc}</body>
   </section>
 
   <div class="board" id="board" aria-live="polite"><span>掲載中の催し</span><b>${CURRENT.length}件</b></div>
-  <ul class="list" id="list">${order(CURRENT).map((e, i) => card(e, i < 2)).join('')}</ul>
+  <ul class="list" id="list">${order(CURRENT).map((e, i) => card(e, i < 2, i)).join('')}</ul>
 
   <section class="join" id="join" hidden>
     <h2>催しをのせたい主催者の方へ</h2>

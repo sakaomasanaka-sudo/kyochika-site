@@ -239,12 +239,13 @@ ${scripts.map(s => `<script src="/${s}?v=${VER}"></script>\n`).join('')}</body>
 </html>
 `;
   const pic = (ev, eager) => ev.ph ? `<div class="pic"><img src="/photos/${ev.ph}.jpg" alt="${S.alt}" width="384" height="216"${eager ? '' : ' loading="lazy"'}><span class="kind">${S.G[ev.g][0]}</span></div>` : `<div class="pic none"><span class="kind">${S.G[ev.g][0]}</span></div>`;
-  const card = (ev, eager) => `<li class="ev" style="--c:var(--${ev.g})" data-e="${ev.e}">${pic(ev, eager)}<div class="body">`
-    + `<h2><a href="${P}/event/${ev.id}/">${esc(tt(ev))}</a></h2><div class="where">${esc(tv(ev))}${esc(S.staP(ts(ev.st)))}</div>`
-    + `<dl class="facts"><dt>${S.time}</dt><dd>${when(ev)}</dd><dt>${S.price}</dt><dd>${esc(tp(ev))}</dd></dl>`
-    + (ev.ig ? `<div class="badges"><span class="bd ig">${S.ui.igbd}</span></div>` : '')
+  const LTM = { art: 'A', live: 'L', food: 'F', market: 'M', festival: 'S', popup: 'P' };
+  const card = (ev, eager, i = 0) => `<li class="ev" style="--c:var(--${ev.g})" data-e="${ev.e}"><span class="sn" aria-hidden="true"><b>${LTM[ev.g] || 'E'}</b>${String(i + 1).padStart(2, '0')}</span>`
+    + `<div class="hd"><p class="kd">${S.G[ev.g][0]}</p><h2><a href="${P}/event/${ev.id}/">${esc(tt(ev))}</a></h2><p class="where">${esc(tv(ev))}${esc(S.staP(ts(ev.st)))}</p></div>`
+    + (ev.ph ? `<a class="th" href="${P}/event/${ev.id}/" tabindex="-1" aria-hidden="true"><img src="/photos/${ev.ph}.jpg" alt="" width="384" height="216"${eager ? '' : ' loading="lazy"'}></a>` : '')
+    + `<div class="rest"><p class="when">${when(ev)}</p><p class="meta"><span class="price">${esc(tp(ev))}</span>${ev.free ? `<span class="bd free">${S.ui.free}</span>` : ''}${ev.ig ? `<span class="bd ig">${S.ui.igbd}</span>` : ''}</p>`
     + (ev.note ? `<p class="note">${esc(tn(ev))}</p>` : '')
-    + `<div class="row"><a class="go pri" href="${P}/event/${ev.id}/">${S.details}</a><a class="go" href="${esc(ev.url)}" target="_blank" rel="noopener">${ev.ig ? S.igpost : S.official}</a></div></div></li>`;
+    + `<a class="off" href="${esc(ev.url)}" target="_blank" rel="noopener">${ev.ig ? S.igpost : S.official}</a></div></li>`;
   const itemList = evs => ({ '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: evs.map((e, i) => ({ '@type': 'ListItem', position: i + 1, url: url(`${P}/event/${e.id}/`), name: tt(e) })) });
   const OUT = {}, PAGES = [];
   const write = (path, text) => { OUT[(P + path + 'index.html').slice(1)] = text; PAGES.push(P + path); };
@@ -295,7 +296,7 @@ ${scripts.map(s => `<script src="/${s}?v=${VER}"></script>\n`).join('')}</body>
     const body = `${cr}  <h1 class="pt">${esc(h1)}</h1>
   <p class="intro">${esc(desc)}</p>
   <div class="board"><span>${S.endSoon}</span><b>${S.n(evs.length)}</b></div>
-  <ul class="list">${evs.map((e, i) => card(e, i < 2)).join('')}</ul>
+  <ul class="list">${evs.map((e, i) => card(e, i < 2, i)).join('')}</ul>
   <p class="upd">${S.listUpd(ymd(TODAY))}</p>
 `;
     write(path, head(title, desc, path, [itemList(evs), crLd]) + sign(path) + body + ways(path) + foot());
@@ -349,7 +350,7 @@ ${scripts.map(s => `<script src="/${s}?v=${VER}"></script>\n`).join('')}</body>
   </section>
 
   <div class="board" id="board" aria-live="polite"><span>${S.listed}</span><b>${S.n(CURRENT.length)}</b></div>
-  <ul class="list" id="list">${order(CURRENT).map((e, i) => card(e, i < 2)).join('')}</ul>
+  <ul class="list" id="list">${order(CURRENT).map((e, i) => card(e, i < 2, i)).join('')}</ul>
 
   <p class="intro">${S.intro(cnt.map(([g, n]) => S.cnt(S.G[g][0], n)).join(S.cntJoin), ymd(TODAY))}</p>
 `;
