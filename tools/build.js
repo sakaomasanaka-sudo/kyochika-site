@@ -86,7 +86,7 @@ function kyochikaBuild(D, aboutMain, TODAY, VER) {
   // ほかの言語の同じページ。D.LANGS があるときだけ使う。エリアのページと404にはない。
   const LANGS = D.LANGS || [];
   const HREFLANG = { en: 'en', zh: 'zh-Hans' }, LANGNAME = { en: 'English', zh: '中文' };
-  const altPath = (l, path) => (path.startsWith('/area/') || path === '/404.html' || path === '/drama/' || path === '/christmas/' || path === '/illumination/' || path.startsWith('/date/') || /^\/weekend\/\d/.test(path)) ? null : `/${l}` + (path === '/about.html' ? '/about/' : path);
+  const altPath = (l, path) => (path.startsWith('/area/') || path === '/404.html' || path === '/drama/' || path === '/christmas/' || path === '/illumination/' || path === '/halloween/' || path.startsWith('/date/') || /^\/weekend\/\d/.test(path)) ? null : `/${l}` + (path === '/about.html' ? '/about/' : path);
   const head = (title, desc, path, ld = [], noindex = false) => {
     const alts = (noindex || !LANGS.length || !altPath('en', path)) ? '' : `<link rel="alternate" hreflang="ja" href="${url(path)}">\n` + LANGS.map(l => `<link rel="alternate" hreflang="${HREFLANG[l]}" href="${url(altPath(l, path))}">\n`).join('') + `<link rel="alternate" hreflang="x-default" href="${url(path)}">\n`;
     const lds = ld.map(x => `<script type="application/ld+json">${pyjson(x)}</script>\n`).join('');
@@ -150,7 +150,7 @@ ${lds}</head>
 
   const ways = (current = null) => {
     const a = (p, n) => `<a href="${p}"${p === current ? ' aria-current="page"' : ''}>${esc(n)}</a>`;
-    const g = Object.values(GENRE_PAGES).map(([s, n]) => a(`/${s}/`, n)).join('') + a('/free/', '無料で行ける') + a('/weekend/', '今週末') + a('/date/', '日付から') + (EV.some(e => e.ig && !ended(e)) ? a('/instagram/', 'インスタ告知') : '') + (CURRENT.some(e => (e.k || []).includes('xmas')) ? a('/christmas/', 'クリスマスマーケット') : '') + (CURRENT.some(e => (e.k || []).includes('illumi')) ? a('/illumination/', 'イルミネーション') : '');
+    const g = Object.values(GENRE_PAGES).map(([s, n]) => a(`/${s}/`, n)).join('') + a('/free/', '無料で行ける') + a('/weekend/', '今週末') + a('/date/', '日付から') + (EV.some(e => e.ig && !ended(e)) ? a('/instagram/', 'インスタ告知') : '') + (CURRENT.some(e => (e.k || []).includes('halloween')) ? a('/halloween/', 'ハロウィン') : '') + (CURRENT.some(e => (e.k || []).includes('xmas')) ? a('/christmas/', 'クリスマスマーケット') : '') + (CURRENT.some(e => (e.k || []).includes('illumi')) ? a('/illumination/', 'イルミネーション') : '');
     const ar = LIVE_AREAS.map(([s, n]) => a(`/area/${s}/`, n)).join('');
     return `  <nav class="ways" aria-label="ほかのさがし方">
     <h2>ジャンル・条件からさがす</h2><div class="links">${g}</div>
@@ -291,6 +291,7 @@ ${sc}</body>
   const SEASONS = [
     ['xmas', '/christmas/', '東京のクリスマスマーケット2026', `東京のクリスマスマーケット2026｜日程・場所・入場料の一覧｜${NAME}`, n => `2026年に東京で開かれるクリスマスマーケットを${n}件まとめました。日比谷・六本木・恵比寿など、会期、時間、入場料、最寄り駅がひと目でわかります。`, 'クリスマスマーケット', n => `2026年の冬に東京で開かれるクリスマスマーケットを${n}件のせています。会期や入場料は公式の発表で確かめたものです。混みやすいので、平日の夕方や開場すぐがおすすめです。`],
     ['illumi', '/illumination/', '東京のイルミネーション2026', `東京のイルミネーション2026｜期間・点灯時間・場所の一覧｜${NAME}`, n => `2026年の冬に東京で見られるイルミネーションを${n}件まとめました。期間、点灯時間、料金、最寄り駅がひと目でわかります。`, 'イルミネーション', n => `2026年の冬に東京で見られるイルミネーションを${n}件のせています。点灯時間は公式の発表で確かめたものです。`],
+    ['halloween', '/halloween/', '東京のハロウィンイベント2026', `東京のハロウィンイベント2026｜日程・場所・料金の一覧｜${NAME}`, n => `2026年に東京で開かれるハロウィンイベントを${n}件まとめました。池袋のコスプレフェス、スカイツリータウン、花やしきなど、日程、時間、料金、最寄り駅がひと目でわかります。`, 'ハロウィン', n => `2026年のハロウィンに東京で開かれるイベントを${n}件のせています。日程や料金は主催者の発表で確かめたものです。渋谷駅周辺の路上の集まりは、イベントではないので載せていません。`],
   ];
   for (const [k, path, h1, title, desc, cname, intro] of SEASONS) {
     const evs = CURRENT.filter(e => (e.k || []).includes(k));
