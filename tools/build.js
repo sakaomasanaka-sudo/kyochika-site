@@ -97,7 +97,7 @@ function kyochikaBuild(D, aboutMain, TODAY, VER) {
   // ほかの言語の同じページ。D.LANGS があるときだけ使う。エリアのページと404にはない。
   const LANGS = D.LANGS || [];
   const HREFLANG = { en: 'en', zh: 'zh-Hans', es: 'es', th: 'th', id: 'id' }, LANGNAME = { en: 'English', zh: '中文', es: 'Español', th: 'ไทย', id: 'Indonesia' };
-  const altPath = (l, path) => (path.startsWith('/area/') || path.startsWith('/kids/') || path.startsWith('/place/') || path === '/404.html' || path === '/drama/' || path === '/christmas/' || path === '/illumination/' || path === '/halloween/' || path.startsWith('/date/') || /^\/weekend\/\d/.test(path)) ? null : `/${l}` + (path === '/about.html' ? '/about/' : path);
+  const altPath = (l, path) => (path.startsWith('/area/') || path.startsWith('/kids/') || path.startsWith('/place/') || path === '/404.html' || path === '/drama/' || path === '/christmas/' || path === '/illumination/' || path === '/halloween/' || path === '/newyear/' || path.startsWith('/date/') || /^\/weekend\/\d/.test(path)) ? null : `/${l}` + (path === '/about.html' ? '/about/' : path);
   const head = (title, desc, path, ld = [], noindex = false) => {
     const alts = (noindex || !LANGS.length || !altPath('en', path)) ? '' : `<link rel="alternate" hreflang="ja" href="${url(path)}">\n` + LANGS.map(l => `<link rel="alternate" hreflang="${HREFLANG[l]}" href="${url(altPath(l, path))}">\n`).join('') + `<link rel="alternate" hreflang="x-default" href="${url(path)}">\n`;
     const lds = ld.map(x => `<script type="application/ld+json">${pyjson(x)}</script>\n`).join('');
@@ -158,10 +158,21 @@ ${lds}</head>
   const CURRENT = EV.filter(e => !ended(e));
   const order = evs => [...evs].sort((a, b) => cmp(a.e, b.e) || cmp(a.s, b.s) || cmp(a.o, b.o));
   const LIVE_AREAS = AREAS.filter(([, , sts]) => CURRENT.filter(e => sts.includes(e.st)).length >= 2);
+  // 月ごとのページ（今月から3か月、5件以上ある月だけ）。「東京 11月 イベント」で探す人向け。外国語版（intl.js）と同じ月の集め方。
+  const JMONTHS = [];
+  {
+    const p0 = TODAY.split('-').map(Number);
+    for (let i = 0; i < 3; i++) {
+      const y = p0[0] + Math.floor((p0[1] - 1 + i) / 12), m = (p0[1] - 1 + i) % 12 + 1, key = `${y}-${String(m).padStart(2, '0')}`;
+      const first = i === 0 ? TODAY : `${key}-01`, last = `${key}-${String(new Date(Date.UTC(y, m, 0)).getUTCDate()).padStart(2, '0')}`;
+      const evs = CURRENT.filter(e => e.s <= last && e.e >= first);
+      if (evs.length >= 5) JMONTHS.push([key, y, m, evs]);
+    }
+  }
 
   const ways = (current = null) => {
     const a = (p, n) => `<a href="${p}"${p === current ? ' aria-current="page"' : ''}>${esc(n)}</a>`;
-    const g = Object.values(GENRE_PAGES).map(([s, n]) => a(`/${s}/`, n)).join('') + a('/free/', '無料で行ける') + (KIDP.length ? KIDP.map(([p, , , , n]) => a(p, n)).join('') : '') + a('/weekend/', '今週末') + a('/date/', '日付から') + (EV.some(e => e.ig && !ended(e)) ? a('/instagram/', 'インスタ告知') : '') + (CURRENT.some(e => (e.k || []).includes('halloween')) ? a('/halloween/', 'ハロウィン') : '') + (CURRENT.some(e => (e.k || []).includes('xmas')) ? a('/christmas/', 'クリスマスマーケット') : '') + (CURRENT.some(e => (e.k || []).includes('illumi')) ? a('/illumination/', 'イルミネーション') : '');
+    const g = Object.values(GENRE_PAGES).map(([s, n]) => a(`/${s}/`, n)).join('') + a('/free/', '無料で行ける') + (KIDP.length ? KIDP.map(([p, , , , n]) => a(p, n)).join('') : '') + a('/weekend/', '今週末') + JMONTHS.map(([k, , m]) => a(`/month/${k}/`, `${m}月のイベント`)).join('') + a('/date/', '日付から') + (EV.some(e => e.ig && !ended(e)) ? a('/instagram/', 'インスタ告知') : '') + (CURRENT.some(e => (e.k || []).includes('halloween')) ? a('/halloween/', 'ハロウィン') : '') + (CURRENT.some(e => (e.k || []).includes('newyear')) ? a('/newyear/', '年末年始') : '') + (CURRENT.some(e => (e.k || []).includes('xmas')) ? a('/christmas/', 'クリスマスマーケット') : '') + (CURRENT.some(e => (e.k || []).includes('illumi')) ? a('/illumination/', 'イルミネーション') : '');
     const ar = LIVE_AREAS.map(([s, n]) => a(`/area/${s}/`, n)).join('') + PLACES_LIVE.map(([s, n]) => a(`/place/${s}/`, n)).join('');
     return `  <nav class="ways" aria-label="ほかのさがし方">
     <h2>ジャンル・条件からさがす</h2><div class="links">${g}</div>
@@ -316,11 +327,20 @@ ${sc}</body>
   const SEASONS = [
     ['xmas', '/christmas/', '東京のクリスマスマーケット2026', `東京のクリスマスマーケット2026｜日程・場所・入場料の一覧｜${NAME}`, n => `2026年に東京で開かれるクリスマスマーケットを${n}件まとめました。日比谷・六本木・恵比寿など、会期、時間、入場料、最寄り駅がひと目でわかります。`, 'クリスマスマーケット', n => `2026年の冬に東京で開かれるクリスマスマーケットを${n}件のせています。会期や入場料は公式の発表で確かめたものです。混みやすいので、平日の夕方や開場すぐがおすすめです。`],
     ['illumi', '/illumination/', '東京のイルミネーション2026', `東京のイルミネーション2026｜期間・点灯時間・場所の一覧｜${NAME}`, n => `2026年の冬に東京で見られるイルミネーションを${n}件まとめました。期間、点灯時間、料金、最寄り駅がひと目でわかります。`, 'イルミネーション', n => `2026年の冬に東京で見られるイルミネーションを${n}件のせています。点灯時間は公式の発表で確かめたものです。`],
+    ['newyear', '/newyear/', '東京の年末年始イベント2026-2027', `東京の年末年始イベント2026-2027｜カウントダウン・初詣・初売り・年末の市｜${NAME}`, n => `2026年の年末から2027年の年始に東京で行けるイベントを${n}件まとめました。カウントダウン、初詣の屋台、年末の市、正月の催しの日程・時間・最寄り駅がひと目でわかります。`, '年末年始', n => `2026年の年末から2027年の年始にかけて、東京で行ける催しを${n}件まとめました。カウントダウン、初詣、年の市、正月の催しなど。終わりが近い順にならべています。`],
     ['halloween', '/halloween/', '東京のハロウィンイベント2026', `東京のハロウィンイベント2026｜日程・場所・料金の一覧｜${NAME}`, n => `2026年に東京で開かれるハロウィンイベントを${n}件まとめました。池袋のコスプレフェス、スカイツリータウン、花やしきなど、日程、時間、料金、最寄り駅がひと目でわかります。`, 'ハロウィン', n => `2026年のハロウィンに東京で開かれるイベントを${n}件のせています。日程や料金は主催者の発表で確かめたものです。渋谷駅周辺の路上の集まりは、イベントではないので載せていません。`],
   ];
   for (const [k, path, h1, title, desc, cname, intro] of SEASONS) {
     const evs = CURRENT.filter(e => (e.k || []).includes(k));
     if (evs.length) listPage(path, h1, title, desc(evs.length), evs, cname, intro(evs.length));
+  }
+  for (const [key, y, m, evs] of JMONTHS) {
+    const nf = evs.filter(e => e.free).length, nk = evs.filter(e => e.kid).length;
+    const GN = { art: '美術展', live: 'ライブ', food: 'フードイベント', market: 'マーケット・蚤の市', festival: '祭り', popup: 'ポップアップ' };
+    const parts = Object.keys(GN).map(g => [GN[g], evs.filter(e => e.g === g).length]).filter(x => x[1]).map(([n, c]) => `${n}${c}件`).join('、');
+    listPage(`/month/${key}/`, `東京の${m}月のイベント${y}`, `東京の${m}月のイベント${y}｜祭り・マーケット・美術展・ライブ・子どもと行ける催し${evs.length}件｜${NAME}`,
+      `${y}年${m}月に東京で行けるイベント${evs.length}件（${parts}）。無料${nf}件、子どもと行ける催し${nk}件。日程・時間・料金・最寄り駅つき。`,
+      evs, `${m}月のイベント`, `${y}年${m}月に東京で開かれる・開催中のイベントを${evs.length}件まとめました（${parts}）。入場無料は${nf}件、子どもと行ける催しは${nk}件です。終わりが近い順にならべています。`);
   }
 
   // 日付ごとのページ（今日から6週間ぶん）と、その先の週末ページ。毎日アップロードしなくても、その日には正しい中身になる。

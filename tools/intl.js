@@ -183,7 +183,7 @@ function kyochikaIntl(D, T, L, TODAY, VER) {
   const when = ev => `${span(ev)} ${hrs(ev)}`;
   const lateText = ev => { if (!ev.late || !Object.keys(ev.late).length) return ''; const by = new Map(); for (const [k, v] of Object.entries(ev.late)) { if (!by.has(v)) by.set(v, []); by.get(v).push(S.dows[Number(k)]); } return [...by].map(([t, ds]) => S.lateOn(ds, t)).join(S.joiner); };
   const hxText = ev => Object.keys(ev.hx || {}).sort().map(iso => `${md(iso)}: ${ev.hx[iso][0]}–${ev.hx[iso][1]}`).join(S.joiner);
-  const noJa = p => p.startsWith('/month/');
+  const noJa = p => false;
   const jaPath = p => p === '/about/' ? '/about.html' : noJa(p) ? '/' : p;
   const ICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23000'/%3E%3Ctext x='27' y='46' font-size='40' font-weight='900' text-anchor='middle' fill='%23fff' font-family='sans-serif'%3E%E3%82%AD%3C/text%3E%3Ccircle cx='52' cy='42' r='5.5' fill='%23ff4a1c'/%3E%3C/svg%3E";
   const head = (title, desc, path, ld = []) => `<!doctype html>
