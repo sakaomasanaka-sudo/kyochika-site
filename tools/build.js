@@ -49,13 +49,9 @@ function kyochikaBuild(D, aboutMain, TODAY, VER) {
   const AFF = D.AFF || {};
   const affOn = !!(AFF.rakuten || AFF.klook);
   const rakutenHotel = ev => AFF.rakuten ? `https://hb.afl.rakuten.co.jp/hgc/${AFF.rakuten}/?pc=${encodeURIComponent('https://kw.travel.rakuten.co.jp/keyword/Search.do?f_keyword=' + encodeURIComponent(ev.st + '駅'))}` : '';
-  // Klook（日本語版）：その駅のまわりの体験・チケット・遊び場をさがすリンク。
-  const klookJa = ev => AFF.klook ? `https://affiliate.klook.com/redirect?aid=${AFF.klook}&aff_adid=${AFF.klookAd}&k_site=${encodeURIComponent(`https://www.klook.com/ja/search/result/?query=${encodeURIComponent(ev.st)}`)}` : '';
-  const affBox = ev => { const u = rakutenHotel(ev), k = klookJa(ev); return (u ? `<h2>この近くで泊まる</h2>
+  const affBox = ev => { const u = rakutenHotel(ev); return u ? `<h2>この近くで泊まる</h2>
       <div class="row"><a class="go aff" href="${esc(u)}" target="_blank" rel="sponsored noopener">${esc(ev.st)}駅の近くのホテルを楽天トラベルで見る</a></div>
-      <p class="cap">PR・楽天アフィリエイトのリンクです。</p>` : '') + (k ? `<h2>${ev.kid ? '子どもと遊べる場所・体験も予約できる' : 'この近くの体験・チケット'}</h2>
-      <div class="row"><a class="go aff" href="${esc(k)}" target="_blank" rel="sponsored noopener">${esc(ev.st)}駅のまわりの体験・チケットをKlookで見る</a></div>
-      <p class="cap">PR・Klookのアフィリエイトリンクです。</p>` : ''); };
+      <p class="cap">PR・楽天アフィリエイトのリンクです。</p>` : ''; };
   const travel = dist => dist <= 1.5 ? `徒歩で約${Math.max(1, pyround(dist * 16))}分` : `電車などで約${pyround((10 + dist * 2.5) / 5) * 5}分`;
   const far = dist => dist < 0.1 ? 'すぐ' : `約${dist.toFixed(1)}km、${travel(dist)}`;
   const activeOn = (ev, iso) => ev.s <= iso && iso <= ev.e && !ev.off.includes(iso);
