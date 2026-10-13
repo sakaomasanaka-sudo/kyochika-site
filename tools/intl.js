@@ -49,6 +49,7 @@ function kyochikaIntl(D, T, L, TODAY, VER) {
     evDesc: (kind, v, s, span, hrs, price, note) => `${kind} at ${v} (${s} Sta.), Tokyo. ${span}, ${hrs}. ${price}. ${note}`,
     kind: { art: 'Exhibition', live: 'Live show', food: 'Food event', market: 'Market', festival: 'Festival', popup: 'Pop-up' },
     orig: 'Japanese title',
+    moH1: m => `Tokyo events in ${m}`, moTitle: m => `Things to do in Tokyo in ${m}: festivals, markets, art, live music | Kyochika Tokyo`, moDesc: (m, n, f) => `${n} events in Tokyo in ${m}: festivals, markets, exhibitions, live music and food events, with dates, hours, prices and nearest stations. ${f} are free.`,
     aboutT: 'About Kyochika', aboutD: 'About Kyochika Tokyo: what the site is, how the information is checked, who runs it and how to get in touch.',
     about: `    <p>Kyochika (キョウチカ, “today, nearby”) is an independent guide to events in Tokyo. We collect art exhibitions, live music, food events, markets and festivals from the official websites and Instagram accounts of venues and organisers, and list them by date and by distance from your station.</p>
     <h2>How to use it</h2>
@@ -116,6 +117,7 @@ function kyochikaIntl(D, T, L, TODAY, VER) {
     evDesc: (kind, v, s, span, hrs, price, note) => `${v}（${s}站）的${kind}。${span}，${hrs}，${price}。${note}`,
     kind: { art: '展览', live: '演出', food: '美食活动', market: '市集', festival: '祭典', popup: '快闪活动' },
     orig: '日文名称',
+    moH1: m => `东京${m}活动`, moTitle: m => `东京${m}活动一览：祭典、市集、展览、现场音乐｜Kyochika 东京`, moDesc: (m, n, f) => `东京${m}的${n}个活动：祭典、市集、展览、现场音乐和美食活动，附日期、时间、价格和最近车站。其中${f}个免费。`,
     aboutT: '关于 Kyochika', aboutD: '关于 Kyochika 东京：网站介绍、信息的确认方式、运营者和联系方式。',
     about: `    <p>Kyochika（キョウチカ，意为“今天·附近”）是一个独立运营的东京活动指南。我们从场馆和主办方的官方网站及Instagram收集展览、现场音乐、美食活动、市集和祭典，并按日期和离你所在车站的远近列出。</p>
     <h2>使用方法</h2>
@@ -144,7 +146,7 @@ function kyochikaIntl(D, T, L, TODAY, VER) {
   };
   if (!S0.bar) { S0.bar = ' | '; S1.bar = '｜'; }
   const SX = (EN || ZH) ? {} : (typeof KYOCHIKA_SX !== 'undefined' ? KYOCHIKA_SX : require('./intl_more.js').KYOCHIKA_SX)(L, P);
-  const S = EN ? S0 : ZH ? S1 : Object.assign({}, S0, SX, { G: Object.assign({}, S0.G, SX.G), kind: Object.assign({}, S0.kind, SX.kind), ui: Object.assign({}, S0.ui, SX.ui) });
+  const S = EN ? S0 : ZH ? S1 : Object.assign({}, S0, SX, { G: Object.fromEntries([...new Set(Object.keys(SX.G || {}).concat(Object.keys(S0.G)))].map(k => [k, (SX.G || {})[k] || S0.G[k]])), kind: Object.assign({}, S0.kind, SX.kind), ui: Object.assign({}, S0.ui, SX.ui) });
   const GKEYS = Object.keys(S.G);
   const LDTYPE = { art: 'ExhibitionEvent', live: 'MusicEvent', food: 'FoodEvent', market: 'Event', festival: 'Festival', popup: 'Event' };
   const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], MONF = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -179,7 +181,8 @@ function kyochikaIntl(D, T, L, TODAY, VER) {
   const when = ev => `${span(ev)} ${hrs(ev)}`;
   const lateText = ev => { if (!ev.late || !Object.keys(ev.late).length) return ''; const by = new Map(); for (const [k, v] of Object.entries(ev.late)) { if (!by.has(v)) by.set(v, []); by.get(v).push(S.dows[Number(k)]); } return [...by].map(([t, ds]) => S.lateOn(ds, t)).join(S.joiner); };
   const hxText = ev => Object.keys(ev.hx || {}).sort().map(iso => `${md(iso)}: ${ev.hx[iso][0]}–${ev.hx[iso][1]}`).join(S.joiner);
-  const jaPath = p => p === '/about/' ? '/about.html' : p;
+  const noJa = p => p.startsWith('/month/');
+  const jaPath = p => p === '/about/' ? '/about.html' : noJa(p) ? '/' : p;
   const ICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23000'/%3E%3Ctext x='27' y='46' font-size='40' font-weight='900' text-anchor='middle' fill='%23fff' font-family='sans-serif'%3E%E3%82%AD%3C/text%3E%3Ccircle cx='52' cy='42' r='5.5' fill='%23ff4a1c'/%3E%3C/svg%3E";
   const head = (title, desc, path, ld = []) => `<!doctype html>
 <html lang="${HL[L]}">
@@ -191,8 +194,7 @@ function kyochikaIntl(D, T, L, TODAY, VER) {
 <meta name="robots" content="max-image-preview:large">
 <link rel="canonical" href="${url(P + path)}">
 <meta property="og:url" content="${url(P + path)}">
-<link rel="alternate" hreflang="ja" href="${url(jaPath(path))}">
-${ALL.map(l => `<link rel="alternate" hreflang="${HL[l]}" href="${url('/' + l + path)}">\n`).join('')}<link rel="alternate" hreflang="x-default" href="${url(jaPath(path))}">
+${noJa(path) ? '' : `<link rel="alternate" hreflang="ja" href="${url(jaPath(path))}">\n`}${ALL.map(l => `<link rel="alternate" hreflang="${HL[l]}" href="${url('/' + l + path)}">\n`).join('')}<link rel="alternate" hreflang="x-default" href="${url(noJa(path) ? '/en' + path : jaPath(path))}">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="${S.loc}">
 <meta property="og:site_name" content="${S.site}">
@@ -219,6 +221,18 @@ ${ld.map(x => `<script type="application/ld+json">${JSON.stringify(x)}</script>\
 <div class="wrap">
 `;
   const CURRENT = EV.filter(e => !ended(e)), HASIG = CURRENT.some(e => e.ig);
+  const MONTHS = [];
+  {
+    const p0 = TODAY.split('-').map(Number);
+    for (let i = 0; i < 3; i++) {
+      const y = p0[0] + Math.floor((p0[1] - 1 + i) / 12), m = (p0[1] - 1 + i) % 12 + 1, key = `${y}-${String(m).padStart(2, '0')}`;
+      const first = i === 0 ? TODAY : `${key}-01`, last = `${key}-${String(new Date(Date.UTC(y, m, 0)).getUTCDate()).padStart(2, '0')}`;
+      const evs = CURRENT.filter(e => e.s <= last && e.e >= first);
+      if (evs.length < 5) continue;
+      const mn = EN ? `${MONF[m - 1]} ${y}` : ZH ? `${y}年${m}月` : `${new Intl.DateTimeFormat(LOC, { month: 'long', timeZone: 'UTC' }).format(new Date(Date.UTC(y, m - 1, 1)))} ${y}`;
+      MONTHS.push([key, mn, evs]);
+    }
+  }
   const GNAV = GKEYS.map(g => [`/${g}/`, S.G[g][1]]).concat([['/free/', S.free], ['/weekend/', S.weekend]], HASIG ? [['/instagram/', 'Instagram']] : []);
   const sign = path => `  <header class="top">
     <a class="brand" href="${P}/"><b>${NAME}<i></i></b><span>KYOCHIKA TOKYO</span></a>
@@ -230,7 +244,7 @@ ${ld.map(x => `<script type="application/ld+json">${JSON.stringify(x)}</script>\
     { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: items.map(([n, p], i) => Object.assign({ '@type': 'ListItem', position: i + 1, name: n }, p ? { item: url(P + p) } : {})) }];
   const order = evs => [...evs].sort((a, b) => cmp(a.e, b.e) || cmp(a.s, b.s) || cmp(a.o, b.o));
   const ways = cur => `  <nav class="ways" aria-label="${S.ways1}">
-    <h2>${S.ways1}</h2><div class="links">${GNAV.map(([p, n]) => `<a href="${P}${p}"${p === cur ? ' aria-current="page"' : ''}>${p.length < 12 && S.G[p.slice(1, -1)] ? S.G[p.slice(1, -1)][0] : n}</a>`).join('')}</div>
+    <h2>${S.ways1}</h2><div class="links">${GNAV.map(([p, n]) => `<a href="${P}${p}"${p === cur ? ' aria-current="page"' : ''}>${p.length < 12 && S.G[p.slice(1, -1)] ? S.G[p.slice(1, -1)][0] : n}</a>`).join('')}${MONTHS.map(([k, mn]) => `<a href="${P}/month/${k}/"${cur === `/month/${k}/` ? ' aria-current="page"' : ''}>${S.moH1(mn)}</a>`).join('')}</div>
   </nav>
 `;
   const foot = (scripts = ['pages.js']) => `  <p class="follow">${S.follow}</p>
@@ -325,6 +339,24 @@ ${scripts.map(s => `<script src="/${s}?v=${VER}"></script>\n`).join('')}</body>
   <p class="upd">${S.listUpd(ymd(TODAY))}</p>
 `;
     write('/weekend/', head(`${S.wkH1(rng)}${S.bar}${S.site}`, desc, '/weekend/', [itemList(evs), crLd]) + sign('/weekend/') + body + ways('/weekend/') + foot());
+  }
+
+  // 月ごとのページ（外国語だけ）。旅行の前後に「東京 10月 イベント」で探す人向け。今月から3か月、催しが5件以上ある月だけ。
+  {
+    for (const [key, mn, evs] of MONTHS) {
+      const path = `/month/${key}/`, [cr, crLd] = crumbs([[S.home, '/'], [S.moH1(mn), null]]);
+      const nf = evs.filter(e => e.free).length, desc = S.moDesc(mn, evs.length, nf);
+      let secs = '';
+      for (const g of GKEYS) { const es = order(evs.filter(e => e.g === g)); if (es.length) secs += `<h2 class="moh">${S.G[g][0]} <small>${S.n(es.length)}</small></h2><ul class="list">${es.map((e, i) => card(e, false, i)).join('')}</ul>`; }
+      const others = MONTHS.filter(x => x[0] !== key).map(x => `<a href="${P}/month/${x[0]}/">${S.moH1(x[1])}</a>`).join('');
+      const body = `${cr}  <h1 class="pt">${esc(S.moH1(mn))}</h1>
+  <p class="intro">${esc(desc)}</p>
+  ${secs}
+  ${others ? `<nav class="ways"><div class="links">${others}</div></nav>` : ''}
+  <p class="upd">${S.listUpd(ymd(TODAY))}</p>
+`;
+      write(path, head(S.moTitle(mn), desc, path, [itemList(order(evs)), crLd]) + sign(path) + body + ways(path) + foot());
+    }
   }
 
   {

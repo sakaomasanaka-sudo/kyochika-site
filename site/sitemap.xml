@@ -801,6 +801,9 @@
   <url><loc>https://kyochika.jp/en/free/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/en/instagram/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/en/weekend/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
+  <url><loc>https://kyochika.jp/en/month/2026-10/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/en/month/2026-11/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/en/month/2026-12/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/en/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/en/about/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/en/app/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
@@ -1158,6 +1161,9 @@
   <url><loc>https://kyochika.jp/zh/free/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/zh/instagram/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/zh/weekend/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
+  <url><loc>https://kyochika.jp/zh/month/2026-10/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/zh/month/2026-11/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/zh/month/2026-12/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/zh/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/zh/about/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/zh/app/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
@@ -1515,6 +1521,9 @@
   <url><loc>https://kyochika.jp/es/free/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/es/instagram/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/es/weekend/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
+  <url><loc>https://kyochika.jp/es/month/2026-10/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/es/month/2026-11/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/es/month/2026-12/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/es/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/es/about/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/es/app/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
@@ -1863,15 +1872,18 @@
   <url><loc>https://kyochika.jp/th/event/suginami-kyodo-kimono-to-kodomo-2026/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/th/event/setagaya-art-museum-collection-2026-2/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/th/event/kichijoji-theatre-woyzeck-2026/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/th/market/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
+  <url><loc>https://kyochika.jp/th/food/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
+  <url><loc>https://kyochika.jp/th/festival/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/th/art/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/th/live/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
-  <url><loc>https://kyochika.jp/th/food/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
-  <url><loc>https://kyochika.jp/th/market/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
-  <url><loc>https://kyochika.jp/th/festival/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/th/popup/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/th/free/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/th/instagram/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/th/weekend/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
+  <url><loc>https://kyochika.jp/th/month/2026-10/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/th/month/2026-11/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/th/month/2026-12/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/th/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/th/about/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/th/app/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
@@ -2229,6 +2241,9 @@
   <url><loc>https://kyochika.jp/id/free/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/id/instagram/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/id/weekend/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
+  <url><loc>https://kyochika.jp/id/month/2026-10/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/id/month/2026-11/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/id/month/2026-12/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/id/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/id/about/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/id/app/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
