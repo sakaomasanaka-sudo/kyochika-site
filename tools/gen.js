@@ -6,6 +6,7 @@ const build = require('./build.js'); const { kyochikaIntl, kyochikaAll } = requi
 const src = f => fs.readFileSync(path.join(R, 'src', f), 'utf8');
 const D = new Function(src('data.js') + ';return {EV,SPOTS,GENRES,CRED,HOLIDAYS};')();
 const T = JSON.parse(src('tr.json'));
+T.x = {}; for (const l of ['es', 'th', 'id']) { try { T.x[l] = JSON.parse(src(`tr_${l}.json`)); } catch (e) { T.x[l] = null; } }
 const today = process.argv[2] || new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
 const r = kyochikaAll(build, kyochikaIntl, D, T, src('about_main.html'), today, process.argv[3] || '12');
 const out = Object.assign({}, r.files, { 'data.js': src('data.js'), 'app.js': src('app.js'), 'style.css': src('style.css'), 'config.js': src('config.js') });

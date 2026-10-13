@@ -4,9 +4,10 @@
 const KYOCHIKA_AFF = { rakuten: '', klook: '138663', klookAd: '1493145' };
 function kyochikaIntl(D, T, L, TODAY, VER) {
   const { EV, SPOTS, GENRES, CRED, HOLIDAYS } = D;
-  const BASE = 'https://kyochika.jp', NAME = 'キョウチカ', P = '/' + L, EN = L === 'en', li = EN ? 0 : 1;
-  const HL = { en: 'en', zh: 'zh-Hans' }, LANGNAME = { ja: '日本語', en: 'English', zh: '中文' };
-  const S = EN ? {
+  const BASE = 'https://kyochika.jp', NAME = 'キョウチカ', P = '/' + L, EN = L === 'en', ZH = L === 'zh', li = ZH ? 1 : 0;
+  const ALL = KYOCHIKA_LANGS, LOC = { en: 'en-US', zh: 'zh-CN', es: 'es-ES', th: 'th-TH', id: 'id-ID' }[L];
+  const HL = KYOCHIKA_HL, LANGNAME = KYOCHIKA_LANGNAME;
+  const S0 = {
     site: 'Kyochika Tokyo', loc: 'en_US',
     G: { art: ['Art exhibitions', 'Art'], live: ['Live music & concerts', 'Live music'], food: ['Food events', 'Food'], market: ['Markets & flea markets', 'Markets'], festival: ['Festivals & local events', 'Festivals'], popup: ['Pop-ups', 'Pop-ups'] },
     free: 'Free', weekend: 'This weekend', ig: 'From Instagram',
@@ -73,7 +74,7 @@ function kyochikaIntl(D, T, L, TODAY, VER) {
     <h2>To remove it</h2>
     <p>Press and hold the icon and choose “Remove” or “Delete”. Nothing else is left behind.</p>`,
     ui: { today: 'Today', hol: '', nowOnly: 'Still open now', free: 'Free', soon: 'Ending soon', night: 'Open after 7pm', ig: 'From Instagram', board: '{d} · nearest to {from} first', n: '{n} events', start: '{o} start', lastDay: 'Last day today', until: 'until {d}', now: 'On now', fromT: 'From {o}', over: 'Finished for today', endsToday: 'Ends today', left: '{n} days left', time: 'Time', dist: 'Distance', price: 'Price', fromSt: 'From {s}: ', near: 'right there', walk: 'about {n} min on foot', train: 'about {n} min by train', km: '{k} km, {t}', details: 'Details', official: 'Official page (Japanese)', igpost: 'Instagram post', igbd: 'Found on Instagram', alt: 'Photo of the venue area', sta: ' ({s} Sta.)', empty: 'No events match this day and these filters. Remove a filter or pick another day.' },
-  } : {
+  }, S1 = {
     site: 'Kyochika 东京', loc: 'zh_CN',
     G: { art: ['艺术展览', '展览'], live: ['现场音乐·音乐会', '音乐'], food: ['美食活动', '美食'], market: ['市集·跳蚤市场', '市集'], festival: ['祭典·地方活动', '祭典'], popup: ['快闪店', '快闪'] },
     free: '免费', weekend: '本周末', ig: 'Instagram公告',
@@ -141,6 +142,9 @@ function kyochikaIntl(D, T, L, TODAY, VER) {
     <p>长按图标并选择“移除”或“删除”即可，不会留下其他内容。</p>`,
     ui: { today: '今天', hol: '', nowOnly: '现在还来得及', free: '免费', soon: '即将结束', night: '晚上19点后仍开放', ig: 'Instagram公告', board: '{d}·从{from}由近到远', n: '{n}个', start: '{o} 开演', lastDay: '今天是最后一天', until: '至{d}', now: '正在举办', fromT: '{o}开始', over: '今天已结束', endsToday: '今天截止', left: '还剩{n}天', time: '时间', dist: '距离', price: '费用', fromSt: '从{s}出发：', near: '就在附近', walk: '步行约{n}分钟', train: '乘电车等约{n}分钟', km: '约{k}公里，{t}', details: '查看详情', official: '官方页面（日文）', igpost: 'Instagram公告', igbd: '来自Instagram', alt: '场馆周边照片', sta: '（{s}站）', empty: '当前条件下没有符合的活动。请取消筛选或选择其他日期。' },
   };
+  if (!S0.bar) { S0.bar = ' | '; S1.bar = '｜'; }
+  const SX = (EN || ZH) ? {} : (typeof KYOCHIKA_SX !== 'undefined' ? KYOCHIKA_SX : require('./intl_more.js').KYOCHIKA_SX)(L, P);
+  const S = EN ? S0 : ZH ? S1 : Object.assign({}, S0, SX, { G: Object.assign({}, S0.G, SX.G), kind: Object.assign({}, S0.kind, SX.kind), ui: Object.assign({}, S0.ui, SX.ui) });
   const GKEYS = Object.keys(S.G);
   const LDTYPE = { art: 'ExhibitionEvent', live: 'MusicEvent', food: 'FoodEvent', market: 'Event', festival: 'Festival', popup: 'Event' };
   const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], MONF = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -148,8 +152,8 @@ function kyochikaIntl(D, T, L, TODAY, VER) {
   const dnum = iso => { const p = iso.split('-').map(Number); return Math.floor(Date.UTC(p[0], p[1] - 1, p[2]) / 864e5); };
   const isoOf = n => new Date(n * 864e5).toISOString().slice(0, 10);
   const dow = iso => new Date(dnum(iso) * 864e5).getUTCDay();
-  const md = iso => { const p = iso.split('-').map(Number), h = iso in HOLIDAYS ? S.hol : ''; return EN ? `${MON[p[1] - 1]} ${p[2]} (${S.dows[dow(iso)]}${h})` : `${p[1]}月${p[2]}日(${S.dows[dow(iso)]}${h})`; };
-  const ymd = iso => { const p = iso.split('-').map(Number); return EN ? `${MONF[p[1] - 1]} ${p[2]}, ${p[0]}` : `${p[0]}年${p[1]}月${p[2]}日`; };
+  const md = iso => { const p = iso.split('-').map(Number), h = iso in HOLIDAYS ? S.hol : ''; return EN ? `${MON[p[1] - 1]} ${p[2]} (${S.dows[dow(iso)]}${h})` : ZH ? `${p[1]}月${p[2]}日(${S.dows[dow(iso)]}${h})` : `${new Intl.DateTimeFormat(LOC, { day: 'numeric', month: 'short', timeZone: 'UTC' }).format(new Date(Date.UTC(p[0], p[1] - 1, p[2])))} (${S.dows[dow(iso)]}${h})`; };
+  const ymd = iso => { const p = iso.split('-').map(Number); return EN ? `${MONF[p[1] - 1]} ${p[2]}, ${p[0]}` : ZH ? `${p[0]}年${p[1]}月${p[2]}日` : new Intl.DateTimeFormat(LOC, { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(Date.UTC(p[0], p[1] - 1, p[2]))); };
   const mins = hm => { const p = hm.split(':').map(Number); return p[0] * 60 + p[1]; };
   const km = (a, b, c, e) => { const R = 6371, r = Math.PI / 180, x = (c - a) * r, y = (e - b) * r, h = Math.sin(x / 2) ** 2 + Math.cos(a * r) * Math.cos(c * r) * Math.sin(y / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); };
   const travel = d => d <= 1.5 ? S.walk(Math.max(1, Math.round(d * 16))) : S.train(Math.round((10 + d * 2.5) / 5) * 5);
@@ -162,11 +166,11 @@ function kyochikaIntl(D, T, L, TODAY, VER) {
   const url = p => BASE + p;
   const need = (o, k, what) => { if (!o || o[k] == null) throw new Error('翻訳がありません: ' + what + ' ' + k); return o[k]; };
   const tt = ev => need(T.e, ev.id, 'e')[li * 2], tn = ev => ev.note ? need(T.e, ev.id, 'e')[li * 2 + 1] : '', tv = ev => need(T.v, ev.v, 'v')[li], ts = s => need(T.st, s, 'st')[li];
-  const tpS = s => { const p = T.p[s]; if (p && p[li]) return p[li]; const m = s.match(/^一般([\d,]+)円$/); if (m) return EN ? `Adults ¥${m[1]}` : `成人${m[1]}日元`; if (EN) throw new Error('料金の翻訳がありません: ' + s); return s.replace(/円/g, '日元').replace(/・/g, '·'); };
+  const tpS = s => { const p = T.p[s]; if (p && p[li]) return p[li]; const m = s.match(/^一般([\d,]+)円$/); if (m) return ZH ? `成人${m[1]}日元` : S.adult ? S.adult(m[1]) : `Adults ¥${m[1]}`; if (!ZH) throw new Error('料金の翻訳がありません: ' + s); return s.replace(/円/g, '日元').replace(/・/g, '·'); };
   const tp = ev => tpS(ev.price);
   const AFF = D.AFF || {};
   const affOn = !!(AFF.rakuten || AFF.klook);
-  const klookUrl = ev => AFF.klook ? `https://affiliate.klook.com/redirect?aid=${AFF.klook}&aff_adid=${AFF.klookAd}&k_site=${encodeURIComponent(`https://www.klook.com/${L === 'zh' ? 'zh-CN' : 'en-US'}/search/result/?query=${encodeURIComponent(need(T.st, ev.st, 'st')[0] + ' Tokyo')}`)}` : '';
+  const klookUrl = ev => AFF.klook ? `https://affiliate.klook.com/redirect?aid=${AFF.klook}&aff_adid=${AFF.klookAd}&k_site=${encodeURIComponent(`https://www.klook.com/${{ zh: 'zh-CN', th: 'th', id: 'id' }[L] || 'en-US'}/search/result/?query=${encodeURIComponent(need(T.st, ev.st, 'st')[0] + ' Tokyo')}`)}` : '';
   const affBox = ev => { const u = klookUrl(ev); return u ? `<h2>${S.affH}</h2>
       <div class="row"><a class="go aff" href="${esc(u)}" target="_blank" rel="sponsored noopener">${S.affK(ts(ev.st))}</a></div>
       <p class="cap">${S.affCap}</p>` : ''; };
@@ -188,9 +192,7 @@ function kyochikaIntl(D, T, L, TODAY, VER) {
 <link rel="canonical" href="${url(P + path)}">
 <meta property="og:url" content="${url(P + path)}">
 <link rel="alternate" hreflang="ja" href="${url(jaPath(path))}">
-<link rel="alternate" hreflang="en" href="${url('/en' + path)}">
-<link rel="alternate" hreflang="zh-Hans" href="${url('/zh' + path)}">
-<link rel="alternate" hreflang="x-default" href="${url(jaPath(path))}">
+${ALL.map(l => `<link rel="alternate" hreflang="${HL[l]}" href="${url('/' + l + path)}">\n`).join('')}<link rel="alternate" hreflang="x-default" href="${url(jaPath(path))}">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="${S.loc}">
 <meta property="og:site_name" content="${S.site}">
@@ -220,7 +222,7 @@ ${ld.map(x => `<script type="application/ld+json">${JSON.stringify(x)}</script>\
   const GNAV = GKEYS.map(g => [`/${g}/`, S.G[g][1]]).concat([['/free/', S.free], ['/weekend/', S.weekend]], HASIG ? [['/instagram/', 'Instagram']] : []);
   const sign = path => `  <header class="top">
     <a class="brand" href="${P}/"><b>${NAME}<i></i></b><span>KYOCHIKA TOKYO</span></a>
-    <nav class="lang" aria-label="Language">${['ja', 'en', 'zh'].map(l => `<a href="${l === 'ja' ? jaPath(path) : '/' + l + path}" lang="${l === 'ja' ? 'ja' : HL[l]}"${l === L ? ' aria-current="true"' : ''}>${LANGNAME[l]}</a>`).join('')}</nav>
+    <nav class="lang" aria-label="Language">${['ja'].concat(ALL).map(l => `<a href="${l === 'ja' ? jaPath(path) : '/' + l + path}" lang="${l === 'ja' ? 'ja' : HL[l]}"${l === L ? ' aria-current="true"' : ''}>${LANGNAME[l]}</a>`).join('')}</nav>
     <nav class="gnav" aria-label="${S.lGenre}">${GNAV.map(([p, n]) => `<a href="${P}${p}"${p === path ? ' aria-current="page"' : ''}>${n}</a>`).join('')}</nav>
   </header>
 `;
@@ -243,7 +245,7 @@ ${scripts.map(s => `<script src="/${s}?v=${VER}"></script>\n`).join('')}</body>
   const card = (ev, eager, i = 0) => `<li class="ev" style="--c:var(--${ev.g})" data-e="${ev.e}"><span class="sn" aria-hidden="true"><b>${LTM[ev.g] || 'E'}</b>${String(i + 1).padStart(2, '0')}</span>`
     + `<div class="hd"><p class="kd">${S.G[ev.g][0]}</p><h2><a href="${P}/event/${ev.id}/">${esc(tt(ev))}</a></h2><p class="where">${esc(tv(ev))}${esc(S.staP(ts(ev.st)))}</p></div>`
     + (ev.ph ? `<a class="th" href="${P}/event/${ev.id}/" tabindex="-1" aria-hidden="true"><img src="/photos/${ev.ph}.jpg" alt="" width="384" height="216"${eager ? '' : ' loading="lazy"'}></a>` : '')
-    + `<div class="rest"><p class="when">${when(ev)}</p><p class="meta"><span class="price">${esc(tp(ev))}</span>${ev.free ? `<span class="bd free">${S.ui.free}</span>` : ''}${ev.ig ? `<span class="bd ig">${S.ui.igbd}</span>` : ''}${ev.kid ? `<span class="bd kid">${EN ? (ev.kid[1] >= 99 ? `Family, ages ${ev.kid[0]}+` : `Kids ${ev.kid[0]}–${ev.kid[1]}`) : (ev.kid[1] >= 99 ? `亲子·${ev.kid[0]}岁起` : `儿童 ${ev.kid[0]}–${ev.kid[1]}岁`)}</span>` : ''}</p>`
+    + `<div class="rest"><p class="when">${when(ev)}</p><p class="meta"><span class="price">${esc(tp(ev))}</span>${ev.free ? `<span class="bd free">${S.ui.free}</span>` : ''}${ev.ig ? `<span class="bd ig">${S.ui.igbd}</span>` : ''}${ev.kid ? `<span class="bd kid">${S.kidBd ? S.kidBd(ev.kid) : EN ? (ev.kid[1] >= 99 ? `Family, ages ${ev.kid[0]}+` : `Kids ${ev.kid[0]}–${ev.kid[1]}`) : (ev.kid[1] >= 99 ? `亲子·${ev.kid[0]}岁起` : `儿童 ${ev.kid[0]}–${ev.kid[1]}岁`)}</span>` : ''}</p>`
     + (ev.note ? `<p class="note">${esc(tn(ev))}</p>` : '')
     + `<a class="off" href="${esc(ev.url)}" target="_blank" rel="noopener">${ev.ig ? S.igpost : S.official}</a></div></li>`;
   const itemList = evs => ({ '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: evs.map((e, i) => ({ '@type': 'ListItem', position: i + 1, url: url(`${P}/event/${e.id}/`), name: tt(e) })) });
@@ -261,7 +263,7 @@ ${scripts.map(s => `<script src="/${s}?v=${VER}"></script>\n`).join('')}</body>
     if (ev.free) ld.offers = { '@type': 'Offer', price: 0, priceCurrency: 'JPY', availability: 'https://schema.org/InStock', url: ev.url };
     const rows = [[oneDay(ev) ? S.date1 : S.dates, span(ev)],
       [S.time, [(ev.g === 'live' ? `${S.start(ev.o)} (${S.endAbout(ev.c)})` : `${ev.o}–${ev.c}`), lateText(ev), hxText(ev)].filter(x => x).join(S.joiner)],
-      [S.price, tp(ev)]].concat(ev.kid ? [[EN ? 'Kids' : '儿童', EN ? (ev.kid[1] >= 99 ? `Family-friendly, ages ${ev.kid[0]}+` : `Ages ${ev.kid[0]}–${ev.kid[1]}`) : (ev.kid[1] >= 99 ? `适合亲子，${ev.kid[0]}岁起` : `${ev.kid[0]}–${ev.kid[1]}岁`)]] : [], [[S.venue, tv(ev)], [S.station, S.sta(ts(ev.st))]]);
+      [S.price, tp(ev)]].concat(ev.kid ? [[S.kidH || (EN ? 'Kids' : '儿童'), S.kidRow ? S.kidRow(ev.kid) : EN ? (ev.kid[1] >= 99 ? `Family-friendly, ages ${ev.kid[0]}+` : `Ages ${ev.kid[0]}–${ev.kid[1]}`) : (ev.kid[1] >= 99 ? `适合亲子，${ev.kid[0]}岁起` : `${ev.kid[0]}–${ev.kid[1]}岁`)]] : [], [[S.venue, tv(ev)], [S.station, S.sta(ts(ev.st))]]);
     const spots = Object.entries(SPOTS).map(([n, [la, ln]]) => [km(la, ln, ev.lat, ev.lng), n]).sort((a, b) => a[0] - b[0] || cmp(a[1], b[1])).slice(0, 4);
     const others = CURRENT.filter(x => x.id !== ev.id).map(x => [km(ev.lat, ev.lng, x.lat, x.lng) + ((x.s <= ev.e && x.e >= ev.s) ? 0 : 50), x]).sort((a, b) => a[0] - b[0]).slice(0, 6);
     const maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(ev.v.split('（')[0]);
@@ -302,8 +304,8 @@ ${scripts.map(s => `<script src="/${s}?v=${VER}"></script>\n`).join('')}</body>
     write(path, head(title, desc, path, [itemList(evs), crLd]) + sign(path) + body + ways(path) + foot());
   };
   for (const g of GKEYS) { const evs = CURRENT.filter(e => e.g === g), gn = S.G[g][0]; listPage(`/${g}/`, S.gH1(gn), S.gTitle(gn), S.gDesc(gn, evs.length, evs.filter(e => e.free).length), evs, gn); }
-  { const evs = CURRENT.filter(e => e.free); listPage('/free/', S.freeH1, `${S.freeH1} | ${S.site}`.replace(' | ', EN ? ' | ' : '｜'), S.freeDesc(evs.length), evs, S.free); }
-  if (HASIG) { const evs = CURRENT.filter(e => e.ig); listPage('/instagram/', S.igH1, `${S.igH1}${EN ? ' | ' : '｜'}${S.site}`, S.igDesc(evs.length), evs, S.ig); }
+  { const evs = CURRENT.filter(e => e.free); listPage('/free/', S.freeH1, `${S.freeH1} | ${S.site}`.replace(' | ', S.bar), S.freeDesc(evs.length), evs, S.free); }
+  if (HASIG) { const evs = CURRENT.filter(e => e.ig); listPage('/instagram/', S.igH1, `${S.igH1}${S.bar}${S.site}`, S.igDesc(evs.length), evs, S.ig); }
 
   {
     const t = dnum(TODAY), sat = t + ((6 - dow(TODAY)) % 7 + 7) % 7, wk = [isoOf(sat), isoOf(sat + 1)];
@@ -322,7 +324,7 @@ ${scripts.map(s => `<script src="/${s}?v=${VER}"></script>\n`).join('')}</body>
   <main class="page"><div class="body">${byDay}</div></main>
   <p class="upd">${S.listUpd(ymd(TODAY))}</p>
 `;
-    write('/weekend/', head(`${S.wkH1(rng)}${EN ? ' | ' : '｜'}${S.site}`, desc, '/weekend/', [itemList(evs), crLd]) + sign('/weekend/') + body + ways('/weekend/') + foot());
+    write('/weekend/', head(`${S.wkH1(rng)}${S.bar}${S.site}`, desc, '/weekend/', [itemList(evs), crLd]) + sign('/weekend/') + body + ways('/weekend/') + foot());
   }
 
   {
@@ -332,7 +334,7 @@ ${scripts.map(s => `<script src="/${s}?v=${VER}"></script>\n`).join('')}</body>
     const LT = {art:'A',live:'L',food:'F',market:'M',festival:'S',popup:'P'};
     const lines = cnt.map(([g, n]) => `<a href="${P}/${g}/" style="--c:var(--${g})"><i>${LT[g]}</i>${S.G[g][1]}<b>${n}</b></a>`).join('');
     const nKid = CURRENT.filter(e => e.kid).length;
-    const KL = EN ? ['With kids', 'How old are the kids?', 'Ages 0–2', 'Ages 3–6', 'Elementary school', 'Any age'] : ['带孩子去', '孩子几岁？', '0–2岁', '3–6岁', '小学生', '不限年龄'];
+    const KL = S.KL || (EN ? ['With kids', 'How old are the kids?', 'Ages 0–2', 'Ages 3–6', 'Elementary school', 'Any age'] : ['带孩子去', '孩子几岁？', '0–2岁', '3–6岁', '小学生', '不限年龄']);
     const kidLine = nKid ? `<button type="button" class="kidline" data-act="kidopen" aria-expanded="false" aria-controls="kidAges" style="--c:var(--kid)"><i>K</i>${KL[0]}<b>${nKid}</b></button><div class="kidages" id="kidAges" hidden><span>${KL[1]}</span><button type="button" class="chip" data-act="kidage" data-k="kA" aria-pressed="false">${KL[2]}</button><button type="button" class="chip" data-act="kidage" data-k="kB" aria-pressed="false">${KL[3]}</button><button type="button" class="chip" data-act="kidage" data-k="kC" aria-pressed="false">${KL[4]}</button><button type="button" class="chip" data-act="kidage" data-k="all" aria-pressed="false">${KL[5]}</button><p class="kidnote" id="kidNote" hidden></p></div>` : '';
     const nv = new Set(CURRENT.map(e => e.v)).size;
     const body = `  <section class="hero">
@@ -361,20 +363,29 @@ ${scripts.map(s => `<script src="/${s}?v=${VER}"></script>\n`).join('')}</body>
   }
   for (const [path, t, d, html] of [['/about/', S.aboutT, S.aboutD, S.about], ['/app/', S.appT, S.appD, S.app]]) {
     const [cr, crLd] = crumbs([[S.home, '/'], [t, null]]);
-    write(path, head(`${t}${EN ? ' | ' : '｜'}${S.site}`, d, path, [crLd]) + sign(path) + cr + `  <main class="doc">\n    <h1 class="pt">${t}</h1>\n${html}\n  </main>\n` + ways() + foot());
+    write(path, head(`${t}${S.bar}${S.site}`, d, path, [crLd]) + sign(path) + cr + `  <main class="doc">\n    <h1 class="pt">${t}</h1>\n${html}\n  </main>\n` + ways() + foot());
   }
   const KT = { lang: L, pre: P, ui: S.ui, g: {}, st: {}, v: {}, p: {}, e: {} };
   for (const g of Object.keys(GENRES)) KT.g[g] = S.G[g][0];
   for (const k of new Set(EV.map(e => e.st).concat(Object.keys(SPOTS)))) KT.st[k] = ts(k);
   for (const e of EV) { KT.v[e.v] = tv(e); KT.p[e.price] = tp(e); KT.e[e.id] = [tt(e), tn(e)]; }
-  OUT[`i18n.${L}.js`] = '// ' + (EN ? 'English' : '中文') + ' の表示用のことば。build から作られます。\nconst KT=' + JSON.stringify(KT) + ';\n';
+  OUT[`i18n.${L}.js`] = '// ' + LANGNAME[L] + ' の表示用のことば。build から作られます。\nconst KT=' + JSON.stringify(KT) + ';\n';
   return { files: OUT, pages: PAGES };
 }
+// 言語の一覧。es/th/id は src/tr_xx.json の訳を使い、訳がないものは英語で出す。
+const KYOCHIKA_LANGS = ['en', 'zh', 'es', 'th', 'id'];
+const KYOCHIKA_HL = { en: 'en', zh: 'zh-Hans', es: 'es', th: 'th', id: 'id' };
+const KYOCHIKA_LANGNAME = { ja: '日本語', en: 'English', zh: '中文', es: 'Español', th: 'ไทย', id: 'Indonesia' };
+const kyochikaMergeT = (T, X) => {
+  if (!X) return T;
+  const m = (a, b, n) => { const o = {}; for (const k in a) { const y = (b || {})[k]; o[k] = n === 2 ? [(y && y[0]) || a[k][0], (y && y[1]) || a[k][1]] : [(y && (Array.isArray(y) ? y[0] : y)) || a[k][0]]; } return o; };
+  return { e: m(T.e, X.e, 2), v: m(T.v, X.v, 1), p: m(T.p, X.p, 1), st: m(T.st, X.st, 1) };
+};
 function kyochikaAll(buildJa, buildIntl, D, T, about, TODAY, VER) {
-  const D2 = Object.assign({}, D, { LANGS: ['en', 'zh'], AFF: D.AFF || KYOCHIKA_AFF });
+  const D2 = Object.assign({}, D, { LANGS: KYOCHIKA_LANGS, AFF: D.AFF || KYOCHIKA_AFF });
   const r = buildJa(D2, about, TODAY, VER), files = Object.assign({}, r.files);
   let extra = '';
-  for (const L of ['en', 'zh']) { const x = buildIntl(D2, T, L, TODAY, VER); Object.assign(files, x.files); extra += x.pages.map(p => `  <url><loc>https://kyochika.jp${p}</loc><lastmod>${TODAY}</lastmod><priority>${p.split('/').length <= 4 ? '0.7' : '0.5'}</priority></url>\n`).join(''); }
+  for (const L of KYOCHIKA_LANGS) { const x = buildIntl(D2, (L === 'en' || L === 'zh') ? T : kyochikaMergeT(T, (T.x || {})[L]), L, TODAY, VER); Object.assign(files, x.files); extra += x.pages.map(p => `  <url><loc>https://kyochika.jp${p}</loc><lastmod>${TODAY}</lastmod><priority>${p.split('/').length <= 4 ? '0.7' : '0.5'}</priority></url>\n`).join(''); }
   files['sitemap.xml'] = files['sitemap.xml'].replace('</urlset>', extra + '</urlset>');
   return { files, pages: r.pages };
 }
