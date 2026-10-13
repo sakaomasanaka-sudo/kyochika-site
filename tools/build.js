@@ -28,7 +28,7 @@ function kyochikaBuild(D, aboutMain, TODAY, VER) {
   const GKEYS = Object.keys(GENRE_PAGES);
   const GNAV = GKEYS.map(g => [`/${GENRE_PAGES[g][0]}/`, SHORT[g]]).concat([['/free/', '無料'], ['/weekend/', '今週末']], EV.some(e => e.kid && e.e >= TODAY) ? [['/kids/', '子どもと']] : [], EV.some(e => e.ig && e.e >= TODAY) ? [['/instagram/', 'インスタ']] : []);
   // 子どもと：年齢の重なりで集める。2件以上のときだけページにする（/kids/ は1件から）。
-  const KIDP0 = [['/kids/', '子どもと行ける東京の催し', 0, 99, '子どもと'], ['/kids/baby/', '赤ちゃん（0〜2歳）と行ける東京の催し', 0, 2, '0〜2歳と'], ['/kids/preschool/', '未就学児（3〜6歳）と行ける東京の催し', 3, 6, '3〜6歳と'], ['/kids/elementary/', '小学生と行ける東京の催し', 6, 12, '小学生と']];
+  const KIDP0 = [['/kids/', '東京の子どもと行けるイベント', 0, 99, '子どもと'], ['/kids/baby/', '東京の赤ちゃん（0〜2歳）と行けるイベント', 0, 2, '0〜2歳と'], ['/kids/preschool/', '東京の未就学児（3〜6歳）と行けるイベント', 3, 6, '3〜6歳と'], ['/kids/elementary/', '東京の小学生と行けるイベント', 6, 12, '小学生と']];
   const KIDP = KIDP0.filter(([p, , lo, hi]) => EV.filter(e => e.kid && e.e >= TODAY && e.kid[0] <= hi && e.kid[1] >= lo).length >= (p === '/kids/' ? 1 : 2));
   const KIND = { art: '展示', live: '公演', food: '催し', market: '市', festival: '祭り', popup: '催し' };
   const LDTYPE = { art: 'ExhibitionEvent', live: 'MusicEvent', food: 'FoodEvent', market: 'Event', festival: 'Festival', popup: 'Event' };
@@ -208,6 +208,7 @@ ${sc}</body>
       url: url(`/event/${ev.id}/`), sameAs: ev.url,
       isAccessibleForFree: !!ev.free, description: ev.note || ev.t,
     };
+    if (ev.kid) { ld.typicalAgeRange = ev.kid[1] >= 99 ? `${ev.kid[0]}-` : `${ev.kid[0]}-${ev.kid[1]}`; ld.audience = { '@type': 'PeopleAudience', suggestedMinAge: ev.kid[0], ...(ev.kid[1] < 99 ? { suggestedMaxAge: ev.kid[1] } : {}) }; }
     if (ev.ph) ld.image = [`${BASE}/photos/${ev.ph}.jpg`];
     if (ev.free) ld.offers = { '@type': 'Offer', price: 0, priceCurrency: 'JPY', availability: 'https://schema.org/InStock', url: ev.url };
     return ld;
@@ -293,7 +294,7 @@ ${sc}</body>
   for (const [p, h1, lo, hi, n] of KIDP) {
     const evs = CURRENT.filter(e => e.kid && e.kid[0] <= hi && e.kid[1] >= lo);
     const all = p === '/kids/';
-    listPage(p, h1, `${h1}｜親子で行けるイベント一覧｜${NAME}`,
+    listPage(p, h1, `${h1}｜今週末・親子で楽しめる催し（対象年齢つき）｜${NAME}`,
       `${all ? '子どもと' : n + 'の子どもと'}一緒に行ける東京の催しを${evs.length}件まとめました。対象年齢は主催者の公式ページに書かれたもので、会期、時間、料金、最寄り駅がひと目でわかります。`,
       evs, n, `主催者が公式ページで子ども向け・親子向けと書いている催しを${evs.length}件のせています。対象年齢は公式の記載どおりです（年齢の書き方は催しごとに違うので、くわしくは各ページで確かめてください）。`);
   }
@@ -353,7 +354,13 @@ ${sc}</body>
     const cnt = GKEYS.map(g => [g, evs.filter(e => e.g === g).length]).filter(([, n]) => n);
     const kinds = cnt.length > 3 ? 'イベント' : cnt.map(([g]) => SHORT[g]).join('・');
     const used = sts.filter(s => evs.some(e => e.st === s));
-    listPage(`/area/${slug}/`, `${aname}の${kinds}`, `${aname}の${kinds}｜開催中・今週の催し一覧｜${NAME}`,
+    // 区のエリアは「◯◯区 イベント」で探されるので、区の名前を先に出す。子ども向けの件数も書く。
+    const ward = (aname.match(/^(.+?区)（/) || [])[1];
+    const kidN = evs.filter(e => e.kid).length;
+    if (ward) listPage(`/area/${slug}/`, `${ward}のイベント`, `${ward}のイベント情報｜開催中・今週末・子どもと行ける催し｜${NAME}`,
+      `${ward}（${used.join('・')}駅の近く）で開催中・今週開かれるイベントを${evs.length}件まとめました${kidN ? `（子どもと行ける催し${kidN}件）` : ''}。区民まつり、マルシェ、博物館、コンサートなど、会期、時間、料金がひと目でわかります。`,
+      evs, ward, `最寄り駅が${used.map(s => s + '駅').join('・')}の催しを${evs.length}件のせています（${cnt.map(([g, n]) => GENRES[g].n + n + '件').join('、')}${kidN ? `、うち子ども向け${kidN}件` : ''}）。`);
+    else listPage(`/area/${slug}/`, `${aname}の${kinds}`, `${aname}の${kinds}｜開催中・今週の催し一覧｜${NAME}`,
       `${aname}エリアで開催中・今週開かれる${kinds}を${evs.length}件まとめました。最寄り駅は${used.join('・')}。会期、時間、料金がひと目でわかります。`,
       evs, aname, `最寄り駅が${used.map(s => s + '駅').join('・')}の催しを${evs.length}件のせています（${cnt.map(([g, n]) => GENRES[g].n + n + '件').join('、')}）。`);
   }
