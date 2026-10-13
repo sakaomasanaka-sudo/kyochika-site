@@ -1,7 +1,7 @@
 // 英語・中国語のページを作る。kyochikaAll が日本語のページとあわせて一式にする。
 // アフィリエイトの ID。登録が済んだらここに入れる。空なら何も表示しない。
 // rakuten: 楽天アフィリエイトID（hgc の後ろの部分）／klook: Klook の affiliate ID（aid）、klookAd: サイト Kyochika Tokyo の aff_adid（10/11 登録）
-const KYOCHIKA_AFF = { rakuten: '', klook: '138663', klookAd: '1493145' };
+const KYOCHIKA_AFF = { rakuten: '584eca7f.b482ba06.584eca80.649f3027', klook: '138663', klookAd: '1493145' };
 function kyochikaIntl(D, T, L, TODAY, VER) {
   const { EV, SPOTS, GENRES, CRED, HOLIDAYS } = D;
   const BASE = 'https://kyochika.jp', NAME = 'キョウチカ', P = '/' + L, EN = L === 'en', ZH = L === 'zh', li = ZH ? 1 : 0;

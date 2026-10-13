@@ -48,7 +48,10 @@ function kyochikaBuild(D, aboutMain, TODAY, VER) {
   // アフィリエイト。D.AFF の ID が空なら何も出さない。
   const AFF = D.AFF || {};
   const affOn = !!(AFF.rakuten || AFF.klook);
-  const rakutenHotel = ev => AFF.rakuten ? `https://hb.afl.rakuten.co.jp/hgc/${AFF.rakuten}/?pc=${encodeURIComponent('https://kw.travel.rakuten.co.jp/keyword/Search.do?f_keyword=' + encodeURIComponent(ev.st + '駅'))}` : '';
+  // 楽天トラベルのキーワード検索は Shift_JIS で受け取るので、駅名を Shift_JIS でエンコードする。
+  let SJ = null;
+  const sjis = str => { if (!SJ) { SJ = new Map(); const dec = new TextDecoder('shift_jis'); for (let a = 0x81; a <= 0xfc; a++) { if (a > 0x9f && a < 0xe0) continue; for (let b = 0x40; b <= 0xfc; b++) { if (b === 0x7f) continue; const c = dec.decode(new Uint8Array([a, b])); if (c.length === 1 && c !== '\ufffd' && !SJ.has(c)) SJ.set(c, [a, b]); } } } return [...str].map(ch => ch.charCodeAt(0) < 0x80 ? encodeURIComponent(ch) : (SJ.get(ch) || []).map(x => '%' + x.toString(16).toUpperCase()).join('')).join(''); };
+  const rakutenHotel = ev => AFF.rakuten ? `https://hb.afl.rakuten.co.jp/hgc/${AFF.rakuten}/?pc=${encodeURIComponent('https://kw.travel.rakuten.co.jp/keyword/Search.do?f_query=' + sjis(ev.st + '駅'))}&link_type=text` : '';
   const affBox = ev => { const u = rakutenHotel(ev); return u ? `<h2>この近くで泊まる</h2>
       <div class="row"><a class="go aff" href="${esc(u)}" target="_blank" rel="sponsored noopener">${esc(ev.st)}駅の近くのホテルを楽天トラベルで見る</a></div>
       <p class="cap">PR・楽天アフィリエイトのリンクです。</p>` : ''; };
