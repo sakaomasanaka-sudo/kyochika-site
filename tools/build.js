@@ -275,6 +275,7 @@ ${sc}</body>
   <div class="board"><span>終わりが近い順</span><b>${evs.length}件</b></div>
   <ul class="list">${cards}</ul>
   <p class="upd">${ymd(TODAY)}時点の掲載分です。行く日や出発する駅からさがすときは、<a href="/">トップページ</a>が便利です。</p>
+  <a class="igcta" href="https://www.instagram.com/kyochika.tokyo/" target="_blank" rel="noopener"><b>週末どこ行く？をインスタでも</b><span>キョウチカのインスタ @kyochika.tokyo をフォローすると、東京の催しのおすすめが届きます →</span></a>
 `;
     write(path, head(title, desc, path, [itemList(evs), crLd]) + sign(path, path) + body + ways(path) + foot());
   };
