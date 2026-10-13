@@ -94,16 +94,26 @@
     $('pickOut').innerHTML=`<p class="pc-dd">ポチカのお告げ…<b>ここに決まり！</b></p><ul class="pc-one">${mini(r,why(r,st.day).say,'pc-i big')}</ul>`;
     $('pickBtn').textContent='もう1回、えらんでもらう';
   }
+  // トップの「子どもと」の年齢ボタンの押された状態を、しぼりこみの状態にあわせる
+  const KN={ja:'{a}は子どもと行ける催しがないので、いちばん近い{b}にしました',en:'Nothing for kids on {a}, so we moved to the nearest day: {b}',zh:'{a}没有适合带孩子的活动，已改为最近的{b}'};
+  function kidHit(d){const ks=['kA','kB','kC'].filter(k=>st[k]);return search({day:d,from:st.from,genres:st.genres,free:st.free,soon:st.soon,night:st.night,nowOnly:false,nowMin:null}).some(r=>(!st.ig||r.ev.ig)&&r.ev.kid&&ks.some(k=>r.ev.kid[0]<=KR[k][1]&&r.ev.kid[1]>=KR[k][0]));}
+  function kidSync(){const all=st.kA&&st.kB&&st.kC;document.querySelectorAll('[data-act="kidage"]').forEach(x=>{const k=x.dataset.k;x.setAttribute('aria-pressed',String(k==='all'?all:(!all&&!!st[k])));});}
   document.addEventListener('click',e=>{
     const b=e.target.closest('[data-act]');if(!b)return;
     const a=b.dataset.act;
     if(a==='pick'){pickOne();return;}
+    if(a==='kidopen'){const p=$('kidAges');if(p){p.hidden=!p.hidden;b.setAttribute('aria-expanded',String(!p.hidden));}return;}
+    if(a==='kidage'){const k=b.dataset.k,on=k==='all'?!(st.kA&&st.kB&&st.kC):!(st[k]&&!['kA','kB','kC'].some(x=>x!==k&&st[x]));['kA','kB','kC'].forEach(x=>st[x]=on&&(k==='all'||x===k));
+      // えらんだ日にあう催しがなければ、いちばん近い日に動かして、そのことを書く
+      let note='';if(on&&!kidHit(st.day)){for(let i=1;i<=60;i++){const d=isoOf(dayNum(st.day)+i);if(kidHit(d)){note=f(KN[LG]||KN.ja,{a:day(st.day),b:day(d)});st.day=d;break;}}}
+      const kn=$('kidNote');if(kn){kn.textContent=note;kn.hidden=!note;}
+      render();kidSync();if(on){const bd=$('board');if(bd)bd.scrollIntoView({behavior:'smooth',block:'start'});}return;}
     if(a==='day'||a==='dstep')st.day=b.dataset.d;
     else if(a==='from'){st.from=b.dataset.k;save();}
     else if(a==='here'){const msg=$('fromMsg');if(!navigator.geolocation){msg.textContent=U.locFail;msg.hidden=false;return;}msg.textContent=U.locating;msg.hidden=false;navigator.geolocation.getCurrentPosition(p=>{SPOTS.__here=[p.coords.latitude,p.coords.longitude];st.from='__here';msg.hidden=true;render();},()=>{msg.textContent=U.locFail;msg.hidden=false;},{enableHighAccuracy:false,timeout:10000,maximumAge:300000});return;}
     else if(a==='genre'){const k=b.dataset.k;if(st.genres.has(k)){if(st.genres.size>1)st.genres.delete(k);}else st.genres.add(k);}
     else if(a==='flag')st[b.dataset.k]=!st[b.dataset.k];
-    render();
+    render();kidSync();
   });
   $('otherDay').addEventListener('change',e=>{if(isIso(e.target.value)){st.day=e.target.value;render();}});
   if($('join')&&typeof CONFIG!=='undefined'&&/^https:\/\//.test(CONFIG.registerUrl||'')){$('joinLink').href=CONFIG.registerUrl;$('join').hidden=false;}

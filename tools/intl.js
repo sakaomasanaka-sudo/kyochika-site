@@ -331,6 +331,9 @@ ${scripts.map(s => `<script src="/${s}?v=${VER}"></script>\n`).join('')}</body>
     const siteLd = { '@context': 'https://schema.org', '@type': 'WebSite', name: S.site, alternateName: 'キョウチカ', url: BASE + P + '/', inLanguage: HL[L], description: desc };
     const LT = {art:'A',live:'L',food:'F',market:'M',festival:'S',popup:'P'};
     const lines = cnt.map(([g, n]) => `<a href="${P}/${g}/" style="--c:var(--${g})"><i>${LT[g]}</i>${S.G[g][1]}<b>${n}</b></a>`).join('');
+    const nKid = CURRENT.filter(e => e.kid).length;
+    const KL = EN ? ['With kids', 'How old are the kids?', 'Ages 0–2', 'Ages 3–6', 'Elementary school', 'Any age'] : ['带孩子去', '孩子几岁？', '0–2岁', '3–6岁', '小学生', '不限年龄'];
+    const kidLine = nKid ? `<button type="button" class="kidline" data-act="kidopen" aria-expanded="false" aria-controls="kidAges" style="--c:var(--kid)"><i>K</i>${KL[0]}<b>${nKid}</b></button><div class="kidages" id="kidAges" hidden><span>${KL[1]}</span><button type="button" class="chip" data-act="kidage" data-k="kA" aria-pressed="false">${KL[2]}</button><button type="button" class="chip" data-act="kidage" data-k="kB" aria-pressed="false">${KL[3]}</button><button type="button" class="chip" data-act="kidage" data-k="kC" aria-pressed="false">${KL[4]}</button><button type="button" class="chip" data-act="kidage" data-k="all" aria-pressed="false">${KL[5]}</button><p class="kidnote" id="kidNote" hidden></p></div>` : '';
     const nv = new Set(CURRENT.map(e => e.v)).size;
     const body = `  <section class="hero">
     <h1>${S.h1}</h1>
@@ -340,7 +343,7 @@ ${scripts.map(s => `<script src="/${s}?v=${VER}"></script>\n`).join('')}</body>
       <div class="pl-band"><button type="button" id="plPrev" data-act="dstep" aria-label="${S.plate[2]}"><span id="plPrevT"></span></button><button type="button" id="plNext" data-act="dstep" aria-label="${S.plate[3]}"><span id="plNextT">${S.plate[4]}</span></button></div>
     </div>
     <p class="sub">${S.sub2(CURRENT.length, nv)}</p>
-    <nav class="lines" aria-label="${S.lGenre}">${lines}</nav>
+    <nav class="lines" aria-label="${S.lGenre}">${lines}${kidLine}</nav>
   </section>
   <section class="ctl" aria-label="${S.lFilt}">
     <div><span class="lab">${S.lDay}</span><div class="days" id="days"></div><label class="other">${S.lOther} <input type="date" id="otherDay"></label></div>

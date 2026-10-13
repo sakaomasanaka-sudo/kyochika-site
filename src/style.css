@@ -6,7 +6,7 @@ img{max-width:100%}
 :root{
   color-scheme:light;
   --paper:#ffffff; --ink:#000000; --ink-2:#5a5a5a; --rule:#d6d6d6; --wash:#f3f3f3; --sign:#ffd100;
-  --art:#00a7db; --live:#e60012; --food:#f39700; --market:#009944; --festival:#c1a470; --popup:#9b7cb6;
+  --art:#00a7db; --live:#e60012; --food:#f39700; --market:#009944; --festival:#c1a470; --popup:#9b7cb6; --kid:#c2337a;
   --go:#009944; --soon:#e60012; --dot:#ff4a1c;
   --f:"BIZ UDPGothic","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;
   --fn:var(--f);
@@ -237,3 +237,14 @@ h1.pt{font-weight:700;font-size:clamp(26px,6.6vw,40px);line-height:1.35;margin:0
 @media (prefers-reduced-motion:reduce){.hop{animation:none}}
 .pc-ig{font-size:13px;font-weight:700;color:var(--ink-2);text-decoration:underline;align-self:flex-start}
 .bd.kid{color:#c2337a}
+/* トップの「子どもと」：押すと年齢をえらぶ欄がひらく */
+.lines .kidline{display:inline-flex;align-items:center;gap:8px;font:inherit;font-weight:700;font-size:15px;background:none;border:0;padding:0;color:inherit;cursor:pointer}
+.lines .kidline:hover{text-decoration:underline;text-underline-offset:4px}
+.lines .kidline[aria-expanded="true"]{color:var(--kid)}
+.kidages{flex-basis:100%;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;border:2px solid var(--kid);border-radius:4px;background:var(--paper)}
+.kidages[hidden]{display:none}
+.kidages>span{font-weight:700;font-size:14px;width:100%}
+.kidages .chip[aria-pressed="true"]{background:var(--kid);border-color:var(--kid);color:#fff}
+.kidages a{font-size:13px;width:100%}
+.kidages .kidnote{width:100%;margin:0;font-size:13px;color:var(--kid);font-weight:700}
+.kidages .kidnote[hidden]{display:none}
