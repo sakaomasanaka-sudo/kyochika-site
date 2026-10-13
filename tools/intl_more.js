@@ -45,6 +45,7 @@ function KYOCHIKA_SX(L, P) {
       evDesc: (kind, v, s, span, hrs, price, note) => `${kind} en ${v} (Est. ${s}), Tokio. ${span}, ${hrs}. ${price}. ${note}`,
       kind: { art: 'Exposición', live: 'Concierto', food: 'Evento gastronómico', market: 'Mercado', festival: 'Festival', popup: 'Pop-up' },
       orig: 'Título en japonés',
+      halalBd: 'Info halal', halalH: 'Apto para musulmanes', halalRow: 'La página oficial menciona opciones halal o sin cerdo / sin alcohol. Consulta los detalles allí.',
       moH1: m => `Eventos en Tokio en ${m}`, moTitle: m => `Qué hacer en Tokio en ${m}: festivales, mercados, arte y música | Kyochika Tokio`, moDesc: (m, n, f) => `${n} eventos en Tokio en ${m}: festivales, mercadillos, exposiciones, música en directo y comida, con fechas, horarios, precios y estación más cercana. ${f} son gratis.`,
       aboutT: 'Sobre Kyochika', aboutD: 'Sobre Kyochika Tokio: qué es, cómo se comprueba la información, quién la lleva y cómo contactar.',
       about: `    <p>Kyochika (キョウチカ, «hoy, cerca») es una guía independiente de eventos en Tokio. Reunimos exposiciones, música en directo, eventos gastronómicos, mercados y festivales de las webs oficiales y cuentas de Instagram de recintos y organizadores, y los ordenamos por fecha y por distancia desde tu estación.</p>
@@ -113,6 +114,7 @@ function KYOCHIKA_SX(L, P) {
       evDesc: (kind, v, s, span, hrs, price, note) => `${kind}ที่ ${v} (สถานี ${s}) โตเกียว ${span} ${hrs} ${price} ${note}`,
       kind: { art: 'นิทรรศการ', live: 'ไลฟ์', food: 'งานอาหาร', market: 'ตลาด', festival: 'เทศกาล', popup: 'ป๊อปอัพ' },
       orig: 'ชื่อภาษาญี่ปุ่น',
+      halalBd: 'ข้อมูลฮาลาล', halalH: 'สำหรับชาวมุสลิม', halalRow: 'เว็บไซต์ทางการระบุว่ามีตัวเลือกฮาลาล หรือไม่มีหมู/แอลกอฮอล์ โปรดดูรายละเอียดที่นั่น',
       moH1: m => `งานในโตเกียว เดือน${m}`, moTitle: m => `เที่ยวโตเกียวเดือน${m}: งานเทศกาล ตลาดนัด นิทรรศการ ดนตรีสด | Kyochika โตเกียว`, moDesc: (m, n, f) => `งานในโตเกียวเดือน${m} ${n} งาน ทั้งตลาดนัด เทศกาล นิทรรศการ ดนตรีสด และงานอาหาร พร้อมวันที่ เวลา ราคา และสถานีใกล้ที่สุด ฟรี ${f} งาน`,
       aboutT: 'เกี่ยวกับ Kyochika', aboutD: 'เกี่ยวกับ Kyochika โตเกียว: เว็บนี้คืออะไร ตรวจสอบข้อมูลอย่างไร ใครเป็นผู้ดูแล และติดต่ออย่างไร',
       about: `    <p>Kyochika (キョウチカ แปลว่า “วันนี้ ใกล้ๆ”) เป็นคู่มืออิสระสำหรับงานต่างๆ ในโตเกียว เรารวบรวมนิทรรศการศิลปะ ดนตรีสด งานอาหาร ตลาด และเทศกาล จากเว็บไซต์ทางการและ Instagram ของสถานที่และผู้จัด แล้วเรียงตามวันและระยะทางจากสถานีของคุณ</p>
@@ -181,6 +183,7 @@ function KYOCHIKA_SX(L, P) {
       evDesc: (kind, v, s, span, hrs, price, note) => `${kind} di ${v} (Stasiun ${s}), Tokyo. ${span}, ${hrs}. ${price}. ${note}`,
       kind: { art: 'Pameran', live: 'Pertunjukan live', food: 'Acara kuliner', market: 'Pasar', festival: 'Festival', popup: 'Pop-up' },
       orig: 'Judul bahasa Jepang',
+      halalBd: 'Info halal', halalH: 'Ramah Muslim', halalRow: 'Situs resmi menyebutkan pilihan halal atau tanpa babi / tanpa alkohol. Cek detailnya di sana.',
       moH1: m => `Event di Tokyo bulan ${m}`, moTitle: m => `Event di Tokyo bulan ${m}: festival, pasar, pameran, musik live | Kyochika Tokyo`, moDesc: (m, n, f) => `${n} event di Tokyo bulan ${m}: festival, pasar loak, pameran, musik live, dan kuliner, lengkap dengan tanggal, jam, harga, dan stasiun terdekat. ${f} di antaranya gratis.`,
       aboutT: 'Tentang Kyochika', aboutD: 'Tentang Kyochika Tokyo: apa situs ini, bagaimana info dicek, siapa pengelolanya, dan cara menghubungi.',
       about: `    <p>Kyochika (キョウチカ, “hari ini, di dekat sini”) adalah panduan independen untuk acara di Tokyo. Kami mengumpulkan pameran seni, musik live, acara kuliner, pasar, dan festival dari situs resmi dan akun Instagram tempat serta penyelenggara, lalu mengurutkannya berdasarkan tanggal dan jarak dari stasiunmu.</p>

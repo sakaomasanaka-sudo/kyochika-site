@@ -250,3 +250,4 @@ h1.pt{font-weight:700;font-size:clamp(26px,6.6vw,40px);line-height:1.35;margin:0
 .kidages .kidnote[hidden]{display:none}
 .igcta{display:flex;flex-direction:column;gap:2px;border:2px solid var(--ink);border-radius:6px;padding:12px 14px;text-decoration:none;background:#fff8cc;margin-top:8px}.igcta b{font-size:16px}.igcta span{font-size:13px;color:var(--ink-2)}
 .lang{flex-wrap:wrap;gap:2px 12px}
+.bd.halal{color:#0b7a4b}
