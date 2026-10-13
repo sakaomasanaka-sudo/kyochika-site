@@ -236,3 +236,4 @@ h1.pt{font-weight:700;font-size:clamp(26px,6.6vw,40px);line-height:1.35;margin:0
 .hop{animation:hop .6s ease}
 @media (prefers-reduced-motion:reduce){.hop{animation:none}}
 .pc-ig{font-size:13px;font-weight:700;color:var(--ink-2);text-decoration:underline;align-self:flex-start}
+.bd.kid{color:#c2337a}

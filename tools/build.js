@@ -19,11 +19,17 @@ function kyochikaBuild(D, aboutMain, TODAY, VER) {
     ['kichijoji', '吉祥寺・高円寺', ['吉祥寺', '高円寺']],
     ['kiyosumi', '清澄白河', ['清澄白河']],
     ['odaiba', 'お台場', ['台場']],
+    ['arakawa', '荒川区（町屋・日暮里・南千住）', ['町屋', '日暮里', '西日暮里', '南千住', '三河島']],
+    ['katsushika', '葛飾区（亀有・金町・柴又）', ['亀有', '金町', '柴又', '青砥', '新小岩', '堀切菖蒲園', '京成立石', 'お花茶屋']],
+    ['edogawa', '江戸川区（葛西・小岩・船堀）', ['葛西', '西葛西', '葛西臨海公園', '小岩', '船堀', '一之江', '瑞江', '平井']],
   ];
   const GENRE_PAGES = { art: ['art', '美術展・アート展'], live: ['live', 'ライブ・コンサート'], food: ['food', 'フードイベント'], market: ['market', 'マーケット・蚤の市'], festival: ['festival', '祭り・地域の催し'], popup: ['popup', 'ポップアップ・期間限定の店'] };
   const SHORT = { art: '美術展', live: 'ライブ', food: 'フード', market: 'マーケット', festival: '祭り', popup: 'ポップアップ' };
   const GKEYS = Object.keys(GENRE_PAGES);
-  const GNAV = GKEYS.map(g => [`/${GENRE_PAGES[g][0]}/`, SHORT[g]]).concat([['/free/', '無料'], ['/weekend/', '今週末']], EV.some(e => e.ig && e.e >= TODAY) ? [['/instagram/', 'インスタ']] : []);
+  const GNAV = GKEYS.map(g => [`/${GENRE_PAGES[g][0]}/`, SHORT[g]]).concat([['/free/', '無料'], ['/weekend/', '今週末']], EV.some(e => e.kid && e.e >= TODAY) ? [['/kids/', '子どもと']] : [], EV.some(e => e.ig && e.e >= TODAY) ? [['/instagram/', 'インスタ']] : []);
+  // 子どもと：年齢の重なりで集める。2件以上のときだけページにする（/kids/ は1件から）。
+  const KIDP0 = [['/kids/', '子どもと行ける東京の催し', 0, 99, '子どもと'], ['/kids/baby/', '赤ちゃん（0〜2歳）と行ける東京の催し', 0, 2, '0〜2歳と'], ['/kids/preschool/', '未就学児（3〜6歳）と行ける東京の催し', 3, 6, '3〜6歳と'], ['/kids/elementary/', '小学生と行ける東京の催し', 6, 12, '小学生と']];
+  const KIDP = KIDP0.filter(([p, , lo, hi]) => EV.filter(e => e.kid && e.e >= TODAY && e.kid[0] <= hi && e.kid[1] >= lo).length >= (p === '/kids/' ? 1 : 2));
   const KIND = { art: '展示', live: '公演', food: '催し', market: '市', festival: '祭り', popup: '催し' };
   const LDTYPE = { art: 'ExhibitionEvent', live: 'MusicEvent', food: 'FoodEvent', market: 'Event', festival: 'Festival', popup: 'Event' };
 
@@ -86,7 +92,7 @@ function kyochikaBuild(D, aboutMain, TODAY, VER) {
   // ほかの言語の同じページ。D.LANGS があるときだけ使う。エリアのページと404にはない。
   const LANGS = D.LANGS || [];
   const HREFLANG = { en: 'en', zh: 'zh-Hans' }, LANGNAME = { en: 'English', zh: '中文' };
-  const altPath = (l, path) => (path.startsWith('/area/') || path === '/404.html' || path === '/drama/' || path === '/christmas/' || path === '/illumination/' || path === '/halloween/' || path.startsWith('/date/') || /^\/weekend\/\d/.test(path)) ? null : `/${l}` + (path === '/about.html' ? '/about/' : path);
+  const altPath = (l, path) => (path.startsWith('/area/') || path.startsWith('/kids/') || path === '/404.html' || path === '/drama/' || path === '/christmas/' || path === '/illumination/' || path === '/halloween/' || path.startsWith('/date/') || /^\/weekend\/\d/.test(path)) ? null : `/${l}` + (path === '/about.html' ? '/about/' : path);
   const head = (title, desc, path, ld = [], noindex = false) => {
     const alts = (noindex || !LANGS.length || !altPath('en', path)) ? '' : `<link rel="alternate" hreflang="ja" href="${url(path)}">\n` + LANGS.map(l => `<link rel="alternate" hreflang="${HREFLANG[l]}" href="${url(altPath(l, path))}">\n`).join('') + `<link rel="alternate" hreflang="x-default" href="${url(path)}">\n`;
     const lds = ld.map(x => `<script type="application/ld+json">${pyjson(x)}</script>\n`).join('');
@@ -150,7 +156,7 @@ ${lds}</head>
 
   const ways = (current = null) => {
     const a = (p, n) => `<a href="${p}"${p === current ? ' aria-current="page"' : ''}>${esc(n)}</a>`;
-    const g = Object.values(GENRE_PAGES).map(([s, n]) => a(`/${s}/`, n)).join('') + a('/free/', '無料で行ける') + a('/weekend/', '今週末') + a('/date/', '日付から') + (EV.some(e => e.ig && !ended(e)) ? a('/instagram/', 'インスタ告知') : '') + (CURRENT.some(e => (e.k || []).includes('halloween')) ? a('/halloween/', 'ハロウィン') : '') + (CURRENT.some(e => (e.k || []).includes('xmas')) ? a('/christmas/', 'クリスマスマーケット') : '') + (CURRENT.some(e => (e.k || []).includes('illumi')) ? a('/illumination/', 'イルミネーション') : '');
+    const g = Object.values(GENRE_PAGES).map(([s, n]) => a(`/${s}/`, n)).join('') + a('/free/', '無料で行ける') + (KIDP.length ? KIDP.map(([p, , , , n]) => a(p, n)).join('') : '') + a('/weekend/', '今週末') + a('/date/', '日付から') + (EV.some(e => e.ig && !ended(e)) ? a('/instagram/', 'インスタ告知') : '') + (CURRENT.some(e => (e.k || []).includes('halloween')) ? a('/halloween/', 'ハロウィン') : '') + (CURRENT.some(e => (e.k || []).includes('xmas')) ? a('/christmas/', 'クリスマスマーケット') : '') + (CURRENT.some(e => (e.k || []).includes('illumi')) ? a('/illumination/', 'イルミネーション') : '');
     const ar = LIVE_AREAS.map(([s, n]) => a(`/area/${s}/`, n)).join('');
     return `  <nav class="ways" aria-label="ほかのさがし方">
     <h2>ジャンル・条件からさがす</h2><div class="links">${g}</div>
@@ -179,11 +185,13 @@ ${sc}</body>
 
   // 一覧の1件。トップの app.js と同じ形（駅名標の番号・見出し・写真・時間と料金）にする。
   const LTM = { art: 'A', live: 'L', food: 'F', market: 'M', festival: 'S', popup: 'P' };
+  // 子ども向けの目安（公式に年齢の記載があるものだけ ev.kid=[下限,上限] を持つ。99＝親子で全年齢）
+  const kidTxt = k => k[1] >= 99 ? `親子で・${k[0]}歳から` : `${k[0]}歳〜${k[1] === 12 ? '小学生' : k[1] === 15 ? '中学生' : k[1] + '歳'}`;
   const card = (ev, eager = false, i = 0) =>
     `<li class="ev" style="--c:var(--${ev.g})" data-e="${ev.e}"><span class="sn" aria-hidden="true"><b>${LTM[ev.g] || 'E'}</b>${String(i + 1).padStart(2, '0')}</span>`
     + `<div class="hd"><p class="kd">${GENRES[ev.g].n}</p><h2><a href="/event/${ev.id}/">${esc(ev.t)}</a></h2><p class="where">${esc(ev.v)}（${esc(ev.st)}駅）</p></div>`
     + (ev.ph ? `<a class="th" href="/event/${ev.id}/" tabindex="-1" aria-hidden="true"><img src="/photos/${ev.ph}.jpg" alt="" width="384" height="216"${eager ? '' : ' loading="lazy"'}></a>` : '')
-    + `<div class="rest"><p class="when">${when(ev)}</p><p class="meta"><span class="price">${esc(ev.price)}</span>${ev.free ? '<span class="bd free">無料</span>' : ''}${ev.ig ? '<span class="bd ig">インスタで告知</span>' : ''}</p>`
+    + `<div class="rest"><p class="when">${when(ev)}</p><p class="meta"><span class="price">${esc(ev.price)}</span>${ev.free ? '<span class="bd free">無料</span>' : ''}${ev.ig ? '<span class="bd ig">インスタで告知</span>' : ''}${ev.kid ? `<span class="bd kid">子ども ${kidTxt(ev.kid)}</span>` : ''}</p>`
     + (ev.note ? `<p class="note">${esc(ev.note)}</p>` : '')
     + `<a class="off" href="${esc(ev.url)}" target="_blank" rel="noopener">${ev.ig ? 'インスタの告知' : '公式ページ'}</a></div></li>`;
 
@@ -223,7 +231,7 @@ ${sc}</body>
     const desc = `${ev.v}（${ev.st}駅）の${kind}。${oneDay(ev) ? '開催日' : '会期'}は${span(ev)}、${ev.o}${ev.g === 'live' ? '開演' : '〜' + ev.c}、料金は${ev.price}。${ev.note || ''}`;
     const rows = [[oneDay(ev) ? '開催日' : '会期', span(ev) + (oneDay(ev) ? '' : `（${ymd(ev.e)}まで）`)],
       ['時間', [(ev.g === 'live' ? `${ev.o} 開演（終わりは${ev.c}ごろの見込み）` : `${ev.o}〜${ev.c}`), lateText(ev), hxText(ev)].filter(x => x).join('　')],
-      ['料金', ev.price], ['会場', ev.v], ['最寄り駅', ev.st + '駅']];
+      ['料金', ev.price]].concat(ev.kid ? [['子ども', ev.kidnote || kidTxt(ev.kid)]] : [], [['会場', ev.v], ['最寄り駅', ev.st + '駅']]);
     const facts = rows.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
     const spots = Object.entries(SPOTS).map(([n, [la, ln]]) => [km(la, ln, ev.lat, ev.lng), n]).sort((a, b) => a[0] - b[0] || cmp(a[1], b[1])).slice(0, 4);
     const from = spots.map(([dist, n]) => `<dt>${n}から</dt><dd>${far(dist)}</dd>`).join('');
@@ -280,6 +288,14 @@ ${sc}</body>
     listPage('/free/', '東京で無料で行ける催し', `東京の無料で行けるイベント｜開催中・今週の一覧｜${NAME}`,
       `東京で無料で入れる美術展・ライブ・フードイベント・祭りなどを${evs.length}件まとめました。会期、時間、最寄り駅がひと目でわかります。`,
       evs, '無料で行ける', `入場やチャージが無料の催しを${evs.length}件のせています。飲食や物販は別にお金がかかることがあります。`);
+  }
+
+  for (const [p, h1, lo, hi, n] of KIDP) {
+    const evs = CURRENT.filter(e => e.kid && e.kid[0] <= hi && e.kid[1] >= lo);
+    const all = p === '/kids/';
+    listPage(p, h1, `${h1}｜親子で行けるイベント一覧｜${NAME}`,
+      `${all ? '子どもと' : n + 'の子どもと'}一緒に行ける東京の催しを${evs.length}件まとめました。対象年齢は主催者の公式ページに書かれたもので、会期、時間、料金、最寄り駅がひと目でわかります。`,
+      evs, n, `主催者が公式ページで子ども向け・親子向けと書いている催しを${evs.length}件のせています。対象年齢は公式の記載どおりです（年齢の書き方は催しごとに違うので、くわしくは各ページで確かめてください）。`);
   }
 
   {

@@ -3,7 +3,7 @@
   const pad=n=>String(n).padStart(2,'0');
   const KTR=typeof KT!=='undefined'?KT:null,PRE=KTR?KTR.pre:'',LG=KTR?KTR.lang:'ja';
   const U=KTR?KTR.ui:{today:'きょう',hol:'・祝',nowOnly:'いまから間に合う',free:'無料',soon:'もうすぐ終わる',night:'夜19時以降もやっている',ig:'インスタ告知',board:'{d}・{from}から近い順',n:'{n}件',start:'{o} 開演',lastDay:'きょうが最終日',until:'{d}まで',now:'いま開催中',fromT:'{o}から',over:'きょうは終了',endsToday:'きょうまで',left:'あと{n}日',time:'時間',dist:'距離',price:'料金',fromSt:'{s}から',near:'すぐ',walk:'徒歩で約{n}分',train:'電車などで約{n}分',km:'{k}km、{t}',details:'くわしく見る',official:'公式ページ',igpost:'インスタの告知',igbd:'インスタで告知',alt:'{p}の写真',sta:'（{s}駅）',empty:'この日・この条件に合う催しは、いまの掲載分にはありません。しぼりこみを外すか、別の日をえらんでください。'};
-  const U2={ja:{tomorrow:'あした',yest:'きのう',plNext:'次の日',plPrev:'前の日',walkTo:'{s}から',here:'現在地から',other:'ほかの駅からさがす',locating:'現在地を確かめています…',locFail:'現在地がわかりませんでした。駅をえらんでください。',hereName:'現在地'},en:{tomorrow:'Tomorrow',yest:'Yesterday',plNext:'Next day',plPrev:'Previous day',walkTo:'from {s}',here:'Near me',other:'Start from another station',locating:'Finding your location…',locFail:'Could not get your location. Please choose a station.',hereName:'your location'},zh:{tomorrow:'明天',yest:'昨天',plNext:'后一天',plPrev:'前一天',walkTo:'从{s}',here:'从当前位置',other:'从其他车站出发',locating:'正在获取当前位置…',locFail:'无法获取当前位置，请选择车站。',hereName:'当前位置'}}[LG]||{};
+  const U2={ja:{tomorrow:'あした',yest:'きのう',plNext:'次の日',plPrev:'前の日',walkTo:'{s}から',here:'現在地から',other:'ほかの駅からさがす',locating:'現在地を確かめています…',locFail:'現在地がわかりませんでした。駅をえらんでください。',hereName:'現在地',kA:'0〜2歳と',kB:'3〜6歳と',kC:'小学生と',kid:'子ども'},en:{tomorrow:'Tomorrow',yest:'Yesterday',plNext:'Next day',plPrev:'Previous day',walkTo:'from {s}',here:'Near me',other:'Start from another station',locating:'Finding your location…',locFail:'Could not get your location. Please choose a station.',hereName:'your location',kA:'Ages 0–2',kB:'Ages 3–6',kC:'Ages 6–12',kid:'Kids'},zh:{tomorrow:'明天',yest:'昨天',plNext:'后一天',plPrev:'前一天',walkTo:'从{s}',here:'从当前位置',other:'从其他车站出发',locating:'正在获取当前位置…',locFail:'无法获取当前位置，请选择车站。',hereName:'当前位置',kA:'0–2岁',kB:'3–6岁',kC:'6–12岁',kid:'儿童'}}[LG]||{};
   for(const k in U2) if(!(k in U)) U[k]=U2[k];
   const POP=['渋谷','新宿','池袋','東京','銀座','上野','表参道','六本木','恵比寿','下北沢','吉祥寺','品川'];
   const f=(s,o)=>s.replace(/\{(\w+)\}/g,(m,k)=>o[k]);
@@ -16,8 +16,9 @@
   const now=new Date(),todayIso=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
   // きょうから7日分をえらべるようにする。
   const DAYS=Array.from({length:7},(_,i)=>isoOf(dayNum(todayIso)+i));
-  const HASIG=EV.some(ev=>ev.ig);
-  const st={day:todayIso,from:'渋谷',genres:new Set(Object.keys(GENRES).filter(k=>EV.some(ev=>ev.g===k))),free:false,soon:false,night:false,nowOnly:false,ig:false};
+  const HASIG=EV.some(ev=>ev.ig),HASKID=EV.some(ev=>ev.kid);const KR={kA:[0,2],kB:[3,6],kC:[6,12]};
+  const kidTxt=k=>LG==='ja'?(k[1]>=99?`親子で・${k[0]}歳から`:`${k[0]}歳〜${k[1]===12?'小学生':k[1]===15?'中学生':k[1]+'歳'}`):LG==='en'?(k[1]>=99?`Family, ages ${k[0]}+`:`Kids ${k[0]}–${k[1]}`):(k[1]>=99?`亲子·${k[0]}岁起`:`${k[0]}–${k[1]}岁`);
+  const st={day:todayIso,from:'渋谷',genres:new Set(Object.keys(GENRES).filter(k=>EV.some(ev=>ev.g===k))),free:false,soon:false,night:false,nowOnly:false,ig:false,kA:false,kB:false,kC:false};
   try{const s=JSON.parse(localStorage.getItem('kyochika')||'null');if(s&&SPOTS[s.from])st.from=s.from;}catch(e){}
   const save=()=>{try{localStorage.setItem('kyochika',JSON.stringify({from:st.from}));}catch(e){}};
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -35,9 +36,10 @@
     const GL=LG==='en'?1:LG==='zh'?2:0; $('fromSel').innerHTML=`<option value="">${U.other}</option>`+(typeof SPOT_GROUPS!=='undefined'?SPOT_GROUPS:[['',[],'',Object.keys(SPOTS)]]).map(g=>`<optgroup label="${esc(g[GL])}">${g[3].filter(k=>SPOTS[k]).map(k=>`<option value="${k}"${st.from===k?' selected':''}>${esc(tS(k))}</option>`).join('')}</optgroup>`).join('');
     $('genres').innerHTML=Object.keys(GENRES).filter(k=>EV.some(ev=>ev.g===k)).map(k=>`<button class="chip g" style="--c:var(--${k})" type="button" data-act="genre" data-k="${k}" aria-pressed="${st.genres.has(k)}">${tG(k)}</button>`).join('');
     const fl=(k,label)=>`<button class="chip" type="button" data-act="flag" data-k="${k}" aria-pressed="${st[k]}">${label}</button>`;
-    $('filters').innerHTML=(isToday?fl('nowOnly',U.nowOnly):'')+fl('free',U.free)+fl('soon',U.soon)+fl('night',U.night)+(HASIG?fl('ig',U.ig):'');
+    $('filters').innerHTML=(isToday?fl('nowOnly',U.nowOnly):'')+fl('free',U.free)+fl('soon',U.soon)+fl('night',U.night)+(HASIG?fl('ig',U.ig):'')+(HASKID?fl('kA',U.kA)+fl('kB',U.kB)+fl('kC',U.kC):'');
     let rows=search({day:st.day,from:st.from,genres:st.genres,free:st.free,soon:st.soon,night:st.night,nowOnly:isToday&&st.nowOnly,nowMin:isToday?now.getHours()*60+now.getMinutes():null});
     if(st.ig)rows=rows.filter(r=>r.ev.ig);
+    const ks=['kA','kB','kC'].filter(k=>st[k]);if(ks.length)rows=rows.filter(r=>r.ev.kid&&ks.some(k=>r.ev.kid[0]<=KR[k][1]&&r.ev.kid[1]>=KR[k][0]));
     $('board').innerHTML=`<span>${f(U.board,{d:day(st.day),from:esc(tS(st.from))})}</span><b>${f(U.n,{n:rows.length})}</b>`;
     $('list').innerHTML=rows.length?rows.map(r=>{
       const ev=r.ev,left=daysLeft(ev,st.day),oneDay=ev.s===ev.e,c=closeOn(ev,st.day),o=openOn(ev,st.day);
@@ -49,6 +51,7 @@
       if(r.state==='over')bd.push(`<span class="bd next">${U.over}</span>`);
       if(ev.free)bd.push(`<span class="bd free">${U.free}</span>`);
       if(ev.ig)bd.push(`<span class="bd ig">${U.igbd}</span>`);
+      if(ev.kid)bd.push(`<span class="bd kid">${LG==='ja'?U.kid+' ':''}${kidTxt(ev.kid)}</span>`);
       if(longRun(ev)&&left<=7)bd.push(`<span class="bd soon">${left===0?U.endsToday:f(U.left,{n:left})}</span>`);
       const LT={art:'A',live:'L',food:'F',market:'M',festival:'S',popup:'P'}[ev.g]||'E';const no=String(rows.indexOf(r)+1).padStart(2,'0');
       const note=tN(ev);const dist=r.dist<0.1?U.near:trav(r.dist);

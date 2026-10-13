@@ -243,7 +243,7 @@ ${scripts.map(s => `<script src="/${s}?v=${VER}"></script>\n`).join('')}</body>
   const card = (ev, eager, i = 0) => `<li class="ev" style="--c:var(--${ev.g})" data-e="${ev.e}"><span class="sn" aria-hidden="true"><b>${LTM[ev.g] || 'E'}</b>${String(i + 1).padStart(2, '0')}</span>`
     + `<div class="hd"><p class="kd">${S.G[ev.g][0]}</p><h2><a href="${P}/event/${ev.id}/">${esc(tt(ev))}</a></h2><p class="where">${esc(tv(ev))}${esc(S.staP(ts(ev.st)))}</p></div>`
     + (ev.ph ? `<a class="th" href="${P}/event/${ev.id}/" tabindex="-1" aria-hidden="true"><img src="/photos/${ev.ph}.jpg" alt="" width="384" height="216"${eager ? '' : ' loading="lazy"'}></a>` : '')
-    + `<div class="rest"><p class="when">${when(ev)}</p><p class="meta"><span class="price">${esc(tp(ev))}</span>${ev.free ? `<span class="bd free">${S.ui.free}</span>` : ''}${ev.ig ? `<span class="bd ig">${S.ui.igbd}</span>` : ''}</p>`
+    + `<div class="rest"><p class="when">${when(ev)}</p><p class="meta"><span class="price">${esc(tp(ev))}</span>${ev.free ? `<span class="bd free">${S.ui.free}</span>` : ''}${ev.ig ? `<span class="bd ig">${S.ui.igbd}</span>` : ''}${ev.kid ? `<span class="bd kid">${EN ? (ev.kid[1] >= 99 ? `Family, ages ${ev.kid[0]}+` : `Kids ${ev.kid[0]}–${ev.kid[1]}`) : (ev.kid[1] >= 99 ? `亲子·${ev.kid[0]}岁起` : `儿童 ${ev.kid[0]}–${ev.kid[1]}岁`)}</span>` : ''}</p>`
     + (ev.note ? `<p class="note">${esc(tn(ev))}</p>` : '')
     + `<a class="off" href="${esc(ev.url)}" target="_blank" rel="noopener">${ev.ig ? S.igpost : S.official}</a></div></li>`;
   const itemList = evs => ({ '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: evs.map((e, i) => ({ '@type': 'ListItem', position: i + 1, url: url(`${P}/event/${e.id}/`), name: tt(e) })) });
@@ -261,7 +261,7 @@ ${scripts.map(s => `<script src="/${s}?v=${VER}"></script>\n`).join('')}</body>
     if (ev.free) ld.offers = { '@type': 'Offer', price: 0, priceCurrency: 'JPY', availability: 'https://schema.org/InStock', url: ev.url };
     const rows = [[oneDay(ev) ? S.date1 : S.dates, span(ev)],
       [S.time, [(ev.g === 'live' ? `${S.start(ev.o)} (${S.endAbout(ev.c)})` : `${ev.o}–${ev.c}`), lateText(ev), hxText(ev)].filter(x => x).join(S.joiner)],
-      [S.price, tp(ev)], [S.venue, tv(ev)], [S.station, S.sta(ts(ev.st))]];
+      [S.price, tp(ev)]].concat(ev.kid ? [[EN ? 'Kids' : '儿童', EN ? (ev.kid[1] >= 99 ? `Family-friendly, ages ${ev.kid[0]}+` : `Ages ${ev.kid[0]}–${ev.kid[1]}`) : (ev.kid[1] >= 99 ? `适合亲子，${ev.kid[0]}岁起` : `${ev.kid[0]}–${ev.kid[1]}岁`)]] : [], [[S.venue, tv(ev)], [S.station, S.sta(ts(ev.st))]]);
     const spots = Object.entries(SPOTS).map(([n, [la, ln]]) => [km(la, ln, ev.lat, ev.lng), n]).sort((a, b) => a[0] - b[0] || cmp(a[1], b[1])).slice(0, 4);
     const others = CURRENT.filter(x => x.id !== ev.id).map(x => [km(ev.lat, ev.lng, x.lat, x.lng) + ((x.s <= ev.e && x.e >= ev.s) ? 0 : 50), x]).sort((a, b) => a[0] - b[0]).slice(0, 6);
     const maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(ev.v.split('（')[0]);

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://kyochika.jp/event/nippori-dokan-matsuri-2026/</loc><lastmod>2026-10-13</lastmod><priority>0.6</priority></url>
+  <url><loc>https://kyochika.jp/event/arakawa-koryu-toshi-fair-2026/</loc><lastmod>2026-10-13</lastmod><priority>0.6</priority></url>
+  <url><loc>https://kyochika.jp/event/edogawa-tokimeki-fair-28/</loc><lastmod>2026-10-13</lastmod><priority>0.6</priority></url>
   <url><loc>https://kyochika.jp/event/tokyo-xmas-market-shintoyosu-2026/</loc><lastmod>2026-10-13</lastmod><priority>0.6</priority></url>
   <url><loc>https://kyochika.jp/event/tokyo-xmas-market-shibakoen-2026/</loc><lastmod>2026-10-13</lastmod><priority>0.6</priority></url>
   <url><loc>https://kyochika.jp/event/roppongi-hills-xmas-market-2026/</loc><lastmod>2026-10-13</lastmod><priority>0.6</priority></url>
@@ -313,11 +316,15 @@
   <url><loc>https://kyochika.jp/area/ikebukuro/</loc><lastmod>2026-10-13</lastmod><priority>0.8</priority></url>
   <url><loc>https://kyochika.jp/area/shimokitazawa/</loc><lastmod>2026-10-13</lastmod><priority>0.8</priority></url>
   <url><loc>https://kyochika.jp/area/kichijoji/</loc><lastmod>2026-10-13</lastmod><priority>0.8</priority></url>
+  <url><loc>https://kyochika.jp/area/arakawa/</loc><lastmod>2026-10-13</lastmod><priority>0.8</priority></url>
   <url><loc>https://kyochika.jp/weekend/</loc><lastmod>2026-10-13</lastmod><priority>0.8</priority></url>
   <url><loc>https://kyochika.jp/</loc><lastmod>2026-10-13</lastmod><priority>1.0</priority></url>
   <url><loc>https://kyochika.jp/drama/</loc><lastmod>2026-10-13</lastmod><priority>0.8</priority></url>
   <url><loc>https://kyochika.jp/about.html</loc><lastmod>2026-10-13</lastmod><priority>0.8</priority></url>
   <url><loc>https://kyochika.jp/app/</loc><lastmod>2026-10-13</lastmod><priority>0.8</priority></url>
+  <url><loc>https://kyochika.jp/en/event/nippori-dokan-matsuri-2026/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/en/event/arakawa-koryu-toshi-fair-2026/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/en/event/edogawa-tokimeki-fair-28/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/en/event/tokyo-xmas-market-shintoyosu-2026/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/en/event/tokyo-xmas-market-shibakoen-2026/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/en/event/roppongi-hills-xmas-market-2026/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
@@ -574,6 +581,9 @@
   <url><loc>https://kyochika.jp/en/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/en/about/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/en/app/</loc><lastmod>2026-10-13</lastmod><priority>0.7</priority></url>
+  <url><loc>https://kyochika.jp/zh/event/nippori-dokan-matsuri-2026/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/zh/event/arakawa-koryu-toshi-fair-2026/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/zh/event/edogawa-tokimeki-fair-28/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/zh/event/tokyo-xmas-market-shintoyosu-2026/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/zh/event/tokyo-xmas-market-shibakoen-2026/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/zh/event/roppongi-hills-xmas-market-2026/</loc><lastmod>2026-10-13</lastmod><priority>0.5</priority></url>
