@@ -30,6 +30,8 @@ function kyochikaBuild(D, aboutMain, TODAY, VER) {
   // 子どもと：年齢の重なりで集める。2件以上のときだけページにする（/kids/ は1件から）。
   const KIDP0 = [['/kids/', '東京の子どもと行けるイベント', 0, 99, '子どもと'], ['/kids/baby/', '東京の赤ちゃん（0〜2歳）と行けるイベント', 0, 2, '0〜2歳と'], ['/kids/preschool/', '東京の未就学児（3〜6歳）と行けるイベント', 3, 6, '3〜6歳と'], ['/kids/elementary/', '東京の小学生と行けるイベント', 6, 12, '小学生と']];
   const KIDP = KIDP0.filter(([p, , lo, hi]) => EV.filter(e => e.kid && e.e >= TODAY && e.kid[0] <= hi && e.kid[1] >= lo).length >= (p === '/kids/' ? 1 : 2));
+  const PLACES = [['yoyogi-park', '代々木公園', /代々木公園/], ['hibiya-park', '日比谷公園', /日比谷公園/], ['ueno-park', '上野公園', /上野恩賜公園|上野公園/], ['kasai-rinkai-park', '葛西臨海公園', /葛西臨海/], ['unu', '国連大学前（青山）', /国際連合大学|国連大学/], ['roppongi-hills', '六本木ヒルズ', /六本木ヒルズ/], ['tokyo-midtown', '東京ミッドタウン', /東京ミッドタウン(?!日比谷)/], ['shibuya-parco', '渋谷PARCO', /渋谷PARCO/], ['bonus-track', '下北沢 BONUS TRACK・線路街', /BONUS TRACK|下北線路街/], ['tokyo-dome-city', '東京ドームシティ', /東京ドーム/], ['skytree-town', '東京スカイツリータウン', /スカイツリータウン|ソラマチ/], ['azabudai-hills', '麻布台ヒルズ', /麻布台ヒルズ/], ['omotesando-hills', '表参道ヒルズ', /表参道ヒルズ/], ['nippori-ekimae', '日暮里駅前', /日暮里駅前/], ['futakotamagawa-rise', '二子玉川ライズ', /二子玉川ライズ/], ['sunshine-city', '池袋サンシャインシティ', /サンシャインシティ/], ['shibuya-hikarie', '渋谷ヒカリエ', /ヒカリエ/], ['tokyo-intl-forum', '東京国際フォーラム', /東京国際フォーラム/], ['ebisu-garden-place', '恵比寿ガーデンプレイス', /恵比寿ガーデンプレイス/], ['star-pines-cafe', '吉祥寺スターパインズカフェ', /スターパインズカフェ/], ['sunpearl-arakawa', 'サンパール荒川', /サンパール荒川/], ['tower-hall-funabori', 'タワーホール船堀', /タワーホール船堀/]];
+  const PLACES_LIVE = PLACES.filter(([, , re]) => EV.filter(e => e.e >= TODAY && re.test(e.v)).length >= 2);
   const KIND = { art: '展示', live: '公演', food: '催し', market: '市', festival: '祭り', popup: '催し' };
   const LDTYPE = { art: 'ExhibitionEvent', live: 'MusicEvent', food: 'FoodEvent', market: 'Event', festival: 'Festival', popup: 'Event' };
 
@@ -92,7 +94,7 @@ function kyochikaBuild(D, aboutMain, TODAY, VER) {
   // ほかの言語の同じページ。D.LANGS があるときだけ使う。エリアのページと404にはない。
   const LANGS = D.LANGS || [];
   const HREFLANG = { en: 'en', zh: 'zh-Hans' }, LANGNAME = { en: 'English', zh: '中文' };
-  const altPath = (l, path) => (path.startsWith('/area/') || path.startsWith('/kids/') || path === '/404.html' || path === '/drama/' || path === '/christmas/' || path === '/illumination/' || path === '/halloween/' || path.startsWith('/date/') || /^\/weekend\/\d/.test(path)) ? null : `/${l}` + (path === '/about.html' ? '/about/' : path);
+  const altPath = (l, path) => (path.startsWith('/area/') || path.startsWith('/kids/') || path.startsWith('/place/') || path === '/404.html' || path === '/drama/' || path === '/christmas/' || path === '/illumination/' || path === '/halloween/' || path.startsWith('/date/') || /^\/weekend\/\d/.test(path)) ? null : `/${l}` + (path === '/about.html' ? '/about/' : path);
   const head = (title, desc, path, ld = [], noindex = false) => {
     const alts = (noindex || !LANGS.length || !altPath('en', path)) ? '' : `<link rel="alternate" hreflang="ja" href="${url(path)}">\n` + LANGS.map(l => `<link rel="alternate" hreflang="${HREFLANG[l]}" href="${url(altPath(l, path))}">\n`).join('') + `<link rel="alternate" hreflang="x-default" href="${url(path)}">\n`;
     const lds = ld.map(x => `<script type="application/ld+json">${pyjson(x)}</script>\n`).join('');
@@ -157,7 +159,7 @@ ${lds}</head>
   const ways = (current = null) => {
     const a = (p, n) => `<a href="${p}"${p === current ? ' aria-current="page"' : ''}>${esc(n)}</a>`;
     const g = Object.values(GENRE_PAGES).map(([s, n]) => a(`/${s}/`, n)).join('') + a('/free/', '無料で行ける') + (KIDP.length ? KIDP.map(([p, , , , n]) => a(p, n)).join('') : '') + a('/weekend/', '今週末') + a('/date/', '日付から') + (EV.some(e => e.ig && !ended(e)) ? a('/instagram/', 'インスタ告知') : '') + (CURRENT.some(e => (e.k || []).includes('halloween')) ? a('/halloween/', 'ハロウィン') : '') + (CURRENT.some(e => (e.k || []).includes('xmas')) ? a('/christmas/', 'クリスマスマーケット') : '') + (CURRENT.some(e => (e.k || []).includes('illumi')) ? a('/illumination/', 'イルミネーション') : '');
-    const ar = LIVE_AREAS.map(([s, n]) => a(`/area/${s}/`, n)).join('');
+    const ar = LIVE_AREAS.map(([s, n]) => a(`/area/${s}/`, n)).join('') + PLACES_LIVE.map(([s, n]) => a(`/place/${s}/`, n)).join('');
     return `  <nav class="ways" aria-label="ほかのさがし方">
     <h2>ジャンル・条件からさがす</h2><div class="links">${g}</div>
     <h2>エリアからさがす</h2><div class="links">${ar}</div>
@@ -347,6 +349,25 @@ ${sc}</body>
       const li = made.map(([d, w, n]) => `<li><a href="/date/${d}/">${jd(d)}（${w}）</a><span>${n}件</span></li>`).join('');
       write('/date/', head(`日付から東京のイベントをさがす｜${NAME}`, `今日から6週間先まで、東京で行ける美術展・ライブ・マーケット・祭りを日付ごとにまとめています。`, '/date/', [crLd]) + sign(null, '/date/') + cr + `  <main class="doc"><h1 class="pt">日付から東京のイベントをさがす</h1><ul class="near">${li}</ul></main>\n` + ways('/date/') + foot());
     }
+  }
+
+  // 会場・場所のページ（「代々木公園 イベント 今日」のように場所の名前で探す人向け）。いま2件以上あるところだけ。
+  for (const [slug, pname, re] of PLACES_LIVE) {
+    const evs = CURRENT.filter(e => re.test(e.v));
+    const kidN = evs.filter(e => e.kid).length;
+    listPage(`/place/${slug}/`, `${pname}のイベント`, `${pname}のイベント（今日・今週末）｜開催中の催し一覧｜${NAME}`,
+      `${pname}で開催中・これから開かれるイベントを${evs.length}件まとめました${kidN ? `（子どもと行ける催し${kidN}件）` : ''}。日程、時間、料金、最寄り駅がひと目でわかります。`,
+      evs, pname, `${pname}で開かれる催しを${evs.length}件のせています。日程の変更や中止は、各催しの公式ページで確かめてください。`);
+  }
+
+  // 区・エリア × 子ども（「江戸川区 子ども イベント」向け）。子ども向けが2件以上あるところだけ。
+  for (const [slug, aname, sts] of LIVE_AREAS) {
+    const evs = CURRENT.filter(e => sts.includes(e.st) && e.kid);
+    if (evs.length < 2) continue;
+    const nm = (aname.match(/^(.+?区)（/) || [])[1] || aname;
+    listPage(`/area/${slug}/kids/`, `${nm}の子どもと行けるイベント`, `${nm}の子どもと行けるイベント｜親子で楽しめる催し（対象年齢つき）｜${NAME}`,
+      `${nm}で子どもと一緒に行ける催しを${evs.length}件まとめました。対象年齢は主催者の公式ページの記載どおりで、日程、時間、料金、最寄り駅がひと目でわかります。`,
+      evs, `${nm}・子どもと`, `${nm}で、主催者が子ども向け・親子向けと書いている催しを${evs.length}件のせています。対象年齢は各催しのページで確かめてください。`);
   }
 
   for (const [slug, aname, sts] of LIVE_AREAS) {
@@ -541,6 +562,7 @@ ${sc}</body>
   const prio = p => p === '/' ? '1.0' : ((p.split('/').length - 1) <= 3 && !p.startsWith('/event/')) ? '0.8' : '0.6';
   OUT['sitemap.xml'] = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + PAGES.map(p => `  <url><loc>${url(p)}</loc><lastmod>${TODAY}</lastmod><priority>${prio(p)}</priority></url>\n`).join('') + '</urlset>\n';
   OUT['manifest.json'] = JSON.stringify({ name: NAME + '｜東京のイベントをまとめて探す', short_name: NAME, start_url: '/', scope: '/', display: 'standalone', background_color: '#ffffff', theme_color: '#ffffff', lang: 'ja', icons: [{ src: '/icon-192.png?v=' + VER, sizes: '192x192', type: 'image/png' }, { src: '/icon-512.png?v=' + VER, sizes: '512x512', type: 'image/png' }, { src: '/icon-512.png?v=' + VER, sizes: '512x512', type: 'image/png', purpose: 'maskable' }] }, null, 1) + '\n';
+  OUT['llms.txt'] = `# ${NAME}（kyochika.jp）\n\n> 東京の美術展・ライブ・フードイベント・マーケット・祭り・ポップアップ・子ども向けの催しを、会場や主催者の公式情報から毎日集めてまとめ、行く日と駅から近い順に探せるサイト。日本語・英語・中国語。${TODAY}更新、掲載${CURRENT.length}件。日付・時間・料金・対象年齢は公式ページで確かめたものだけを載せています。\n\n## よく使うページ\n- 今日・行く日と駅から探す: ${BASE}/\n- 今週末: ${BASE}/weekend/\n- 無料で行ける: ${BASE}/free/\n- 日付から: ${BASE}/date/\n${KIDP.map(([p, h]) => `- ${h}: ${BASE}${p}`).join('\n')}\n\n## ジャンル\n${Object.values(GENRE_PAGES).map(([sl, n]) => `- ${n}: ${BASE}/${sl}/`).join('\n')}\n\n## エリア・区\n${LIVE_AREAS.map(([sl, n]) => `- ${n}: ${BASE}/area/${sl}/`).join('\n')}\n\n## 場所\n${PLACES_LIVE.map(([sl, n]) => `- ${n}: ${BASE}/place/${sl}/`).join('\n')}\n\n## English / 中文\n- ${BASE}/en/\n- ${BASE}/zh/\n`;
   OUT['robots.txt'] = `User-agent: *\nAllow: /\n\nSitemap: ${BASE}/sitemap.xml\n`;
   OUT['.htaccess'] = `# 見つからないページの案内と、画像などの読みこみを軽くする設定
 ErrorDocument 404 /404.html

@@ -1,0 +1,58 @@
+# キョウチカ（kyochika.jp）
+
+> 東京の美術展・ライブ・フードイベント・マーケット・祭り・ポップアップ・子ども向けの催しを、会場や主催者の公式情報から毎日集めてまとめ、行く日と駅から近い順に探せるサイト。日本語・英語・中国語。2026-10-13更新、掲載258件。日付・時間・料金・対象年齢は公式ページで確かめたものだけを載せています。
+
+## よく使うページ
+- 今日・行く日と駅から探す: https://kyochika.jp/
+- 今週末: https://kyochika.jp/weekend/
+- 無料で行ける: https://kyochika.jp/free/
+- 日付から: https://kyochika.jp/date/
+- 東京の子どもと行けるイベント: https://kyochika.jp/kids/
+- 東京の赤ちゃん（0〜2歳）と行けるイベント: https://kyochika.jp/kids/baby/
+- 東京の未就学児（3〜6歳）と行けるイベント: https://kyochika.jp/kids/preschool/
+- 東京の小学生と行けるイベント: https://kyochika.jp/kids/elementary/
+
+## ジャンル
+- 美術展・アート展: https://kyochika.jp/art/
+- ライブ・コンサート: https://kyochika.jp/live/
+- フードイベント: https://kyochika.jp/food/
+- マーケット・蚤の市: https://kyochika.jp/market/
+- 祭り・地域の催し: https://kyochika.jp/festival/
+- ポップアップ・期間限定の店: https://kyochika.jp/popup/
+
+## エリア・区
+- 上野: https://kyochika.jp/area/ueno/
+- 六本木・乃木坂: https://kyochika.jp/area/roppongi/
+- 銀座・有楽町: https://kyochika.jp/area/ginza/
+- 渋谷・原宿・表参道: https://kyochika.jp/area/shibuya/
+- 新宿: https://kyochika.jp/area/shinjuku/
+- 恵比寿・目黒: https://kyochika.jp/area/ebisu/
+- 池袋: https://kyochika.jp/area/ikebukuro/
+- 下北沢: https://kyochika.jp/area/shimokitazawa/
+- 吉祥寺・高円寺: https://kyochika.jp/area/kichijoji/
+- 荒川区（町屋・日暮里・南千住）: https://kyochika.jp/area/arakawa/
+- 葛飾区（亀有・金町・柴又）: https://kyochika.jp/area/katsushika/
+- 江戸川区（葛西・小岩・船堀）: https://kyochika.jp/area/edogawa/
+
+## 場所
+- 代々木公園: https://kyochika.jp/place/yoyogi-park/
+- 葛西臨海公園: https://kyochika.jp/place/kasai-rinkai-park/
+- 国連大学前（青山）: https://kyochika.jp/place/unu/
+- 六本木ヒルズ: https://kyochika.jp/place/roppongi-hills/
+- 東京ミッドタウン: https://kyochika.jp/place/tokyo-midtown/
+- 渋谷PARCO: https://kyochika.jp/place/shibuya-parco/
+- 下北沢 BONUS TRACK・線路街: https://kyochika.jp/place/bonus-track/
+- 東京ドームシティ: https://kyochika.jp/place/tokyo-dome-city/
+- 東京スカイツリータウン: https://kyochika.jp/place/skytree-town/
+- 麻布台ヒルズ: https://kyochika.jp/place/azabudai-hills/
+- 表参道ヒルズ: https://kyochika.jp/place/omotesando-hills/
+- 日暮里駅前: https://kyochika.jp/place/nippori-ekimae/
+- 二子玉川ライズ: https://kyochika.jp/place/futakotamagawa-rise/
+- 渋谷ヒカリエ: https://kyochika.jp/place/shibuya-hikarie/
+- 吉祥寺スターパインズカフェ: https://kyochika.jp/place/star-pines-cafe/
+- サンパール荒川: https://kyochika.jp/place/sunpearl-arakawa/
+- タワーホール船堀: https://kyochika.jp/place/tower-hall-funabori/
+
+## English / 中文
+- https://kyochika.jp/en/
+- https://kyochika.jp/zh/
