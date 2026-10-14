@@ -304,7 +304,7 @@ ${sc}</body>
       <ul class="near">${near}</ul>
       <h2>近くでごはん・カフェ</h2>
       <p class="sub2">${esc(ev.st)}駅のまわりのお店</p>
-      <div class="row eat">${eatLinks(ev).map(([n, u, pr]) => `<a class="go" href="${esc(u)}" target="_blank" rel="${pr ? 'sponsored ' : ''}noopener">${n}</a>`).join('')}</div>
+      <div class="row eat">${eatLinks(ev).map(([n, u, pr]) => `<a class="go" href="${esc(u)}" target="_blank" rel="${pr ? 'sponsored ' : ''}noopener" onclick="window.gtag&&gtag('event','eat_click',{eat_type:'${esc(n)}'})">${n}</a>`).join('')}</div>
       <p class="cap">食べログ・ホットペッパー・Google マップの検索がひらきます。点数や口コミはそれぞれのサイトでご覧ください。${eatLinks(ev).some(x => x[2]) ? '一部は広告（アフィリエイト）リンクです。' : ''}</p>
       ${affBox(ev)}
       ${cap}
