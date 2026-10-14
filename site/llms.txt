@@ -1,6 +1,6 @@
 # キョウチカ（kyochika.jp）
 
-> 東京の美術展・ライブ・フードイベント・マーケット・祭り・ポップアップ・子ども向けの催しを、会場や主催者の公式情報から毎日集めてまとめ、行く日と駅から近い順に探せるサイト。日本語・英語・中国語。2026-10-14更新、掲載576件。日付・時間・料金・対象年齢は公式ページで確かめたものだけを載せています。
+> 東京の美術展・ライブ・フードイベント・マーケット・祭り・ポップアップ・子ども向けの催しを、会場や主催者の公式情報から毎日集めてまとめ、行く日と駅から近い順に探せるサイト。日本語・英語・中国語。2026-10-14更新、掲載585件。日付・時間・料金・対象年齢は公式ページで確かめたものだけを載せています。
 
 ## よく使うページ
 - 今日・行く日と駅から探す: https://kyochika.jp/
@@ -31,6 +31,7 @@
 - 下北沢: https://kyochika.jp/area/shimokitazawa/
 - 吉祥寺・高円寺: https://kyochika.jp/area/kichijoji/
 - 清澄白河: https://kyochika.jp/area/kiyosumi/
+- お台場: https://kyochika.jp/area/odaiba/
 - 荒川区（町屋・日暮里・南千住）: https://kyochika.jp/area/arakawa/
 - 葛飾区（亀有・金町・柴又）: https://kyochika.jp/area/katsushika/
 - 江戸川区（葛西・小岩・船堀）: https://kyochika.jp/area/edogawa/
@@ -75,6 +76,7 @@
 - [今週から始まる東京のイベント](https://kyochika.jp/new/)
 - [1,000円以下で行ける東京のイベント](https://kyochika.jp/cheap/)
 - [朝から行ける東京のイベント](https://kyochika.jp/morning/)
+- [写真撮影OKの東京の展覧会](https://kyochika.jp/photo-ok/)
 - [アニメ・推し活の東京のイベント](https://kyochika.jp/anime/)
 - [猫のイベント（東京）](https://kyochika.jp/cat/)
 - [日本酒・クラフトビールのイベント（東京）](https://kyochika.jp/sake/)
