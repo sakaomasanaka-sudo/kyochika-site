@@ -59,3 +59,6 @@
 ## English / 中文
 - https://kyochika.jp/en/
 - https://kyochika.jp/zh/
+
+## 条件から探す
+- [雨の日でも行ける東京のイベント](https://kyochika.jp/rainy/)

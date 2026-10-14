@@ -160,11 +160,17 @@ ${lds}<script async src="https://www.googletagmanager.com/gtag/js?id=G-0T0FYH7TT
   const CURRENT = EV.filter(e => !ended(e));
   const order = evs => [...evs].sort((a, b) => cmp(a.e, b.e) || cmp(a.s, b.s) || cmp(a.o, b.o));
   const LIVE_AREAS = AREAS.filter(([, , sts]) => CURRENT.filter(e => sts.includes(e.st)).length >= 2);
+  const COND_FAQ = {
+    '/dog/': evs => [['東京で犬連れOKのイベントはどこで探せますか？', `このページに、公式ページでペット同伴可と書かれている東京の催しを${evs.length}件まとめています。屋外のマルシェや公園の催し、ドッグフェスが多く、毎日更新しています。`], ['犬連れで行くときに気をつけることは？', '多くの催しでリードの着用が必要で、飲食エリアや屋内への同伴はできないことがあります。行く前に、各催しの公式ページで同伴の決まりを確かめてください。'], ['今週末に愛犬と行けるイベントは？', `終わりが近い順にならべているので、上から見ると今週末に行ける催しが見つかります。日付と出発する駅で探すときは、トップページから選べます。`]],
+    '/barrierfree/': evs => [['車椅子で行ける東京のイベントはありますか？', `会場や主催者の公式ページで、車椅子での来場やバリアフリー設備の案内がある催しを${evs.length}件まとめています。`], ['設備の細かい情報はどこで確かめられますか？', '段差・エレベーター・多目的トイレ・貸し出し用の車椅子などは、各催しの公式ページや会場のバリアフリー案内で確かめてください。混雑する日時は会場に問い合わせると安心です。']],
+    '/rainy/': evs => [['雨の日に東京で行けるイベントは？', `美術館・ギャラリーの展示や屋内の催しを${evs.length}件まとめています。駅から近い会場も多く、雨の日の外出に向いています。`], ['子どもと雨の日に行ける場所は？', '子ども向けの催しは「子どもと行けるイベント」のページで、対象年齢つきで探せます。']],
+  };
   const COND_PAGES = [
     ['/rainy/', '雨の日でも行ける東京のイベント', `雨の日でも行ける東京のイベント｜屋内の美術展・催し（今日・今週末）｜${NAME}`, n => `雨の日でも楽しめる東京の屋内イベントを${n}件まとめました。美術館・ギャラリーの展示や屋内の催しの会期、時間、料金、最寄り駅がひと目でわかります。`, e => (e.g === 'art' || e.indoor) && !e.outdoor, '雨の日でも行ける', n => `屋内で楽しめる催しを${n}件のせています（美術展と、公式ページで屋内と確かめた催し）。終わりが近い順です。`],
     ['/barrierfree/', '車椅子で行ける東京のイベント', `車椅子で行ける東京のイベント｜バリアフリーの会場の催し（今日・今週末）｜${NAME}`, n => `車椅子で行ける東京のイベントを${n}件まとめました。会場の公式ページでバリアフリー（段差なし・エレベーター・車椅子対応のトイレなど）を確かめた催しです。`, e => e.bf, '車椅子で行ける', n => `会場や主催者の公式ページで、車椅子での来場について書かれている催しを${n}件のせています。設備の細かい点は、行く前に公式ページや会場に確かめてください。`],
     ['/dog/', '愛犬と行ける東京のイベント', `愛犬と行ける東京のイベント｜犬連れOK・ペット同伴可・ドッグイベント（今日・今週末）｜${NAME}`, n => `愛犬と一緒に行ける東京のイベントを${n}件まとめました。犬連れOKのマルシェや公園の催し、ドッグフェスなど、公式ページで「ペット同伴可」と確かめた催しの会期、時間、場所、最寄り駅がひと目でわかります。`, e => e.dog, '愛犬と行ける', n => `公式ページで犬（ペット）の同伴ができると書かれている催しを${n}件のせています。リードの決まりなどは公式ページで確かめてください。`],
   ];
+  const condLinks = ev => { const l = COND_PAGES.filter(c => c[4](ev) && CURRENT.filter(c[4]).length >= 3).map(c => `<a href="${c[0]}">${esc(c[1])}</a>`); return l.length ? `\n      <p class="cap">この催しは ${l.join('、')} にも載っています。</p>` : ''; };
   // 月ごとのページ（今月から3か月、5件以上ある月だけ）。「東京 11月 イベント」で探す人向け。外国語版（intl.js）と同じ月の集め方。
   const JMONTHS = [];
   {
@@ -255,7 +261,7 @@ ${sc}</body>
     const desc = `${ev.v}（${ev.st}駅）の${kind}。${oneDay(ev) ? '開催日' : '会期'}は${span(ev)}、${ev.o}${ev.g === 'live' ? '開演' : '〜' + ev.c}、料金は${ev.price}。${ev.note || ''}`;
     const rows = [[oneDay(ev) ? '開催日' : '会期', span(ev) + (oneDay(ev) ? '' : `（${ymd(ev.e)}まで）`)],
       ['時間', [(ev.g === 'live' ? `${ev.o} 開演（終わりは${ev.c}ごろの見込み）` : `${ev.o}〜${ev.c}`), lateText(ev), hxText(ev)].filter(x => x).join('　')],
-      ['料金', ev.price]].concat(ev.kid ? [['子ども', ev.kidnote || kidTxt(ev.kid)]] : [], [['会場', ev.v], ['最寄り駅', ev.st + '駅']]);
+      ['料金', ev.price]].concat(ev.kid ? [['子ども', ev.kidnote || kidTxt(ev.kid)]] : [], ev.bf ? [['車椅子', '公式ページにバリアフリーの案内あり']] : [], ev.dog ? [['愛犬', '公式ページでペット同伴可']] : [], [['会場', ev.v], ['最寄り駅', ev.st + '駅']]);
     const facts = rows.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
     const spots = Object.entries(SPOTS).map(([n, [la, ln]]) => [km(la, ln, ev.lat, ev.lng), n]).sort((a, b) => a[0] - b[0] || cmp(a[1], b[1])).slice(0, 4);
     const from = spots.map(([dist, n]) => `<dt>${n}から</dt><dd>${far(dist)}</dd>`).join('');
@@ -269,7 +275,7 @@ ${sc}</body>
       <h1 class="pt">${esc(ev.t)}</h1>
       <p class="lead">${esc(ev.v)}（${esc(ev.st)}駅）${ev.free ? '・無料' : ''}</p>
       ${ev.note ? `<p>${esc(ev.note)}</p>` : ''}
-      <dl class="facts">${facts}</dl>
+      <dl class="facts">${facts}</dl>${condLinks(ev)}
       <p class="cap">${ev.ig ? '日程の変更や中止は、主催者のインスタグラムで確かめてください。' : '休みの日や最終入場の時刻は、公式ページで確かめてください。'}</p>
       <div class="row"><a class="go pri" href="${esc(ev.url)}" target="_blank" rel="noopener">${ev.ig ? 'インスタの告知で確かめる' : '公式ページで確かめる'}</a><a class="go" href="${maps}" target="_blank" rel="noopener">地図でひらく</a></div>
       <h2>主な駅からの近さ</h2>
@@ -287,7 +293,7 @@ ${sc}</body>
   }
 
   // ── 一覧ページ（ジャンル・無料・エリア・今週末） ──
-  const listPage = (path, h1, title, desc, evs0, crumbName, intro) => {
+  const listPage = (path, h1, title, desc, evs0, crumbName, intro, faq = []) => {
     const evs = order(evs0);
     const [cr, crLd] = crumbs([['トップ', '/'], [crumbName, null]]);
     const cards = evs.map((e, i) => card(e, i < 2, i)).join('');
@@ -295,10 +301,11 @@ ${sc}</body>
   <p class="intro">${esc(intro)}</p>
   <div class="board"><span>終わりが近い順</span><b>${evs.length}件</b></div>
   <ul class="list">${cards}</ul>
-  <p class="upd">${ymd(TODAY)}時点の掲載分です。行く日や出発する駅からさがすときは、<a href="/">トップページ</a>が便利です。</p>
+${faq.length ? `  <section class="faq"><h2>よくある質問</h2>${faq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}</section>\n` : ''}  <p class="upd">${ymd(TODAY)}時点の掲載分です。行く日や出発する駅からさがすときは、<a href="/">トップページ</a>が便利です。</p>
   <a class="igcta" href="https://www.instagram.com/kyochika.tokyo/" target="_blank" rel="noopener"><b>週末どこ行く？をインスタでも</b><span>キョウチカのインスタ @kyochika.tokyo をフォローすると、東京の催しのおすすめが届きます →</span></a>
 `;
-    write(path, head(title, desc, path, [itemList(evs), crLd]) + sign(path, path) + body + ways(path) + foot());
+    const faqLd = faq.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }] : [];
+    write(path, head(title, desc, path, [itemList(evs), crLd].concat(faqLd)) + sign(path, path) + body + ways(path) + foot());
   };
 
   for (const [g, [slug, gname]] of Object.entries(GENRE_PAGES)) {
@@ -317,7 +324,7 @@ ${sc}</body>
   // 条件のページ（10/14〜）。公式ページに書いてあることだけで印を付ける（bf・dog・indoor）。雨の日は美術展（屋内）と indoor:true。
   for (const [path, h1, title, desc, test, cname, intro] of COND_PAGES) {
     const evs = CURRENT.filter(test);
-    if (evs.length >= 3) listPage(path, h1, title, desc(evs.length), evs, cname, intro(evs.length));
+    if (evs.length >= 3) listPage(path, h1, title, desc(evs.length), evs, cname, intro(evs.length), (COND_FAQ[path] || (() => []))(evs));
   }
 
   for (const [p, h1, lo, hi, n] of KIDP) {
@@ -599,6 +606,7 @@ ${sc}</body>
   OUT['sitemap.xml'] = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + PAGES.map(p => `  <url><loc>${url(p)}</loc><lastmod>${TODAY}</lastmod><priority>${prio(p)}</priority></url>\n`).join('') + '</urlset>\n';
   OUT['manifest.json'] = JSON.stringify({ name: NAME + '｜東京のイベントをまとめて探す', short_name: NAME, start_url: '/', scope: '/', display: 'standalone', background_color: '#ffffff', theme_color: '#ffffff', lang: 'ja', icons: [{ src: '/icon-192.png?v=' + VER, sizes: '192x192', type: 'image/png' }, { src: '/icon-512.png?v=' + VER, sizes: '512x512', type: 'image/png' }, { src: '/icon-512.png?v=' + VER, sizes: '512x512', type: 'image/png', purpose: 'maskable' }] }, null, 1) + '\n';
   OUT['llms.txt'] = `# ${NAME}（kyochika.jp）\n\n> 東京の美術展・ライブ・フードイベント・マーケット・祭り・ポップアップ・子ども向けの催しを、会場や主催者の公式情報から毎日集めてまとめ、行く日と駅から近い順に探せるサイト。日本語・英語・中国語。${TODAY}更新、掲載${CURRENT.length}件。日付・時間・料金・対象年齢は公式ページで確かめたものだけを載せています。\n\n## よく使うページ\n- 今日・行く日と駅から探す: ${BASE}/\n- 今週末: ${BASE}/weekend/\n- 無料で行ける: ${BASE}/free/\n- 日付から: ${BASE}/date/\n${KIDP.map(([p, h]) => `- ${h}: ${BASE}${p}`).join('\n')}\n\n## ジャンル\n${Object.values(GENRE_PAGES).map(([sl, n]) => `- ${n}: ${BASE}/${sl}/`).join('\n')}\n\n## エリア・区\n${LIVE_AREAS.map(([sl, n]) => `- ${n}: ${BASE}/area/${sl}/`).join('\n')}\n\n## 場所\n${PLACES_LIVE.map(([sl, n]) => `- ${n}: ${BASE}/place/${sl}/`).join('\n')}\n\n## English / 中文\n- ${BASE}/en/\n- ${BASE}/zh/\n`;
+  OUT['llms.txt'] += `\n## 条件から探す\n` + COND_PAGES.filter(c => CURRENT.filter(c[4]).length >= 3).map(c => `- [${c[1]}](${BASE}${c[0]})`).join('\n') + '\n';
   OUT['robots.txt'] = `User-agent: *\nAllow: /\n\nSitemap: ${BASE}/sitemap.xml\n`;
   OUT['.htaccess'] = `# 見つからないページの案内と、画像などの読みこみを軽くする設定
 ErrorDocument 404 /404.html
