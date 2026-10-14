@@ -514,7 +514,7 @@ ${faq.length ? `  <section class="faq"><h2>よくある質問</h2>${faq.map(([q,
     <a class="go" id="joinLink" href="#" target="_blank" rel="noopener">登録フォームをひらく</a>
   </section>
 
-  <p class="intro">${NAME}は、東京の美術展・ライブ・フードイベント・マーケット・祭りなどの情報を、会場や主催者の公式サイトやインスタグラムから集めて1か所にまとめ、行く日と出発する駅から近い順にならべるサイトです。いまは${cnt.map(([g, n]) => GENRES[g].n + n + '件').join('、')}をのせています（${ymd(TODAY)}更新）。スマホのホーム画面に追加すると、アプリのように使えます。</p>
+  <ul class="intro dots"><li>${NAME}は、東京の美術展・ライブ・フードイベント・マーケット・祭りなどの情報を、会場や主催者の公式サイトやインスタグラムから集めて1か所にまとめ、行く日と出発する駅から近い順にならべるサイトです。いまは${cnt.map(([g, n]) => GENRES[g].n + n + '件').join('、')}をのせています（${ymd(TODAY)}更新）。</li><li>スマホの<a href="/app/">ホーム画面に追加</a>すると、アプリのように使えます。</li></ul>
 `;
     const LT = {art:'A',live:'L',food:'F',market:'M',festival:'S',popup:'P'};
     const lines = cnt.map(([g, n]) => `<a href="/${GENRE_PAGES[g][0]}/" style="--c:var(--${g})"><i>${LT[g]}</i>${SHORT[g]}<b>${n}</b></a>`).join('');
