@@ -263,3 +263,4 @@ ul.dots li::before{content:"";position:absolute;left:.15em;top:.62em;width:.42em
 .lines .igline[aria-pressed="true"]{color:#c13584}
 .endedbox{border:2px solid var(--ink);background:#fff8d6;padding:12px 14px;margin:8px 0 14px}
 .endedbox p{margin:4px 0}.endedbox ul{margin:6px 0 0;padding-left:1.2em}
+.aso{margin:18px 0}.aso .go{display:block;text-align:center}

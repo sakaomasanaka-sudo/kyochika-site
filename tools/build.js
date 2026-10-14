@@ -357,6 +357,11 @@ ${sc}</body>
   }
 
   // ── 一覧ページ（ジャンル・無料・エリア・今週末） ──
+  // アソビュー（バリューコマース、PR）。日本語のページだけ。クリックは GA の aso_click で数える。
+  const ASO_ALL = 'https://www.asoview.com/search/?adultQuantity=1&destinationId=prf130000&destinationType=prefecture';
+  const ASO_CRAFT = ASO_ALL + '&leisureId=grp4&leisureType=categoryGroup';
+  const ASO = { '/workshop/': [ASO_CRAFT, '東京のものづくり体験（陶芸・ガラス・レザークラフトなど）をアソビューで探す'], '/kids/workshop/': [ASO_CRAFT, '親子で行ける東京のものづくり体験をアソビューで探す'], '/kids/': [ASO_ALL, '子どもと行ける東京の遊び・チケットをアソビューで探す'], '/kids/rainy/': [ASO_ALL, '雨の日に子どもと行ける東京の遊び・チケットをアソビューで探す'], '/kids/weekend/': [ASO_ALL, '今週末に子どもと行ける東京の遊び・チケットをアソビューで探す'], '/rainy/': [ASO_ALL, '雨の日の東京の遊び・体験をアソビューで探す'], '/weekend/': [ASO_ALL, '今週末の東京の遊び・体験・チケットをアソビューで探す'] };
+  const asoBox = (key, label, tag) => { const w = vcWrap(key, 'asoview'); return `  <section class="aso"><a class="go" href="${esc(w[0])}" target="_blank" rel="${w[1] ? 'sponsored ' : ''}noopener" onclick="window.gtag&&gtag('event','aso_click',{aso_type:'${tag}'})">${esc(label)} →</a><p class="cap">${w[1] ? 'PR・' : ''}アソビュー！のページがひらきます。前売りや予約ができる施設・体験が見つかります。</p></section>\n`; };
   const listPage = (path, h1, title, desc, evs0, crumbName, intro, faq = [], extra = '') => {
     const evs = order(evs0);
     const [cr, crLd] = crumbs([['トップ', '/'], [crumbName, null]]);
@@ -365,7 +370,7 @@ ${sc}</body>
   <p class="intro">${esc(intro)}</p>
   <div class="board"><span>終わりが近い順</span><b>${evs.length}件</b></div>
   <ul class="list">${cards}</ul>
-${extra}${faq.length ? `  <section class="faq"><h2>よくある質問</h2>${faq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}</section>\n` : ''}  <p class="upd">${ymd(TODAY)}時点の掲載分です。行く日や出発する駅からさがすときは、<a href="/">トップページ</a>が便利です。</p>
+${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length ? `  <section class="faq"><h2>よくある質問</h2>${faq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}</section>\n` : ''}  <p class="upd">${ymd(TODAY)}時点の掲載分です。行く日や出発する駅からさがすときは、<a href="/">トップページ</a>が便利です。</p>
   <a class="igcta" href="https://www.instagram.com/kyochika.tokyo/" target="_blank" rel="noopener"><b>週末どこ行く？をインスタでも</b><span>キョウチカのインスタ @kyochika.tokyo をフォローすると、東京の催しのおすすめが届きます →</span></a>
 `;
     const faqLd = faq.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }] : [];
