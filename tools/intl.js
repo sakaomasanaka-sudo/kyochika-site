@@ -218,7 +218,9 @@ ${noJa(path) ? '' : `<link rel="alternate" hreflang="ja" href="${url(jaPath(path
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap">
 <link rel="stylesheet" href="/style.css?v=${VER}">
-${ld.map(x => `<script type="application/ld+json">${JSON.stringify(x)}</script>\n`).join('')}</head>
+${ld.map(x => `<script type="application/ld+json">${JSON.stringify(x)}</script>\n`).join('')}<script async src="https://www.googletagmanager.com/gtag/js?id=G-0T0FYH7TTZ"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-0T0FYH7TTZ");</script>
+</head>
 <body>
 <div class="wrap">
 `;
