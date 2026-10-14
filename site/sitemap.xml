@@ -537,6 +537,14 @@
   <url><loc>https://kyochika.jp/event/kodomo-library-iro-no-hikizan-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
   <url><loc>https://kyochika.jp/event/horimiya-cafe-ikebukuro-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
   <url><loc>https://kyochika.jp/event/yumeneko-jotokai-nihonbashi-1025/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://kyochika.jp/event/showa-tokyo-dogs-runway-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://kyochika.jp/event/komazawa-wanko-matsuri-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://kyochika.jp/event/shinagawa-urban-pet-life-2026-autumn/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://kyochika.jp/event/meiji-park-love-the-park-market-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://kyochika.jp/event/tama-central-park-pompompurin-wanwan-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://kyochika.jp/event/tachikawa-loppis-autumn-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://kyochika.jp/event/tachikawa-green-grown-marche-2026-autumn/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://kyochika.jp/event/tachikawa-jazz-night-2026-final/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
   <url><loc>https://kyochika.jp/art/</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
   <url><loc>https://kyochika.jp/live/</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
   <url><loc>https://kyochika.jp/food/</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
@@ -546,6 +554,7 @@
   <url><loc>https://kyochika.jp/free/</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
   <url><loc>https://kyochika.jp/rainy/</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
   <url><loc>https://kyochika.jp/barrierfree/</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
+  <url><loc>https://kyochika.jp/dog/</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
   <url><loc>https://kyochika.jp/stroller/</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
   <url><loc>https://kyochika.jp/ekichika/</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
   <url><loc>https://kyochika.jp/night/</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
@@ -1205,6 +1214,14 @@
   <url><loc>https://kyochika.jp/en/event/kodomo-library-iro-no-hikizan-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/en/event/horimiya-cafe-ikebukuro-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/en/event/yumeneko-jotokai-nihonbashi-1025/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/en/event/showa-tokyo-dogs-runway-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/en/event/komazawa-wanko-matsuri-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/en/event/shinagawa-urban-pet-life-2026-autumn/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/en/event/meiji-park-love-the-park-market-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/en/event/tama-central-park-pompompurin-wanwan-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/en/event/tachikawa-loppis-autumn-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/en/event/tachikawa-green-grown-marche-2026-autumn/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/en/event/tachikawa-jazz-night-2026-final/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/en/art/</loc><lastmod>2026-10-14</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/en/live/</loc><lastmod>2026-10-14</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/en/food/</loc><lastmod>2026-10-14</lastmod><priority>0.7</priority></url>
@@ -1757,6 +1774,14 @@
   <url><loc>https://kyochika.jp/zh/event/kodomo-library-iro-no-hikizan-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/zh/event/horimiya-cafe-ikebukuro-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/zh/event/yumeneko-jotokai-nihonbashi-1025/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/zh/event/showa-tokyo-dogs-runway-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/zh/event/komazawa-wanko-matsuri-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/zh/event/shinagawa-urban-pet-life-2026-autumn/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/zh/event/meiji-park-love-the-park-market-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/zh/event/tama-central-park-pompompurin-wanwan-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/zh/event/tachikawa-loppis-autumn-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/zh/event/tachikawa-green-grown-marche-2026-autumn/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/zh/event/tachikawa-jazz-night-2026-final/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/zh/art/</loc><lastmod>2026-10-14</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/zh/live/</loc><lastmod>2026-10-14</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/zh/food/</loc><lastmod>2026-10-14</lastmod><priority>0.7</priority></url>
@@ -2309,6 +2334,14 @@
   <url><loc>https://kyochika.jp/es/event/kodomo-library-iro-no-hikizan-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/es/event/horimiya-cafe-ikebukuro-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/es/event/yumeneko-jotokai-nihonbashi-1025/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/es/event/showa-tokyo-dogs-runway-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/es/event/komazawa-wanko-matsuri-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/es/event/shinagawa-urban-pet-life-2026-autumn/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/es/event/meiji-park-love-the-park-market-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/es/event/tama-central-park-pompompurin-wanwan-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/es/event/tachikawa-loppis-autumn-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/es/event/tachikawa-green-grown-marche-2026-autumn/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/es/event/tachikawa-jazz-night-2026-final/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/es/art/</loc><lastmod>2026-10-14</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/es/live/</loc><lastmod>2026-10-14</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/es/food/</loc><lastmod>2026-10-14</lastmod><priority>0.7</priority></url>
@@ -2861,6 +2894,14 @@
   <url><loc>https://kyochika.jp/th/event/kodomo-library-iro-no-hikizan-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/th/event/horimiya-cafe-ikebukuro-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/th/event/yumeneko-jotokai-nihonbashi-1025/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/th/event/showa-tokyo-dogs-runway-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/th/event/komazawa-wanko-matsuri-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/th/event/shinagawa-urban-pet-life-2026-autumn/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/th/event/meiji-park-love-the-park-market-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/th/event/tama-central-park-pompompurin-wanwan-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/th/event/tachikawa-loppis-autumn-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/th/event/tachikawa-green-grown-marche-2026-autumn/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/th/event/tachikawa-jazz-night-2026-final/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/th/market/</loc><lastmod>2026-10-14</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/th/food/</loc><lastmod>2026-10-14</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/th/festival/</loc><lastmod>2026-10-14</lastmod><priority>0.7</priority></url>
@@ -3413,6 +3454,14 @@
   <url><loc>https://kyochika.jp/id/event/kodomo-library-iro-no-hikizan-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/id/event/horimiya-cafe-ikebukuro-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/id/event/yumeneko-jotokai-nihonbashi-1025/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/id/event/showa-tokyo-dogs-runway-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/id/event/komazawa-wanko-matsuri-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/id/event/shinagawa-urban-pet-life-2026-autumn/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/id/event/meiji-park-love-the-park-market-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/id/event/tama-central-park-pompompurin-wanwan-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/id/event/tachikawa-loppis-autumn-2026/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/id/event/tachikawa-green-grown-marche-2026-autumn/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://kyochika.jp/id/event/tachikawa-jazz-night-2026-final/</loc><lastmod>2026-10-14</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/id/art/</loc><lastmod>2026-10-14</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/id/live/</loc><lastmod>2026-10-14</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/id/food/</loc><lastmod>2026-10-14</lastmod><priority>0.7</priority></url>
