@@ -200,7 +200,7 @@ ${lds}<script async src="https://www.googletagmanager.com/gtag/js?id=G-0T0FYH7TT
   const monOpen = e => { const t0 = dnum(TODAY); for (let i = 0; i < 14; i++) { const d = isoOf(t0 + i); if (dow(d) === 1 && e.s <= d && d <= e.e && !e.off.includes(d)) return true; } return false; };
   const quietPick = e => e.g !== 'live' && (!!e.crowd || !!e.quiet || (e.g === 'art' && lateNight(e)) || (e.g === 'art' && dnum(e.e) - dnum(e.s) >= 28 && dnum(TODAY) >= dnum(e.s) && dnum(TODAY) - dnum(e.s) <= 10));
   const PAYN = { cash: '現金', card: 'クレジットカード', ic: '交通系IC（Suicaなど）', paypay: 'PayPay', qr: 'QRコード決済', emoney: '電子マネー' };
-  const payTxt = e => (e.pay.length === 1 && e.pay[0] === 'cash' ? '現金のみ' : e.pay.map(x => PAYN[x] || x).join('・')) + (e.paynote ? `（${e.paynote}）` : '') + '（公式ページより）';
+  const payTxt = e => (e.pay.length === 1 && e.pay[0] === 'cash' ? '現金のみ' : e.pay.map(x => PAYN[x] || x).join('・')) + (e.paynote ? `（${e.paynote}）` : '（公式ページより）');
   const priceMax = p => { p = String(p); const a = p.match(/(?:一般|大人)[^\d]{0,6}([\d,]+)\s*円/); if (a) return Number(a[1].replace(/,/g, '')); const all = [...p.matchAll(/([\d,]+)\s*円/g)]; return all.length === 1 ? Number(all[0][1].replace(/,/g, '')) : 99999; };
   const WKD = (() => { const t0 = dnum(TODAY), sat = t0 + ((6 - dow(TODAY)) % 7 + 7) % 7; return [isoOf(sat), isoOf(sat + 1)]; })();
   const PICK_PATH = `/pick/${WKD[0]}/`;
