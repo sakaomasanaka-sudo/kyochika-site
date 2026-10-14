@@ -186,7 +186,7 @@ ${lds}<script async src="https://www.googletagmanager.com/gtag/js?id=G-0T0FYH7TT
     '/rainy/': evs => [['雨の日に東京で行けるイベントは？', `美術館・ギャラリーの展示や屋内の催しを${evs.length}件まとめています。駅から近い会場も多く、雨の日の外出に向いています。`], ['子どもと雨の日に行ける場所は？', '子ども向けの催しは「子どもと行けるイベント」のページで、対象年齢つきで探せます。']],
   };
   const stSlug = st => (SPOTS[st] && SPOTS[st][2] ? String(SPOTS[st][2]).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') : '');
-  const stPage = st => { const sl = stSlug(st); return sl && CURRENT.filter(e => e.st === st).length >= 3 ? `/station/${sl}/` : null; };
+  const stPage = st => { const sl = stSlug(st), n = CURRENT.filter(e => e.st === st).length, ar = AREAS.find(([, , ss]) => ss.includes(st)); return sl && n >= 5 && !(ar && n >= CURRENT.filter(e => ar[2].includes(e.st)).length * 0.9) ? `/station/${sl}/` : null; };
   const staDist = e => { const p = SPOTS[e.st]; return p ? km(p[0], p[1], e.lat, e.lng) : 9; };
   const lateNight = e => e.g !== 'live' && ((e.c >= '21:00' && e.c > e.o) || Object.values(e.late || {}).some(t => t >= '21:00') || Object.values(e.hx || {}).some(h => h[1] >= '21:00'));
   const monOpen = e => { const t0 = dnum(TODAY); for (let i = 0; i < 14; i++) { const d = isoOf(t0 + i); if (dow(d) === 1 && e.s <= d && d <= e.e && !e.off.includes(d)) return true; } return false; };
@@ -506,12 +506,15 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
     ['rainy', '雨の日でも行ける', e => (e.g === 'art' || e.indoor) && !e.outdoor, '美術展と屋内の催し', '雨の日'],
     ['dog', '愛犬と行ける', e => e.dog, '公式ページでペット同伴可と書かれている催し', '愛犬と'],
   ];
+  // 条件を満たさなくなった自動ページは消せない（サーバーはファイルを消さない）ので、検索に出さない案内ページで上書きする。サイトマップにも入れない。
+  const stubPage = (path, h1, toPath, toName) => { OUT[path.replace(/^\//, '') + 'index.html'] = head(`${h1}｜${NAME}`, `${h1}。`, path, [], true) + sign(null, path) + `  <main class="page"><div class="body"><h1 class="pt">${esc(h1)}</h1><p>いまはこのページに載せる催しが少ないため、<a href="${toPath}">${esc(toName)}</a>にまとめています。</p></div></main>\n` + ways() + foot(); };
   const AREA_COND_PAGES = [];
   for (const [slug, aname, sts] of LIVE_AREAS) {
     const nm = (aname.match(/^(.+?区)（/) || [])[1] || aname;
     for (const [cs, cn, test, what, short] of AREA_COND) {
       const evs = CURRENT.filter(e => sts.includes(e.st) && test(e));
-      if (evs.length < 3) continue;
+      // 中身の薄いページを量産しない（Google の「入口だけのページ」対策）。5件以上で、エリアのページとほぼ同じにならないときだけ。
+      if (evs.length < 5 || evs.length >= CURRENT.filter(e => sts.includes(e.st)).length * 0.9) { if (evs.length >= 3) stubPage(`/area/${slug}/${cs}/`, `${nm}で${cn}イベント`, `/area/${slug}/`, `${nm}のイベント`); continue; }
       AREA_COND_PAGES.push([`/area/${slug}/${cs}/`, `${nm}・${short}`]);
       listPage(`/area/${slug}/${cs}/`, `${nm}で${cn}イベント`, `${nm}で${cn}イベント｜${short}の催し一覧（${evs.length}件）｜${NAME}`,
         `${nm}（${sts.slice(0, 4).join('・')}駅の近く）で${cn}イベントを${evs.length}件まとめました。日程、時間、料金、最寄り駅がひと目でわかります。`,
@@ -528,7 +531,9 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
       const sl = stSlug(st);
       if (!sl || seen.has(sl)) continue;
       const evs = CURRENT.filter(e => e.st === st);
-      if (evs.length < 3) continue;
+      // 5件以上、かつそのエリアのページとほぼ同じにならない駅だけ。
+      const ar = AREAS.find(([, , ss]) => ss.includes(st));
+      if (evs.length < 5 || (ar && evs.length >= CURRENT.filter(e => ar[2].includes(e.st)).length * 0.9)) { if (evs.length >= 3) stubPage(`/station/${sl}/`, `${st}駅の近くのイベント`, ar ? `/area/${ar[0]}/` : '/', ar ? `${ar[1]}のイベント` : 'トップページ'); continue; }
       seen.add(sl);
       STATION_PAGES.push([`/station/${sl}/`, `${st}駅`]);
       const near = CURRENT.filter(e => e.st !== st && SPOTS[st] && km(SPOTS[st][0], SPOTS[st][1], e.lat, e.lng) <= 1).length;
