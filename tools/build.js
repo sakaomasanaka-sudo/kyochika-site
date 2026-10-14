@@ -72,6 +72,13 @@ function kyochikaBuild(D, aboutMain, TODAY, VER) {
   const oneDay = ev => ev.s === ev.e;
   const areaOf = ev => { for (const [slug, name, sts] of AREAS) if (sts.includes(ev.st)) return [slug, name]; return [null, null]; };
   const span = ev => oneDay(ev) ? md(ev.s) : `${md(ev.s)}〜${md(ev.e)}`;
+  // 催しごとのシェア用画像（og/<id>.jpg）。tools/og.js が作る。作れたもの（D.OGDONE の hash が合うもの）だけ og:image に使う。
+  const OGCOL = { art: '#00a7db', live: '#e60012', food: '#f39700', market: '#009944', festival: '#c1a470', popup: '#9b7cb6' };
+  const ogData = ev => ({ t: ev.t, d: span(ev) + (ev.g === 'live' ? ` ${ev.o}開演` : ` ${ev.o}〜${ev.c}`), v: ev.v, st: ev.st, p: ev.free ? '無料' : String(ev.price).slice(0, 40), c: OGCOL[ev.g] || '#000', k: ev.kid ? '子どもと' : '', dog: !!ev.dog });
+  const ogHash = ev => { let h = 5381; const t = JSON.stringify(ogData(ev)) + '|1'; for (let i = 0; i < t.length; i++) h = ((h * 33) ^ t.charCodeAt(i)) >>> 0; return h.toString(36); };
+  const OGDONE = D.OGDONE || {};
+  const calUrl = ev => { const d = x => x.replace(/-/g, ''); const nx = iso => isoOf(dnum(iso) + 1).replace(/-/g, ''); const dates = oneDay(ev) && /^\d\d:\d\d$/.test(ev.o) && /^\d\d:\d\d$/.test(ev.c) && ev.c > ev.o ? `${d(ev.s)}T${ev.o.replace(':', '')}00/${d(ev.s)}T${ev.c.replace(':', '')}00` : `${d(ev.s)}/${nx(ev.e)}`; return `https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=${quote(ev.t)}&amp;dates=${dates}&amp;ctz=Asia/Tokyo&amp;location=${quote(ev.v + '（' + ev.st + '駅）')}&amp;details=${quote(url('/event/' + ev.id + '/'))}`; };
+  const ogUrl = ev => OGDONE[ev.id] === ogHash(ev) ? `${BASE}/og/${ev.id}.jpg?v=${OGDONE[ev.id]}` : null;
   const when = ev => ev.g === 'live' ? `${span(ev)} ${ev.o} 開演` : `${span(ev)} ${ev.o}〜${ev.c}`;
   const lateText = ev => {
     if (!ev.late || !Object.keys(ev.late).length) return '';
@@ -107,8 +114,8 @@ function kyochikaBuild(D, aboutMain, TODAY, VER) {
   // ほかの言語の同じページ。D.LANGS があるときだけ使う。エリアのページと404にはない。
   const LANGS = D.LANGS || [];
   const HREFLANG = { en: 'en', zh: 'zh-Hans', es: 'es', th: 'th', id: 'id' }, LANGNAME = { en: 'English', zh: '中文', es: 'Español', th: 'ไทย', id: 'Indonesia' };
-  const altPath = (l, path) => (path.startsWith('/area/') || path.startsWith('/station/') || path.startsWith('/kids/') || path.startsWith('/place/') || path === '/404.html' || path === '/drama/' || path === '/christmas/' || path === '/illumination/' || path === '/halloween/' || path === '/newyear/' || path === '/rainy/' || path === '/barrierfree/' || path === '/dog/' || path === '/stroller/' || path === '/ekichika/' || path === '/night/' || path === '/noreserve/' || path === '/kids/workshop/' || path === '/kids/rainy/' || path === '/suiteru/' || path === '/bento/' || path === '/cashless/' || path === '/kids/bento/' || path === '/kids/free/' || path === '/kids/weekend/' || ['/monday/','/lastchance/','/new/','/cheap/','/morning/','/photo-ok/','/anime/','/cat/','/sake/','/flea/','/workshop/','/parking/'].includes(path) || path.startsWith('/date/') || /^\/weekend\/\d/.test(path)) ? null : `/${l}` + (path === '/about.html' ? '/about/' : path);
-  const head = (title, desc, path, ld = [], noindex = false) => {
+  const altPath = (l, path) => (path.startsWith('/area/') || path.startsWith('/station/') || path === '/plan/' || path === '/stats/' || path.startsWith('/kids/') || path.startsWith('/place/') || path === '/404.html' || path === '/drama/' || path === '/christmas/' || path === '/illumination/' || path === '/halloween/' || path === '/newyear/' || path === '/koyo/' || path === '/torinoichi/' || path === '/rainy/' || path === '/barrierfree/' || path === '/dog/' || path === '/stroller/' || path === '/ekichika/' || path === '/night/' || path === '/noreserve/' || path === '/kids/workshop/' || path === '/kids/rainy/' || path === '/suiteru/' || path === '/bento/' || path === '/cashless/' || path === '/kids/bento/' || path === '/kids/free/' || path === '/kids/weekend/' || ['/monday/','/lastchance/','/new/','/cheap/','/morning/','/photo-ok/','/anime/','/cat/','/sake/','/flea/','/workshop/','/parking/'].includes(path) || path.startsWith('/date/') || /^\/weekend\/\d/.test(path)) ? null : `/${l}` + (path === '/about.html' ? '/about/' : path);
+  const head = (title, desc, path, ld = [], noindex = false, og = null) => {
     const alts = (noindex || !LANGS.length || !altPath('en', path)) ? '' : `<link rel="alternate" hreflang="ja" href="${url(path)}">\n` + LANGS.map(l => `<link rel="alternate" hreflang="${HREFLANG[l]}" href="${url(altPath(l, path))}">\n`).join('') + `<link rel="alternate" hreflang="x-default" href="${url(path)}">\n`;
     const lds = ld.map(x => `<script type="application/ld+json">${pyjson(x)}</script>\n`).join('');
     const robots = noindex ? '<meta name="robots" content="noindex">' : '<meta name="robots" content="max-image-preview:large">';
@@ -126,10 +133,11 @@ ${canon}${alts}<meta property="og:type" content="website">
 <meta property="og:site_name" content="${NAME}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(desc)}">
-<meta property="og:image" content="${BASE}/og.png?v=${VER}">
+<meta property="og:image" content="${og || BASE + '/og.png?v=' + VER}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="${og || BASE + '/og.png?v=' + VER}">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" href="/favicon.ico?v=${VER}" sizes="48x48">
 <link rel="icon" href="${ICON}" type="image/svg+xml">
@@ -246,7 +254,7 @@ ${lds}<script async src="https://www.googletagmanager.com/gtag/js?id=G-0T0FYH7TT
 
   const ways = (current = null) => {
     const a = (p, n) => `<a href="${p}"${p === current ? ' aria-current="page"' : ''}>${esc(n)}</a>`;
-    const g = Object.values(GENRE_PAGES).map(([s, n]) => a(`/${s}/`, n)).join('') + a('/free/', '無料で行ける') + COND_PAGES.filter(c => CURRENT.filter(c[4]).length >= 3).map(c => a(c[0], c[5])).join('') + (KIDP.length ? KIDP.map(([p, , , , n]) => a(p, n)).join('') : '') + a('/weekend/', '今週末') + JMONTHS.map(([k, , m]) => a(`/month/${k}/`, `${m}月のイベント`)).join('') + a('/date/', '日付から') + (EV.some(e => e.ig && !ended(e)) ? a('/instagram/', 'インスタ告知') : '') + (CURRENT.some(e => (e.k || []).includes('halloween')) ? a('/halloween/', 'ハロウィン') : '') + (CURRENT.some(e => (e.k || []).includes('newyear')) ? a('/newyear/', '年末年始') : '') + (CURRENT.some(e => (e.k || []).includes('xmas')) ? a('/christmas/', 'クリスマスマーケット') : '') + (CURRENT.some(e => (e.k || []).includes('illumi')) ? a('/illumination/', 'イルミネーション') : '');
+    const g = Object.values(GENRE_PAGES).map(([s, n]) => a(`/${s}/`, n)).join('') + a('/free/', '無料で行ける') + COND_PAGES.filter(c => CURRENT.filter(c[4]).length >= 3).map(c => a(c[0], c[5])).join('') + (KIDP.length ? KIDP.map(([p, , , , n]) => a(p, n)).join('') : '') + a('/weekend/', '今週末') + JMONTHS.map(([k, , m]) => a(`/month/${k}/`, `${m}月のイベント`)).join('') + a('/date/', '日付から') + a('/stats/', '数字で見る東京のイベント') + (EV.some(e => e.ig && !ended(e)) ? a('/instagram/', 'インスタ告知') : '') + (CURRENT.some(e => (e.k || []).includes('halloween')) ? a('/halloween/', 'ハロウィン') : '') + (CURRENT.some(e => (e.k || []).includes('newyear')) ? a('/newyear/', '年末年始') : '') + (CURRENT.some(e => (e.k || []).includes('xmas')) ? a('/christmas/', 'クリスマスマーケット') : '') + (CURRENT.some(e => (e.k || []).includes('illumi')) ? a('/illumination/', 'イルミネーション') : '') + (CURRENT.filter(e => (e.k || []).includes('koyo') || /紅葉|もみじ|モミジ|錦秋|いちょう祭|イチョウ祭|銀杏祭|黄葉/.test(e.t)).length >= 3 ? a('/koyo/', '紅葉・ライトアップ') : '') + (CURRENT.filter(e => (e.k || []).includes('torinoichi') || /酉の市|酉のまち|おとりさま/.test(e.t)).length >= 3 ? a('/torinoichi/', '酉の市') : '');
     const ar = LIVE_AREAS.map(([s, n]) => a(`/area/${s}/`, n)).join('') + PLACES_LIVE.map(([s, n]) => a(`/place/${s}/`, n)).join('');
     return `  <nav class="ways" aria-label="ほかのさがし方">
     <h2>ジャンル・条件からさがす</h2><div class="links">${g}</div>
@@ -354,6 +362,8 @@ ${sc}</body>
       <dl class="facts">${facts}</dl>${ev.crowd ? `\n      <p class="cap"><a href="${esc(ev.crowd)}" target="_blank" rel="noopener">公式の混雑状況を見る</a></p>` : ''}${condLinks(ev)}
       <p class="cap">${ev.ig ? '日程の変更や中止は、主催者のインスタグラムで確かめてください。' : '休みの日や最終入場の時刻は、公式ページで確かめてください。'}</p>
       <div class="row"><a class="go pri" href="${esc(ev.url)}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','official_click',{ev_id:'${ev.id}'})">${ev.ig ? 'インスタの告知で確かめる' : '公式ページで確かめる'}</a><a class="go" href="${maps}" target="_blank" rel="noopener">地図でひらく</a></div>
+      <div class="row share"><a class="go line" href="https://social-plugins.line.me/lineit/share?url=${quote(url(path))}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','share',{method:'line',ev_id:'${ev.id}'})">LINEで友だちに送る</a><a class="go" href="https://x.com/intent/post?text=${quote(ev.t + '（' + span(ev) + '・' + ev.st + '駅）')}&amp;url=${quote(url(path))}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','share',{method:'x',ev_id:'${ev.id}'})">Xでポスト</a><button class="go fav" type="button" data-fav="${ev.id}">☆ 行きたいに保存</button><a class="go" href="${calUrl(ev)}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','calendar_add',{ev_id:'${ev.id}'})">カレンダーに追加</a></div>
+      <p class="cap" id="favlink" hidden><a href="/plan/">行きたいリストから週末プランを作る →</a></p>
       <section class="faq"><h2>よくある質問</h2>${evFaq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}</section>
       <h2>主な駅からの近さ</h2>
       <dl class="facts">${from}</dl>
@@ -370,7 +380,7 @@ ${sc}</body>
     </div>
   </main>
 `;
-    write(path, head(title, desc, path, [eventLd(ev), crLd].concat(evFaq.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: evFaq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }] : [])) + sign(null, path) + body + ways() + foot());
+    write(path, head(title, desc, path, [eventLd(ev), crLd].concat(evFaq.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: evFaq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }] : []), false, ogUrl(ev)) + sign(null, path) + body + ways() + foot());
   }
 
   // ── 一覧ページ（ジャンル・無料・エリア・今週末） ──
@@ -388,6 +398,7 @@ ${sc}</body>
   <div class="board"><span>終わりが近い順</span><b>${evs.length}件</b></div>
   <ul class="list">${cards}</ul>
 ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length ? `  <section class="faq"><h2>よくある質問</h2>${faq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}</section>\n` : ''}  <p class="upd">${ymd(TODAY)}時点の掲載分です。行く日や出発する駅からさがすときは、<a href="/">トップページ</a>が便利です。</p>
+  <div class="row share"><a class="go line" href="https://social-plugins.line.me/lineit/share?url=${quote(url(path))}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','share',{method:'line',page:'${path}'})">このページをLINEで送る</a></div>
   <a class="igcta" href="https://www.instagram.com/kyochika.tokyo/" target="_blank" rel="noopener"><b>週末どこ行く？をインスタでも</b><span>キョウチカのインスタ @kyochika.tokyo をフォローすると、東京の催しのおすすめが届きます →</span></a>
 `;
     const faqLd = faq.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }] : [];
@@ -434,10 +445,12 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
     ['illumi', '/illumination/', '東京のイルミネーション2026', `東京のイルミネーション2026｜期間・点灯時間・場所の一覧｜${NAME}`, n => `2026年の冬に東京で見られるイルミネーションを${n}件まとめました。期間、点灯時間、料金、最寄り駅がひと目でわかります。`, 'イルミネーション', n => `2026年の冬に東京で見られるイルミネーションを${n}件のせています。点灯時間は公式の発表で確かめたものです。`],
     ['newyear', '/newyear/', '東京の年末年始イベント2026-2027', `東京の年末年始イベント2026-2027｜カウントダウン・初詣・初売り・年末の市｜${NAME}`, n => `2026年の年末から2027年の年始に東京で行けるイベントを${n}件まとめました。カウントダウン、初詣の屋台、年末の市、正月の催しの日程・時間・最寄り駅がひと目でわかります。`, '年末年始', n => `2026年の年末から2027年の年始にかけて、東京で行ける催しを${n}件まとめました。カウントダウン、初詣、年の市、正月の催しなど。終わりが近い順にならべています。`],
     ['halloween', '/halloween/', '東京のハロウィンイベント2026', `東京のハロウィンイベント2026｜日程・場所・料金の一覧｜${NAME}`, n => `2026年に東京で開かれるハロウィンイベントを${n}件まとめました。池袋のコスプレフェス、スカイツリータウン、花やしきなど、日程、時間、料金、最寄り駅がひと目でわかります。`, 'ハロウィン', n => `2026年のハロウィンに東京で開かれるイベントを${n}件のせています。日程や料金は主催者の発表で確かめたものです。渋谷駅周辺の路上の集まりは、イベントではないので載せていません。`],
+    ['koyo', '/koyo/', '東京の紅葉・ライトアップ2026', `東京の紅葉・ライトアップ2026｜見ごろ・ライトアップの時間・紅葉まつり｜${NAME}`, n => `2026年の秋に東京で開かれる紅葉のライトアップ・紅葉まつりを${n}件まとめました。期間、ライトアップの時間、料金、最寄り駅がひと目でわかります。`, '紅葉・ライトアップ', n => `2026年の秋に東京で開かれる紅葉のライトアップや紅葉まつりを${n}件のせています。見ごろは天候で変わるので、各催しの公式ページで色づきの情報を確かめてください。`, /紅葉|もみじ|モミジ|錦秋|いちょう祭|イチョウ祭|銀杏祭|黄葉/],
+    ['torinoichi', '/torinoichi/', '東京の酉の市2026', `東京の酉の市2026｜一の酉・二の酉の日程と時間・場所（浅草・新宿・府中ほか）｜${NAME}`, n => `2026年に東京で開かれる酉の市を${n}件まとめました。一の酉・二の酉の日程、時間、最寄り駅がひと目でわかります。`, '酉の市', n => `2026年の酉の市を${n}件のせています。熊手の露店が並び、夜遅くまで開いているところが多いです。時間は各神社の公式ページで確かめてください。`, /酉の市|酉のまち|おとりさま/],
   ];
-  for (const [k, path, h1, title, desc, cname, intro] of SEASONS) {
-    const evs = CURRENT.filter(e => (e.k || []).includes(k));
-    if (evs.length) listPage(path, h1, title, desc(evs.length), evs, cname, intro(evs.length));
+  for (const [k, path, h1, title, desc, cname, intro, re] of SEASONS) {
+    const evs = CURRENT.filter(e => (e.k || []).includes(k) || (re && re.test(e.t)));
+    if (evs.length >= (re ? 3 : 1)) listPage(path, h1, title, desc(evs.length), evs, cname, intro(evs.length));
   }
   for (const [key, y, m, evs] of JMONTHS) {
     const nf = evs.filter(e => e.free).length, nk = evs.filter(e => e.kid).length;
@@ -735,10 +748,74 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
 
   // ── 検索エンジン向け ──
   const prio = p => p === '/' ? '1.0' : ((p.split('/').length - 1) <= 3 && !p.startsWith('/event/')) ? '0.8' : '0.6';
-  OUT['sitemap.xml'] = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + PAGES.filter(p => { const m = p.match(/^\/event\/([^/]+)\/$/); if (!m) return true; const e = EV.find(x => x.id === m[1]); return !e || dnum(TODAY) - dnum(e.e) <= 30; }).map(p => `  <url><loc>${url(p)}</loc><lastmod>${TODAY}</lastmod><priority>${prio(p)}</priority></url>\n`).join('') + '</urlset>\n';
+  OUT['sitemap.xml'] = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + PAGES.filter(p => { if (p === '/plan/') return false; const m = p.match(/^\/event\/([^/]+)\/$/); if (!m) return true; const e = EV.find(x => x.id === m[1]); return !e || dnum(TODAY) - dnum(e.e) <= 30; }).map(p => `  <url><loc>${url(p)}</loc><lastmod>${TODAY}</lastmod><priority>${prio(p)}</priority></url>\n`).join('') + '</urlset>\n';
   OUT['manifest.json'] = JSON.stringify({ name: NAME + '｜東京のイベントをまとめて探す', short_name: NAME, start_url: '/', scope: '/', display: 'standalone', background_color: '#ffffff', theme_color: '#ffffff', lang: 'ja', icons: [{ src: '/icon-192.png?v=' + VER, sizes: '192x192', type: 'image/png' }, { src: '/icon-512.png?v=' + VER, sizes: '512x512', type: 'image/png' }, { src: '/icon-512.png?v=' + VER, sizes: '512x512', type: 'image/png', purpose: 'maskable' }] }, null, 1) + '\n';
   OUT['llms.txt'] = `# ${NAME}（kyochika.jp）\n\n> 東京の美術展・ライブ・フードイベント・マーケット・祭り・ポップアップ・子ども向けの催しを、会場や主催者の公式情報から毎日集めてまとめ、行く日と駅から近い順に探せるサイト。日本語・英語・中国語。${TODAY}更新、掲載${CURRENT.length}件。日付・時間・料金・対象年齢は公式ページで確かめたものだけを載せています。\n\n## よく使うページ\n- 今日・行く日と駅から探す: ${BASE}/\n- 今週末: ${BASE}/weekend/\n- 無料で行ける: ${BASE}/free/\n- 日付から: ${BASE}/date/\n${KIDP.map(([p, h]) => `- ${h}: ${BASE}${p}`).join('\n')}\n\n## ジャンル\n${Object.values(GENRE_PAGES).map(([sl, n]) => `- ${n}: ${BASE}/${sl}/`).join('\n')}\n\n## エリア・区\n${LIVE_AREAS.map(([sl, n]) => `- ${n}: ${BASE}/area/${sl}/`).join('\n')}\n\n## 場所\n${PLACES_LIVE.map(([sl, n]) => `- ${n}: ${BASE}/place/${sl}/`).join('\n')}\n\n## English / 中文\n- ${BASE}/en/\n- ${BASE}/zh/\n`;
   OUT['llms.txt'] += `\n## 条件から探す\n` + COND_PAGES.filter(c => CURRENT.filter(c[4]).length >= 3).map(c => `- [${c[1]}](${BASE}${c[0]})`).join('\n') + '\n';
+  // 数字で見る東京のイベント（/stats/）。毎回の書き出しで自動で作りなおす。メディアやブログに引用してもらうためのページ。
+  {
+    const N = CURRENT.length, pc = x => N ? Math.round(x / N * 100) : 0;
+    const GN = { art: '美術展・アート', live: 'ライブ・音楽', food: 'フード・グルメ', market: 'マーケット・蚤の市', festival: '祭り・地域の催し', popup: 'ポップアップ' };
+    const byG = GKEYS.map(g => [GN[g], CURRENT.filter(e => e.g === g).length]).sort((a, b) => b[1] - a[1]);
+    const free = CURRENT.filter(e => e.free).length, kid = CURRENT.filter(e => e.kid).length, dog = CURRENT.filter(e => e.dog).length, bf = CURRENT.filter(e => e.bf).length, ig = CURRENT.filter(e => e.ig).length;
+    const artP = CURRENT.filter(e => e.g === 'art' && !e.free).map(e => priceMax(e.price)).filter(x => x < 99999).sort((a, b) => a - b);
+    const med = artP.length ? artP[Math.floor(artP.length / 2)] : 0;
+    const wk = CURRENT.filter(e => WKD.some(d => e.s <= d && d <= e.e && !(e.off || []).includes(d))).length;
+    const ar = LIVE_AREAS.map(([sl, n, sts]) => [n, CURRENT.filter(e => sts.includes(e.st)).length, sl]).sort((a, b) => b[1] - a[1]).slice(0, 8);
+    const ym = TODAY.slice(0, 7).split('-'), when = `${ym[0]}年${Number(ym[1])}月`;
+    const rows = (a) => a.map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(String(v))}</td></tr>`).join('');
+    const body = `${crumbs([['トップ', '/'], ['数字で見る東京のイベント', null]])[0]}  <main class="page"><div class="body">
+  <h1 class="pt">数字で見る東京のイベント（${when}）</h1>
+  <p class="intro">キョウチカに載っている、東京で開催中・これから開かれる催し${N}件を数えました（${ymd(TODAY)}時点）。催しは会場や主催者の公式ページで確かめたものだけです。引用するときは「キョウチカ調べ」とこのページへのリンクを付けてください。</p>
+  <h2>ひと目で</h2>
+  <table class="stats">${rows([['開催中・これからの催し', N + '件'], ['入場無料', `${free}件（${pc(free)}%）`], ['子どもと行ける（対象年齢つき）', `${kid}件（${pc(kid)}%）`], ['愛犬と行ける（公式にペット同伴可）', `${dog}件`], ['車椅子で行ける（公式にバリアフリーの案内）', `${bf}件`], ['インスタだけで告知された催し', `${ig}件`], [`今週末（${WKD.map(md).join('・')}）に開いている`, `${wk}件`], ['有料の美術展の入場料（一般・中央値）', med ? `${med.toLocaleString()}円` : '—']])}</table>
+  <h2>ジャンル別</h2>
+  <table class="stats">${rows(byG.map(([n, v]) => [n, `${v}件（${pc(v)}%）`]))}</table>
+  <h2>催しの多いエリア</h2>
+  <table class="stats">${ar.map(([n, v, sl]) => `<tr><th><a href="/area/${sl}/">${esc(n)}</a></th><td>${v}件</td></tr>`).join('')}</table>
+  <h2>月ごと</h2>
+  <table class="stats">${JMONTHS.map(([k, , m, evs]) => `<tr><th><a href="/month/${k}/">${m}月に行ける催し</a></th><td>${evs.length}件（無料${evs.filter(e => e.free).length}件）</td></tr>`).join('')}</table>
+  <p class="cap">数え方：会期が今日以降の催しを数えています。入場料は「一般」「大人」の料金で、学生料金などは除いています。毎日更新しています。</p>
+  </div></main>
+`;
+    write('/stats/', head(`数字で見る東京のイベント（${when}）｜無料は${pc(free)}%、子どもと行ける催しは${kid}件｜${NAME}`, `東京で開催中・これから開かれるイベント${N}件を数えました。入場無料は${pc(free)}%、子どもと行ける催し${kid}件、愛犬と行ける催し${dog}件、美術展の入場料の中央値は${med.toLocaleString()}円（キョウチカ調べ・${ymd(TODAY)}時点）。`, '/stats/', [{ '@context': 'https://schema.org', '@type': 'Dataset', name: `東京のイベントの数字（${when}）`, description: `キョウチカに載っている東京のイベント${N}件の集計`, creator: { '@type': 'Organization', name: NAME, url: BASE }, dateModified: TODAY, url: url('/stats/') }]) + sign(null, '/stats/') + body + ways('/stats/') + foot());
+  }
+  // 行きたいリスト・週末プラン（/plan/）。保存した催しを日付順に並べ、地図のルートと LINE で送れるリンクを作る。#i=id,id で同じプランを人に見せられる。
+  write('/plan/', head(`行きたいリスト・週末プラン｜${NAME}`, '保存した東京のイベントを日付順に並べて、地図のルートつきの週末プランにして、LINE で友だちに送れます。', '/plan/', [], true) + sign(null, '/plan/') + `  <main class="page"><div class="body">
+  <h1 class="pt">行きたいリスト・週末プラン</h1>
+  <p class="intro" id="pl-intro">催しのページの「☆ 行きたいに保存」を押すと、ここに集まります。日付の順にならべて、地図のルートと、友だちに送れるリンクを作ります。</p>
+  <div id="pl-list"></div>
+  <div class="row share" id="pl-share" hidden><a class="go line" id="pl-line" target="_blank" rel="noopener">このプランをLINEで送る</a><a class="go" id="pl-map" target="_blank" rel="noopener">地図でルートを見る</a><button class="go" type="button" id="pl-copy">リンクをコピー</button></div>
+  <p class="cap" id="pl-note"></p>
+  <p><a href="/weekend/">今週末のイベントから探す →</a></p>
+  </div></main>
+<script src="/data.js?v=${VER}.${KDV}"></script>
+<script>
+(function(){
+  var K='kyochika_fav',mine=[];try{mine=JSON.parse(localStorage.getItem(K)||'[]')}catch(e){}
+  var h=location.hash.match(/i=([a-z0-9,-]+)/),shared=h?h[1].split(',').filter(Boolean):null,ids=shared||mine;
+  var by={};EV.forEach(function(e){by[e.id]=e;});
+  var n=new Date(),p=function(x){return String(x).padStart(2,'0')},today=n.getFullYear()+'-'+p(n.getMonth()+1)+'-'+p(n.getDate());
+  var evs=ids.map(function(i){return by[i]}).filter(Boolean).sort(function(a,b){return (a.s<today?today:a.s)<(b.s<today?today:b.s)?-1:1});
+  var md=function(iso){var q=iso.split('-');return (+q[1])+'/'+(+q[2])};
+  var L=document.getElementById('pl-list');
+  if(shared)document.getElementById('pl-intro').textContent='友だちから届いた週末プランです。気になる催しは「☆ 行きたいに保存」で自分のリストにも入れられます。';
+  if(!evs.length){L.innerHTML='<p>まだ保存した催しがありません。</p>';return;}
+  L.innerHTML='<ol class="plan">'+evs.map(function(e){var end=e.e<today;return '<li'+(end?' class="ended"':'')+'><a href="/event/'+e.id+'/"><b>'+e.t.replace(/[<&]/g,'')+'</b></a><span>'+(e.s===e.e?md(e.s):md(e.s)+'〜'+md(e.e))+'　'+e.o+(e.g==='live'?'開演':'〜'+e.c)+'</span><span>'+e.v.replace(/[<&]/g,'')+'（'+e.st+'駅）</span>'+(end?'<span>終わりました</span>':'')+(shared?'':'<button type="button" class="go" data-rm="'+e.id+'">リストから外す</button>')+'</li>'}).join('')+'</ol>';
+  L.querySelectorAll('[data-rm]').forEach(function(b){b.addEventListener('click',function(){mine=mine.filter(function(x){return x!==b.dataset.rm});try{localStorage.setItem(K,JSON.stringify(mine))}catch(e){}location.reload();});});
+  var u='https://kyochika.jp/plan/#i='+evs.map(function(e){return e.id}).join(',');
+  var live=evs.filter(function(e){return e.e>=today});
+  var pts=live.map(function(e){return e.lat+','+e.lng});
+  document.getElementById('pl-share').hidden=false;
+  document.getElementById('pl-line').href='https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(u);
+  document.getElementById('pl-line').addEventListener('click',function(){if(window.gtag)gtag('event','share',{method:'line',page:'plan',n:evs.length});});
+  var m=document.getElementById('pl-map');if(pts.length){m.href='https://www.google.com/maps/dir/?api=1&travelmode=transit&destination='+pts[pts.length-1]+(pts.length>1?'&waypoints='+encodeURIComponent(pts.slice(0,-1).join('|')):'');}else m.hidden=true;
+  document.getElementById('pl-copy').addEventListener('click',function(){try{navigator.clipboard.writeText(u);this.textContent='コピーしました';}catch(e){prompt('このリンクを送ってください',u);}});
+  document.getElementById('pl-note').textContent='保存したリストはこのスマホ・パソコンの中だけにあります。日程や時間は、行く前に各催しの公式ページで確かめてください。';
+})();
+</script>
+` + foot());
+  OUT['og/manifest.json'] = JSON.stringify(Object.fromEntries(EV.filter(e => dnum(TODAY) - dnum(e.e) <= 30).map(e => [e.id, Object.assign({ h: ogHash(e) }, ogData(e))])));
   OUT['robots.txt'] = `User-agent: *\nAllow: /\n\nSitemap: ${BASE}/sitemap.xml\n`;
   OUT['.htaccess'] = `# 見つからないページの案内と、画像などの読みこみを軽くする設定
 ErrorDocument 404 /404.html
@@ -764,6 +841,13 @@ ExpiresByType text/javascript "access plus 1 day"
   document.querySelectorAll('[data-until]').forEach(function(el){if(el.dataset.until<today)el.hidden=false;});
   var ib=document.getElementById('inst'),dp=null;
   if(ib){window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();dp=e;ib.hidden=false;});ib.addEventListener('click',function(){if(dp){dp.prompt();dp=null;ib.hidden=true;}});}
+  // 行きたいリスト（このブラウザの中だけに保存。登録はいらない）
+  var K='kyochika_fav',get=function(){try{return JSON.parse(localStorage.getItem(K)||'[]')}catch(e){return []}},put=function(a){try{localStorage.setItem(K,JSON.stringify(a))}catch(e){}};
+  document.querySelectorAll('[data-fav]').forEach(function(b){
+    var id=b.dataset.fav,paint=function(){var on=get().indexOf(id)>=0;b.textContent=on?'★ 行きたいに保存済み':'☆ 行きたいに保存';b.setAttribute('aria-pressed',on);var l=document.getElementById('favlink');if(l)l.hidden=!get().length;};
+    paint();
+    b.addEventListener('click',function(){var a=get(),i=a.indexOf(id);if(i>=0)a.splice(i,1);else{a.push(id);if(window.gtag)gtag('event','fav_add',{ev_id:id});}put(a);paint();});
+  });
 })();
 `;
   return { files: OUT, pages: PAGES.length, areas: LIVE_AREAS.map(a => a[1]), weekend: wk, weekendCount: wkEvs.length };

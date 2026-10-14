@@ -264,3 +264,6 @@ ul.dots li::before{content:"";position:absolute;left:.15em;top:.62em;width:.42em
 .endedbox{border:2px solid var(--ink);background:#fff8d6;padding:12px 14px;margin:8px 0 14px}
 .endedbox p{margin:4px 0}.endedbox ul{margin:6px 0 0;padding-left:1.2em}
 .aso{margin:18px 0}.aso .go{display:block;text-align:center}
+.row.share{flex-wrap:wrap;margin-top:10px}.go.line{background:#06c755;color:#fff;border-color:#06c755}.go.fav[aria-pressed="true"]{background:#ffd100;border-color:#ffd100}
+ol.plan{padding-left:1.4em;margin:16px 0}ol.plan li{margin:0 0 16px}ol.plan li span{display:block;font-size:.92em;color:#444}ol.plan li.ended{opacity:.5}ol.plan .go{margin-top:6px;font-size:.85em;padding:4px 10px}
+table.stats{border-collapse:collapse;width:100%;margin:8px 0 20px}table.stats th,table.stats td{border-bottom:1px solid #ddd;padding:8px 6px;text-align:left;font-weight:400}table.stats td{text-align:right;font-weight:700;white-space:nowrap}
