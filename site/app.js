@@ -124,3 +124,17 @@
   if($('join')&&typeof CONFIG!=='undefined'&&/^https:\/\//.test(CONFIG.registerUrl||'')){$('joinLink').href=CONFIG.registerUrl;$('join').hidden=false;}
   render();
 })();
+
+// 雨の予報の日は、トップに「雨でも行ける」への案内を出す（Open-Meteo の予報。キーは不要。取れなければ何も出さない）
+(function(){
+  var h=document.querySelector('h1');if(!h||location.pathname!=='/')return;
+  try{fetch('https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.76&daily=precipitation_probability_max&timezone=Asia%2FTokyo&forecast_days=2').then(function(r){return r.json()}).then(function(j){
+    var p=(j.daily&&j.daily.precipitation_probability_max)||[];var t=p[0],m=p[1],day=null,pr=0;
+    if(t>=60){day='今日';pr=t;}else if(m>=60&&new Date().getHours()>=15){day='明日';pr=m;}
+    if(!day)return;
+    var a=document.createElement('a');a.className='rainbar';a.href='/rainy/';
+    a.textContent='☔ '+day+'の東京は雨の予報（降水確率'+pr+'%）。雨でも行けるイベントを見る →';
+    a.addEventListener('click',function(){if(window.gtag)gtag('event','rain_banner_click',{day:day});});
+    var ul=document.querySelector('ul.intro');(ul||h).insertAdjacentElement('afterend',a);
+  }).catch(function(){});}catch(e){}
+})();
