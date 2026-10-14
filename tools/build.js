@@ -534,7 +534,7 @@ ${extra}${faq.length ? `  <section class="faq"><h2>よくある質問</h2>${faq.
     </div>
     <p class="sub">美術展、ライブ、フードフェス、蚤の市、祭り。${nv}か所の会場や主催者の公式情報から集めた${CURRENT.length}件を、あなたの駅から近い順にならべます。</p>
     <nav class="lines" aria-label="ジャンル">${lines}${kidLine}</nav>
-    <nav class="areas" aria-label="エリアからさがす"><span class="lab">エリアから</span><div class="chips scroll">${LIVE_AREAS.map(([sl, n]) => `<a class="chip" href="/area/${sl}/">${esc(n)}</a>`).join('')}</div></nav>
+    <nav class="areas" aria-label="エリアからさがす"><span class="lab">エリアから（えらぶと下の一覧がそのエリアだけになります）</span><div class="chips scroll">${LIVE_AREAS.map(([sl, n]) => `<button class="chip" type="button" data-act="area" data-k="${sl}" aria-pressed="false">${esc(n)}</button>`).join('')}</div><script>const AREAS_UI=${JSON.stringify(Object.fromEntries(LIVE_AREAS.map(([sl, , sts]) => [sl, sts])))};</script></nav>
   </section>
 `;
     const dramaBan = `  <a class="dban" href="/drama/" style="display:flex;align-items:center;gap:12px;border:2px solid var(--ink);border-radius:4px;padding:8px 14px;margin:12px 0;text-decoration:none;color:inherit;background:#fff8cc"><img src="/photos/chara/pochika.png?v=${VER}" alt="" width="56" style="flex:none;height:auto"><span><b>連続アニメ『東京、あと80日』</b><br><small>ミカは東京に残る？ 帰る？ 登場人物とあらすじ →</small></span></a>

@@ -18,7 +18,7 @@
   const DAYS=Array.from({length:7},(_,i)=>isoOf(dayNum(todayIso)+i));
   const HASIG=EV.some(ev=>ev.ig),HASKID=EV.some(ev=>ev.kid),HASC=k=>EV.some(ev=>ev[k]&&ev.e>=todayIso);const KR={kA:[0,2],kB:[3,6],kC:[6,12]};
   const kidTxt=k=>LG==='ja'?(k[1]>=99?`親子で・${k[0]}歳から`:`${k[0]}歳〜${k[1]===12?'小学生':k[1]===15?'中学生':k[1]+'歳'}`):LG==='es'?(k[1]>=99?`En familia, desde ${k[0]} años`:`Niños de ${k[0]} a ${k[1]}`):LG==='th'?(k[1]>=99?`ครอบครัว ${k[0]} ขวบขึ้นไป`:`เด็ก ${k[0]}–${k[1]} ขวบ`):LG==='id'?(k[1]>=99?`Keluarga, usia ${k[0]}+`:`Anak ${k[0]}–${k[1]} th`):LG==='en'?(k[1]>=99?`Family, ages ${k[0]}+`:`Kids ${k[0]}–${k[1]}`):(k[1]>=99?`亲子·${k[0]}岁起`:`${k[0]}–${k[1]}岁`);
-  const st={day:todayIso,from:'渋谷',genres:new Set(Object.keys(GENRES).filter(k=>EV.some(ev=>ev.g===k))),free:false,soon:false,night:false,nowOnly:false,ig:false,kA:false,kB:false,kC:false,dog:false,bf:false,stroller:false};
+  const st={day:todayIso,from:'渋谷',genres:new Set(Object.keys(GENRES).filter(k=>EV.some(ev=>ev.g===k))),free:false,soon:false,night:false,nowOnly:false,ig:false,kA:false,kB:false,kC:false,dog:false,bf:false,stroller:false,area:''};
   try{const s=JSON.parse(localStorage.getItem('kyochika')||'null');if(s&&SPOTS[s.from])st.from=s.from;}catch(e){}
   const save=()=>{try{localStorage.setItem('kyochika',JSON.stringify({from:st.from}));}catch(e){}};
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -40,6 +40,8 @@
     let rows=search({day:st.day,from:st.from,genres:st.genres,free:st.free,soon:st.soon,night:st.night,nowOnly:isToday&&st.nowOnly,nowMin:isToday?now.getHours()*60+now.getMinutes():null});
     if(st.ig)rows=rows.filter(r=>r.ev.ig);
     for(const k of ['dog','bf','stroller'])if(st[k])rows=rows.filter(r=>r.ev[k]);
+    if(st.area&&typeof AREAS_UI!=='undefined'&&AREAS_UI[st.area])rows=rows.filter(r=>AREAS_UI[st.area].includes(r.ev.st));
+    document.querySelectorAll('[data-act="area"]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.k===st.area)));
     const ks=['kA','kB','kC'].filter(k=>st[k]);if(ks.length)rows=rows.filter(r=>r.ev.kid&&ks.some(k=>r.ev.kid[0]<=KR[k][1]&&r.ev.kid[1]>=KR[k][0]));
     $('board').innerHTML=`<span>${f(U.board,{d:day(st.day),from:esc(tS(st.from))})}</span><b>${f(U.n,{n:rows.length})}</b>`;
     $('list').innerHTML=rows.length?rows.map(r=>{
@@ -103,6 +105,7 @@
     const b=e.target.closest('[data-act]');if(!b)return;
     const a=b.dataset.act;
     if(a==='pick'){pickOne();return;}
+    if(a==='area'){const k=b.dataset.k;st.area=st.area===k?'':k;if(st.area&&typeof AREAS_UI!=='undefined'){const s0=(AREAS_UI[k]||[]).find(x=>SPOTS[x]);if(s0)st.from=s0;}render();if(st.area){const bd=$('board');if(bd)bd.scrollIntoView({behavior:'smooth',block:'start'});}return;}
     if(a==='kidopen'){const p=$('kidAges');if(p){p.hidden=!p.hidden;b.setAttribute('aria-expanded',String(!p.hidden));}return;}
     if(a==='kidage'){const k=b.dataset.k,on=k==='all'?!(st.kA&&st.kB&&st.kC):!(st[k]&&!['kA','kB','kC'].some(x=>x!==k&&st[x]));['kA','kB','kC'].forEach(x=>st[x]=on&&(k==='all'||x===k));
       // えらんだ日にあう催しがなければ、いちばん近い日に動かして、そのことを書く
