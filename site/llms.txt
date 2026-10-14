@@ -71,3 +71,4 @@
 - [朝から行ける東京のイベント](https://kyochika.jp/morning/)
 - [東京の蚤の市・骨董市・古着市](https://kyochika.jp/flea/)
 - [東京のワークショップ・体験イベント](https://kyochika.jp/workshop/)
+- [子どもと行けるワークショップ（東京）](https://kyochika.jp/kids/workshop/)
