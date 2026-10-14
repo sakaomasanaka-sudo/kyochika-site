@@ -47,6 +47,15 @@ function kyochikaBuild(D, aboutMain, TODAY, VER) {
   const pyround = x => { const f = Math.floor(x), d = x - f; return d > 0.5 ? f + 1 : d < 0.5 ? f : (f % 2 === 0 ? f : f + 1); };
   // アフィリエイト。D.AFF の ID が空なら何も出さない。
   const AFF = D.AFF || {};
+  // 近くでごはん：食べログ（条件つき）・ホットペッパー・Google マップの検索。バリューコマースの ID（AFF.vc = {sid, tabelog, hotpepper}）が入ったら広告リンクにする。
+  const vcWrap = (u, k) => (AFF.vc && AFF.vc.sid && AFF.vc[k]) ? [`https://ck.jp.ap.valuecommerce.com/servlet/referral?sid=${AFF.vc.sid}&pid=${AFF.vc[k]}&vc_url=${encodeURIComponent(u)}`, 1] : [u, 0];
+  const eatLinks = ev => {
+    const sk = encodeURIComponent(ev.st + '駅'), tb = c => vcWrap(`https://tabelog.com/rst/rstsearch?sk=${sk}&SrtT=trend${c}`, 'tabelog');
+    const L = [['食べログで探す', ...tb('')], ['ペット可のお店', ...tb('&ChkPet=1')], ['子連れOKのお店', ...tb('&ChkKids=1')], ['車椅子OKのお店', ...tb('&ChkWheelchair=1')],
+      ['ホットペッパー（クーポン・予約）', ...vcWrap(`https://www.hotpepper.jp/CSP/psh010/doBasic?SA=SA11&FWT=${sk}`, 'hotpepper')],
+      ['地図でカフェ', `https://www.google.com/maps/search/${encodeURIComponent('カフェ')}/@${ev.lat},${ev.lng},17z`, 0]];
+    return L;
+  };
   const affOn = !!(AFF.rakuten || AFF.klook);
   // 楽天トラベルのキーワード検索は Shift_JIS で受け取るので、駅名を Shift_JIS でエンコードする。
   let SJ = null;
@@ -294,8 +303,9 @@ ${sc}</body>
       <h2>近くでやっているほかの催し</h2>
       <ul class="near">${near}</ul>
       <h2>近くでごはん・カフェ</h2>
-      <div class="row">${[['レストラン', 'レストラン'], ['カフェ', 'カフェ'], ['居酒屋', '居酒屋'], ['ペットOKのお店', 'ペット可 カフェ']].map(([n, q]) => `<a class="go" href="https://www.google.com/maps/search/${encodeURIComponent(q)}/@${ev.lat},${ev.lng},17z" target="_blank" rel="noopener">${n}</a>`).join('')}</div>
-      <p class="cap">会場のまわりのお店を Google マップで探せます。</p>
+      <p class="sub2">${esc(ev.st)}駅のまわりのお店</p>
+      <div class="row eat">${eatLinks(ev).map(([n, u, pr]) => `<a class="go" href="${esc(u)}" target="_blank" rel="${pr ? 'sponsored ' : ''}noopener">${n}</a>`).join('')}</div>
+      <p class="cap">食べログ・ホットペッパー・Google マップの検索がひらきます。点数や口コミはそれぞれのサイトでご覧ください。${eatLinks(ev).some(x => x[2]) ? '一部は広告（アフィリエイト）リンクです。' : ''}</p>
       ${affBox(ev)}
       ${cap}
       <p class="upd">${ymd(TODAY)}に${ev.ig ? '主催者のインスタグラムの告知' : '公式ページ'}で確認した内容です。</p>
