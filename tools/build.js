@@ -353,7 +353,7 @@ ${sc}</body>
       ${ev.note ? `<p>${esc(ev.note)}</p>` : ''}
       <dl class="facts">${facts}</dl>${ev.crowd ? `\n      <p class="cap"><a href="${esc(ev.crowd)}" target="_blank" rel="noopener">公式の混雑状況を見る</a></p>` : ''}${condLinks(ev)}
       <p class="cap">${ev.ig ? '日程の変更や中止は、主催者のインスタグラムで確かめてください。' : '休みの日や最終入場の時刻は、公式ページで確かめてください。'}</p>
-      <div class="row"><a class="go pri" href="${esc(ev.url)}" target="_blank" rel="noopener">${ev.ig ? 'インスタの告知で確かめる' : '公式ページで確かめる'}</a><a class="go" href="${maps}" target="_blank" rel="noopener">地図でひらく</a></div>
+      <div class="row"><a class="go pri" href="${esc(ev.url)}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','official_click',{ev_id:'${ev.id}'})">${ev.ig ? 'インスタの告知で確かめる' : '公式ページで確かめる'}</a><a class="go" href="${maps}" target="_blank" rel="noopener">地図でひらく</a></div>
       <section class="faq"><h2>よくある質問</h2>${evFaq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}</section>
       <h2>主な駅からの近さ</h2>
       <dl class="facts">${from}</dl>
