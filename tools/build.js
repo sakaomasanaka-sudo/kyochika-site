@@ -294,7 +294,7 @@ ${sc}</body>
       <h2>近くでやっているほかの催し</h2>
       <ul class="near">${near}</ul>
       <h2>近くでごはん・カフェ</h2>
-      <div class="row">${[['レストラン', 'レストラン'], ['カフェ', 'カフェ'], ['居酒屋', '居酒屋']].map(([n, q]) => `<a class="go" href="https://www.google.com/maps/search/${encodeURIComponent(q)}/@${ev.lat},${ev.lng},17z" target="_blank" rel="noopener">${n}</a>`).join('')}</div>
+      <div class="row">${[['レストラン', 'レストラン'], ['カフェ', 'カフェ'], ['居酒屋', '居酒屋'], ['ペットOKのお店', 'ペット可 カフェ']].map(([n, q]) => `<a class="go" href="https://www.google.com/maps/search/${encodeURIComponent(q)}/@${ev.lat},${ev.lng},17z" target="_blank" rel="noopener">${n}</a>`).join('')}</div>
       <p class="cap">会場のまわりのお店を Google マップで探せます。</p>
       ${affBox(ev)}
       ${cap}
