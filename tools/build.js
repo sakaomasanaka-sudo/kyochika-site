@@ -212,6 +212,13 @@ ${lds}<script async src="https://www.googletagmanager.com/gtag/js?id=G-0T0FYH7TT
     ['/kids/weekend/', '今週末に子どもと行ける東京のイベント', `今週末に子どもと行ける東京のイベント｜親子のお出かけ（対象年齢つき）｜${NAME}`, n => `今週末に子どもと行ける東京のイベントを${n}件まとめました。対象年齢、時間、料金、最寄り駅つき。`, e => e.kid && WKD.some(d => e.s <= d && d <= e.e && !e.off.includes(d)), '今週末に子どもと', n => `今週末に開いている子ども向け・親子向けの催しを${n}件、対象年齢つきでのせています。`],
     ['/parking/', '駐車場がある東京のイベント', `駐車場がある東京のイベント｜車で行ける催し（今日・今週末）｜${NAME}`, n => `会場に駐車場がある東京のイベントを${n}件まとめました。公式ページで駐車場の案内を確かめた催しです。`, e => e.parking, '駐車場あり', n => `公式ページで駐車場の案内がある催しを${n}件のせています。台数や料金は公式ページで確かめてください。`],
   ];
+  // 終わった催し：次回（ser が同じで、まだ終わっていない催し）と、いま行ける近くの同じジャンルの催しを上に出す
+  const endedBox = ev => {
+    if (!ended(ev)) return '';
+    const nx = ev.ser ? CURRENT.filter(x => x.ser === ev.ser && x.id !== ev.id).sort((a, b) => cmp(a.s, b.s))[0] : null;
+    const alt = CURRENT.filter(x => x.g === ev.g).map(x => [km(ev.lat, ev.lng, x.lat, x.lng), x]).sort((a, b) => a[0] - b[0]).slice(0, 4).map(p => p[1]);
+    return `<div class="endedbox"><p><b>この催しは${ymd(ev.e)}に終わりました。</b></p>${nx ? `<p>次回：<a href="/event/${nx.id}/">${esc(nx.t)}</a>（${span(nx)}）</p>` : ''}${alt.length ? `<p>いま行ける近くの${esc(GENRES[ev.g].n)}：</p><ul>${alt.map(x => `<li><a href="/event/${x.id}/">${esc(x.t)}</a>（${esc(x.st)}駅・${span(x)}）</li>`).join('')}</ul>` : ''}</div>`;
+  };
   const condLinks = ev => { const l = COND_PAGES.filter(c => c[4](ev) && CURRENT.filter(c[4]).length >= 3).map(c => `<a href="${c[0]}">${esc(c[1])}</a>`); return l.length ? `\n      <p class="cap">この催しは ${l.join('、')} にも載っています。</p>` : ''; };
   // 月ごとのページ（今月から3か月、5件以上ある月だけ）。「東京 11月 イベント」で探す人向け。外国語版（intl.js）と同じ月の集め方。
   const JMONTHS = [];
@@ -316,6 +323,7 @@ ${sc}</body>
     <div class="body">
       <h1 class="pt">${esc(ev.t)}</h1>
       <p class="lead">${esc(ev.v)}（${esc(ev.st)}駅）${ev.free ? '・無料' : ''}</p>
+      ${endedBox(ev)}
       ${ev.note ? `<p>${esc(ev.note)}</p>` : ''}
       <dl class="facts">${facts}</dl>${condLinks(ev)}
       <p class="cap">${ev.ig ? '日程の変更や中止は、主催者のインスタグラムで確かめてください。' : '休みの日や最終入場の時刻は、公式ページで確かめてください。'}</p>
@@ -651,7 +659,7 @@ ${extra}${faq.length ? `  <section class="faq"><h2>よくある質問</h2>${faq.
 
   // ── 検索エンジン向け ──
   const prio = p => p === '/' ? '1.0' : ((p.split('/').length - 1) <= 3 && !p.startsWith('/event/')) ? '0.8' : '0.6';
-  OUT['sitemap.xml'] = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + PAGES.map(p => `  <url><loc>${url(p)}</loc><lastmod>${TODAY}</lastmod><priority>${prio(p)}</priority></url>\n`).join('') + '</urlset>\n';
+  OUT['sitemap.xml'] = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + PAGES.filter(p => { const m = p.match(/^\/event\/([^/]+)\/$/); if (!m) return true; const e = EV.find(x => x.id === m[1]); return !e || dnum(TODAY) - dnum(e.e) <= 30; }).map(p => `  <url><loc>${url(p)}</loc><lastmod>${TODAY}</lastmod><priority>${prio(p)}</priority></url>\n`).join('') + '</urlset>\n';
   OUT['manifest.json'] = JSON.stringify({ name: NAME + '｜東京のイベントをまとめて探す', short_name: NAME, start_url: '/', scope: '/', display: 'standalone', background_color: '#ffffff', theme_color: '#ffffff', lang: 'ja', icons: [{ src: '/icon-192.png?v=' + VER, sizes: '192x192', type: 'image/png' }, { src: '/icon-512.png?v=' + VER, sizes: '512x512', type: 'image/png' }, { src: '/icon-512.png?v=' + VER, sizes: '512x512', type: 'image/png', purpose: 'maskable' }] }, null, 1) + '\n';
   OUT['llms.txt'] = `# ${NAME}（kyochika.jp）\n\n> 東京の美術展・ライブ・フードイベント・マーケット・祭り・ポップアップ・子ども向けの催しを、会場や主催者の公式情報から毎日集めてまとめ、行く日と駅から近い順に探せるサイト。日本語・英語・中国語。${TODAY}更新、掲載${CURRENT.length}件。日付・時間・料金・対象年齢は公式ページで確かめたものだけを載せています。\n\n## よく使うページ\n- 今日・行く日と駅から探す: ${BASE}/\n- 今週末: ${BASE}/weekend/\n- 無料で行ける: ${BASE}/free/\n- 日付から: ${BASE}/date/\n${KIDP.map(([p, h]) => `- ${h}: ${BASE}${p}`).join('\n')}\n\n## ジャンル\n${Object.values(GENRE_PAGES).map(([sl, n]) => `- ${n}: ${BASE}/${sl}/`).join('\n')}\n\n## エリア・区\n${LIVE_AREAS.map(([sl, n]) => `- ${n}: ${BASE}/area/${sl}/`).join('\n')}\n\n## 場所\n${PLACES_LIVE.map(([sl, n]) => `- ${n}: ${BASE}/place/${sl}/`).join('\n')}\n\n## English / 中文\n- ${BASE}/en/\n- ${BASE}/zh/\n`;
   OUT['llms.txt'] += `\n## 条件から探す\n` + COND_PAGES.filter(c => CURRENT.filter(c[4]).length >= 3).map(c => `- [${c[1]}](${BASE}${c[0]})`).join('\n') + '\n';
