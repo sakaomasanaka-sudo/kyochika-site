@@ -107,7 +107,7 @@ function kyochikaBuild(D, aboutMain, TODAY, VER) {
   // ほかの言語の同じページ。D.LANGS があるときだけ使う。エリアのページと404にはない。
   const LANGS = D.LANGS || [];
   const HREFLANG = { en: 'en', zh: 'zh-Hans', es: 'es', th: 'th', id: 'id' }, LANGNAME = { en: 'English', zh: '中文', es: 'Español', th: 'ไทย', id: 'Indonesia' };
-  const altPath = (l, path) => (path.startsWith('/area/') || path.startsWith('/kids/') || path.startsWith('/place/') || path === '/404.html' || path === '/drama/' || path === '/christmas/' || path === '/illumination/' || path === '/halloween/' || path === '/newyear/' || path === '/rainy/' || path === '/barrierfree/' || path === '/dog/' || path === '/stroller/' || path === '/ekichika/' || path === '/night/' || path === '/noreserve/' || path === '/kids/workshop/' || path === '/kids/rainy/' || path === '/suiteru/' || path === '/bento/' || path === '/cashless/' || path === '/kids/bento/' || path === '/kids/free/' || path === '/kids/weekend/' || ['/monday/','/lastchance/','/new/','/cheap/','/morning/','/photo-ok/','/anime/','/cat/','/sake/','/flea/','/workshop/','/parking/'].includes(path) || path.startsWith('/date/') || /^\/weekend\/\d/.test(path)) ? null : `/${l}` + (path === '/about.html' ? '/about/' : path);
+  const altPath = (l, path) => (path.startsWith('/area/') || path.startsWith('/station/') || path.startsWith('/kids/') || path.startsWith('/place/') || path === '/404.html' || path === '/drama/' || path === '/christmas/' || path === '/illumination/' || path === '/halloween/' || path === '/newyear/' || path === '/rainy/' || path === '/barrierfree/' || path === '/dog/' || path === '/stroller/' || path === '/ekichika/' || path === '/night/' || path === '/noreserve/' || path === '/kids/workshop/' || path === '/kids/rainy/' || path === '/suiteru/' || path === '/bento/' || path === '/cashless/' || path === '/kids/bento/' || path === '/kids/free/' || path === '/kids/weekend/' || ['/monday/','/lastchance/','/new/','/cheap/','/morning/','/photo-ok/','/anime/','/cat/','/sake/','/flea/','/workshop/','/parking/'].includes(path) || path.startsWith('/date/') || /^\/weekend\/\d/.test(path)) ? null : `/${l}` + (path === '/about.html' ? '/about/' : path);
   const head = (title, desc, path, ld = [], noindex = false) => {
     const alts = (noindex || !LANGS.length || !altPath('en', path)) ? '' : `<link rel="alternate" hreflang="ja" href="${url(path)}">\n` + LANGS.map(l => `<link rel="alternate" hreflang="${HREFLANG[l]}" href="${url(altPath(l, path))}">\n`).join('') + `<link rel="alternate" hreflang="x-default" href="${url(path)}">\n`;
     const lds = ld.map(x => `<script type="application/ld+json">${pyjson(x)}</script>\n`).join('');
@@ -185,6 +185,8 @@ ${lds}<script async src="https://www.googletagmanager.com/gtag/js?id=G-0T0FYH7TT
     '/cashless/': evs => [['イベントでクレジットカードは使えますか？', `催しによってちがいます。このページに、公式ページでカード・交通系IC・PayPayなどが使えると書かれている催しを${evs.length}件まとめています。各催しのページの「支払い」の欄で、使えるものを確かめられます。`], ['マーケットやお祭りは現金だけですか？', '屋台や出店は現金だけのことがまだ多いです。「現金のみ」と公式に書かれている催しは、催しのページの「支払い」の欄に出しています。']],
     '/rainy/': evs => [['雨の日に東京で行けるイベントは？', `美術館・ギャラリーの展示や屋内の催しを${evs.length}件まとめています。駅から近い会場も多く、雨の日の外出に向いています。`], ['子どもと雨の日に行ける場所は？', '子ども向けの催しは「子どもと行けるイベント」のページで、対象年齢つきで探せます。']],
   };
+  const stSlug = st => (SPOTS[st] && SPOTS[st][2] ? String(SPOTS[st][2]).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') : '');
+  const stPage = st => { const sl = stSlug(st); return sl && CURRENT.filter(e => e.st === st).length >= 3 ? `/station/${sl}/` : null; };
   const staDist = e => { const p = SPOTS[e.st]; return p ? km(p[0], p[1], e.lat, e.lng) : 9; };
   const lateNight = e => e.g !== 'live' && ((e.c >= '21:00' && e.c > e.o) || Object.values(e.late || {}).some(t => t >= '21:00') || Object.values(e.hx || {}).some(h => h[1] >= '21:00'));
   const monOpen = e => { const t0 = dnum(TODAY); for (let i = 0; i < 14; i++) { const d = isoOf(t0 + i); if (dow(d) === 1 && e.s <= d && d <= e.e && !e.off.includes(d)) return true; } return false; };
@@ -229,7 +231,7 @@ ${lds}<script async src="https://www.googletagmanager.com/gtag/js?id=G-0T0FYH7TT
     const alt = CURRENT.filter(x => x.g === ev.g).map(x => [km(ev.lat, ev.lng, x.lat, x.lng), x]).sort((a, b) => a[0] - b[0]).slice(0, 4).map(p => p[1]);
     return `<div class="endedbox"><p><b>この催しは${ymd(ev.e)}に終わりました。</b></p>${nx ? `<p>次回：<a href="/event/${nx.id}/">${esc(nx.t)}</a>（${span(nx)}）</p>` : ''}${alt.length ? `<p>いま行ける近くの${esc(GENRES[ev.g].n)}：</p><ul>${alt.map(x => `<li><a href="/event/${x.id}/">${esc(x.t)}</a>（${esc(x.st)}駅・${span(x)}）</li>`).join('')}</ul>` : ''}</div>`;
   };
-  const condLinks = ev => { const l = COND_PAGES.filter(c => c[4](ev) && CURRENT.filter(c[4]).length >= 3).map(c => `<a href="${c[0]}">${esc(c[1])}</a>`); return l.length ? `\n      <p class="cap">この催しは ${l.join('、')} にも載っています。</p>` : ''; };
+  const condLinks = ev => { const l = COND_PAGES.filter(c => c[4](ev) && CURRENT.filter(c[4]).length >= 3).map(c => `<a href="${c[0]}">${esc(c[1])}</a>`); if (!ended(ev) && stPage(ev.st)) l.push(`<a href="${stPage(ev.st)}">${esc(ev.st)}駅の近くのイベント</a>`); return l.length ? `\n      <p class="cap">この催しは ${l.join('、')} にも載っています。</p>` : ''; };
   // 月ごとのページ（今月から3か月、5件以上ある月だけ）。「東京 11月 イベント」で探す人向け。外国語版（intl.js）と同じ月の集め方。
   const JMONTHS = [];
   {
@@ -328,6 +330,20 @@ ${sc}</body>
     const near = others.map(x => `<li><a href="/event/${x.id}/">${esc(x.t)}</a><span>${esc(x.v)}（${esc(x.st)}駅）・ここから${far(km(ev.lat, ev.lng, x.lat, x.lng))}・${span(x)}</span></li>`).join('');
     const cap = ev.ph ? `<p class="cap">写真は${esc(CRED[ev.ph][0])}です。会場やその周辺のイメージで、${kind}そのものの写真ではありません。</p>` : '';
     const maps = 'https://www.google.com/maps/search/?api=1&query=' + quote(ev.v.split('（')[0]);
+    // よくある質問（「〇〇展 いつまで」「〇〇 何時まで」「〇〇 料金」「〇〇 最寄り駅」の検索向け）。data.js の値だけで作る。
+    const evFaq = (() => {
+      const q = [], t = ev.t.length > 40 ? ev.t.slice(0, 40) + '…' : ev.t, d0 = staDist(ev);
+      q.push([oneDay(ev) ? `${t}はいつ？` : `${t}はいつまで？`, oneDay(ev) ? `${ymd(ev.s)}（${md(ev.s).replace(/^.*\(/, '').replace(')', '')}）に開かれます。` : `会期は${ymd(ev.s)}から${ymd(ev.e)}までです。${(ev.off || []).filter(d => d >= TODAY).length ? `休みの日：${(ev.off || []).filter(d => d >= TODAY).slice(0, 6).map(md).join('、')}${(ev.off || []).filter(d => d >= TODAY).length > 6 ? 'ほか' : ''}。` : ''}`]);
+      q.push([ev.g === 'live' ? `${t}は何時から？` : `${t}は何時から何時まで？`, (ev.g === 'live' ? `${ev.o}開演です。` : `${ev.o}から${ev.c}までです。`) + [lateText(ev), hxText(ev)].filter(x => x).join('　') + (ev.g === 'live' ? '' : '最終入場の時刻は公式ページで確かめてください。')]);
+      q.push([`${t}の料金は？`, ev.free ? `無料です（${ev.price}）。` : `${ev.price}。`]);
+      q.push([`${t}の会場と最寄り駅は？`, `会場は${ev.v}、最寄り駅は${ev.st}駅です${d0 < 3 ? `（駅から直線で約${Math.max(100, Math.round(d0 * 10) * 100)}m、歩いて${Math.max(1, Math.round(d0 * 1000 / 80))}分ほど）` : ''}。`]);
+      if (ev.kid) q.push([`${t}は子どもも楽しめる？`, `主催者は子ども向け・親子向けとしています。${ev.kidnote || kidTxt(ev.kid)}。`]);
+      if (ev.dog) q.push([`${t}は犬連れで行ける？`, '公式ページにペット同伴可と書かれています。リードなどの決まりは公式ページで確かめてください。']);
+      if (ev.bf) q.push([`${t}は車椅子で行ける？`, '会場の公式ページにバリアフリーの案内があります。設備の細かい点は公式ページで確かめてください。']);
+      if (ev.crowd) q.push([`${t}は混んでいる？`, '公式に混雑状況が出ています。このページの「公式の混雑状況を見る」から確かめられます。']);
+      if (ev.pay && ev.pay.length) q.push([`${t}で使える支払いは？`, payTxt(ev) + '。']);
+      return q;
+    })();
     const body = `${cr}  <main class="page" style="--c:var(--${ev.g})" data-e="${ev.e}" data-detail>
     ${pic(ev, true)}
     <div class="body">
@@ -338,6 +354,7 @@ ${sc}</body>
       <dl class="facts">${facts}</dl>${ev.crowd ? `\n      <p class="cap"><a href="${esc(ev.crowd)}" target="_blank" rel="noopener">公式の混雑状況を見る</a></p>` : ''}${condLinks(ev)}
       <p class="cap">${ev.ig ? '日程の変更や中止は、主催者のインスタグラムで確かめてください。' : '休みの日や最終入場の時刻は、公式ページで確かめてください。'}</p>
       <div class="row"><a class="go pri" href="${esc(ev.url)}" target="_blank" rel="noopener">${ev.ig ? 'インスタの告知で確かめる' : '公式ページで確かめる'}</a><a class="go" href="${maps}" target="_blank" rel="noopener">地図でひらく</a></div>
+      <section class="faq"><h2>よくある質問</h2>${evFaq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}</section>
       <h2>主な駅からの近さ</h2>
       <dl class="facts">${from}</dl>
       <p class="cap">距離は直線、時間はおおよその目安です。</p>
@@ -353,7 +370,7 @@ ${sc}</body>
     </div>
   </main>
 `;
-    write(path, head(title, desc, path, [eventLd(ev), crLd]) + sign(null, path) + body + ways() + foot());
+    write(path, head(title, desc, path, [eventLd(ev), crLd].concat(evFaq.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: evFaq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }] : [])) + sign(null, path) + body + ways() + foot());
   }
 
   // ── 一覧ページ（ジャンル・無料・エリア・今週末） ──
@@ -482,6 +499,45 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
       evs, `${nm}・子どもと`, `${nm}で、主催者が子ども向け・親子向けと書いている催しを${evs.length}件のせています。対象年齢は各催しのページで確かめてください。`);
   }
 
+  // 区・エリア × 条件（「渋谷 無料 イベント」「上野 雨の日」「吉祥寺 犬連れ」向け）。3件以上あるところだけ。
+  const AREA_COND = [
+    ['free', '無料で行ける', e => e.free, '入場無料の催し', '無料'],
+    ['weekend', '今週末に行ける', e => WKD.some(d => e.s <= d && d <= e.e && !(e.off || []).includes(d)), '今週末（' + WKD.map(md).join('・') + '）に開いている催し', '今週末'],
+    ['rainy', '雨の日でも行ける', e => (e.g === 'art' || e.indoor) && !e.outdoor, '美術展と屋内の催し', '雨の日'],
+    ['dog', '愛犬と行ける', e => e.dog, '公式ページでペット同伴可と書かれている催し', '愛犬と'],
+  ];
+  const AREA_COND_PAGES = [];
+  for (const [slug, aname, sts] of LIVE_AREAS) {
+    const nm = (aname.match(/^(.+?区)（/) || [])[1] || aname;
+    for (const [cs, cn, test, what, short] of AREA_COND) {
+      const evs = CURRENT.filter(e => sts.includes(e.st) && test(e));
+      if (evs.length < 3) continue;
+      AREA_COND_PAGES.push([`/area/${slug}/${cs}/`, `${nm}・${short}`]);
+      listPage(`/area/${slug}/${cs}/`, `${nm}で${cn}イベント`, `${nm}で${cn}イベント｜${short}の催し一覧（${evs.length}件）｜${NAME}`,
+        `${nm}（${sts.slice(0, 4).join('・')}駅の近く）で${cn}イベントを${evs.length}件まとめました。日程、時間、料金、最寄り駅がひと目でわかります。`,
+        evs, `${nm}・${short}`, `${nm}の${what}を${evs.length}件のせています。終わりが近い順です。`);
+    }
+  }
+  const areaMore = (slug, used) => { const l = AREA_COND_PAGES.filter(([p]) => p.startsWith(`/area/${slug}/`)).map(([p, n]) => `<a href="${p}">${esc(n)}</a>`).concat(used.filter(stPage).map(st => `<a href="${stPage(st)}">${esc(st)}駅</a>`)); return l.length ? `  <nav class="ways"><p class="cap">しぼって探す：</p>${l.join('')}</nav>\n` : ''; };
+  // 駅ごとのページ（「〇〇駅 イベント 今日」向け）。その駅が最寄りの催しが3件以上ある駅だけ。
+  const STATION_PAGES = [];
+  {
+    const seen = new Set();
+    const sts = [...new Set(CURRENT.map(e => e.st))].sort();
+    for (const st of sts) {
+      const sl = stSlug(st);
+      if (!sl || seen.has(sl)) continue;
+      const evs = CURRENT.filter(e => e.st === st);
+      if (evs.length < 3) continue;
+      seen.add(sl);
+      STATION_PAGES.push([`/station/${sl}/`, `${st}駅`]);
+      const near = CURRENT.filter(e => e.st !== st && SPOTS[st] && km(SPOTS[st][0], SPOTS[st][1], e.lat, e.lng) <= 1).length;
+      listPage(`/station/${sl}/`, `${st}駅の近くのイベント`, `${st}駅の近くのイベント（今日・今週末）｜駅から行ける催し一覧｜${NAME}`,
+        `${st}駅が最寄りのイベントを${evs.length}件まとめました。美術展、ライブ、マーケット、祭りなどの日程、時間、料金がひと目でわかります。`,
+        evs, `${st}駅`, `最寄り駅が${st}駅の催しを${evs.length}件のせています${near ? `（ほかに、駅から1km以内の催しが${near}件あります。トップページで${st}を出発駅に選ぶと近い順に出ます）` : ''}。`);
+    }
+  }
+
   for (const [slug, aname, sts] of LIVE_AREAS) {
     const evs = CURRENT.filter(e => sts.includes(e.st));
     const cnt = GKEYS.map(g => [g, evs.filter(e => e.g === g).length]).filter(([, n]) => n);
@@ -492,10 +548,10 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
     const kidN = evs.filter(e => e.kid).length;
     if (ward) listPage(`/area/${slug}/`, `${ward}のイベント`, `${ward}のイベント情報｜開催中・今週末・子どもと行ける催し｜${NAME}`,
       `${ward}（${used.join('・')}駅の近く）で開催中・今週開かれるイベントを${evs.length}件まとめました${kidN ? `（子どもと行ける催し${kidN}件）` : ''}。区民まつり、マルシェ、博物館、コンサートなど、会期、時間、料金がひと目でわかります。`,
-      evs, ward, `最寄り駅が${used.map(s => s + '駅').join('・')}の催しを${evs.length}件のせています（${cnt.map(([g, n]) => GENRES[g].n + n + '件').join('、')}${kidN ? `、うち子ども向け${kidN}件` : ''}）。`);
+      evs, ward, `最寄り駅が${used.map(s => s + '駅').join('・')}の催しを${evs.length}件のせています（${cnt.map(([g, n]) => GENRES[g].n + n + '件').join('、')}${kidN ? `、うち子ども向け${kidN}件` : ''}）。`, [], areaMore(slug, used));
     else listPage(`/area/${slug}/`, `${aname}の${kinds}`, `${aname}の${kinds}｜開催中・今週の催し一覧｜${NAME}`,
       `${aname}エリアで開催中・今週開かれる${kinds}を${evs.length}件まとめました。最寄り駅は${used.join('・')}。会期、時間、料金がひと目でわかります。`,
-      evs, aname, `最寄り駅が${used.map(s => s + '駅').join('・')}の催しを${evs.length}件のせています（${cnt.map(([g, n]) => GENRES[g].n + n + '件').join('、')}）。`);
+      evs, aname, `最寄り駅が${used.map(s => s + '駅').join('・')}の催しを${evs.length}件のせています（${cnt.map(([g, n]) => GENRES[g].n + n + '件').join('、')}）。`, [], areaMore(slug, used));
   }
 
   // 今週末: 次の土曜と日曜。月曜が祝日ならそこまで。
