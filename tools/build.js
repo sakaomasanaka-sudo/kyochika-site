@@ -107,7 +107,7 @@ function kyochikaBuild(D, aboutMain, TODAY, VER) {
   // ほかの言語の同じページ。D.LANGS があるときだけ使う。エリアのページと404にはない。
   const LANGS = D.LANGS || [];
   const HREFLANG = { en: 'en', zh: 'zh-Hans', es: 'es', th: 'th', id: 'id' }, LANGNAME = { en: 'English', zh: '中文', es: 'Español', th: 'ไทย', id: 'Indonesia' };
-  const altPath = (l, path) => (path.startsWith('/area/') || path.startsWith('/kids/') || path.startsWith('/place/') || path === '/404.html' || path === '/drama/' || path === '/christmas/' || path === '/illumination/' || path === '/halloween/' || path === '/newyear/' || path === '/rainy/' || path === '/barrierfree/' || path === '/dog/' || path === '/stroller/' || path === '/ekichika/' || path === '/night/' || path === '/noreserve/' || path === '/kids/workshop/' || path === '/kids/rainy/' || path === '/kids/free/' || path === '/kids/weekend/' || ['/monday/','/lastchance/','/new/','/cheap/','/morning/','/photo-ok/','/anime/','/cat/','/sake/','/flea/','/workshop/','/parking/'].includes(path) || path.startsWith('/date/') || /^\/weekend\/\d/.test(path)) ? null : `/${l}` + (path === '/about.html' ? '/about/' : path);
+  const altPath = (l, path) => (path.startsWith('/area/') || path.startsWith('/kids/') || path.startsWith('/place/') || path === '/404.html' || path === '/drama/' || path === '/christmas/' || path === '/illumination/' || path === '/halloween/' || path === '/newyear/' || path === '/rainy/' || path === '/barrierfree/' || path === '/dog/' || path === '/stroller/' || path === '/ekichika/' || path === '/night/' || path === '/noreserve/' || path === '/kids/workshop/' || path === '/kids/rainy/' || path === '/suiteru/' || path === '/kids/free/' || path === '/kids/weekend/' || ['/monday/','/lastchance/','/new/','/cheap/','/morning/','/photo-ok/','/anime/','/cat/','/sake/','/flea/','/workshop/','/parking/'].includes(path) || path.startsWith('/date/') || /^\/weekend\/\d/.test(path)) ? null : `/${l}` + (path === '/about.html' ? '/about/' : path);
   const head = (title, desc, path, ld = [], noindex = false) => {
     const alts = (noindex || !LANGS.length || !altPath('en', path)) ? '' : `<link rel="alternate" hreflang="ja" href="${url(path)}">\n` + LANGS.map(l => `<link rel="alternate" hreflang="${HREFLANG[l]}" href="${url(altPath(l, path))}">\n`).join('') + `<link rel="alternate" hreflang="x-default" href="${url(path)}">\n`;
     const lds = ld.map(x => `<script type="application/ld+json">${pyjson(x)}</script>\n`).join('');
@@ -180,11 +180,13 @@ ${lds}<script async src="https://www.googletagmanager.com/gtag/js?id=G-0T0FYH7TT
     '/noreserve/': evs => [['予約なしで行ける東京のイベントは？', `公式ページで予約不要と書かれている催しを${evs.length}件まとめています。思い立った日にそのまま行けます。`], ['当日行っても入れないことはありますか？', '混雑時は入場を制限したり、待ち時間が出たりすることがあります。人気の催しは早めの時間がおすすめです。']],
     '/dog/': evs => [['東京で犬連れOKのイベントはどこで探せますか？', `このページに、公式ページでペット同伴可と書かれている東京の催しを${evs.length}件まとめています。屋外のマルシェや公園の催し、ドッグフェスが多く、毎日更新しています。`], ['犬連れで行くときに気をつけることは？', '多くの催しでリードの着用が必要で、飲食エリアや屋内への同伴はできないことがあります。行く前に、各催しの公式ページで同伴の決まりを確かめてください。'], ['今週末に愛犬と行けるイベントは？', `終わりが近い順にならべているので、上から見ると今週末に行ける催しが見つかります。日付と出発する駅で探すときは、トップページから選べます。`]],
     '/barrierfree/': evs => [['車椅子で行ける東京のイベントはありますか？', `会場や主催者の公式ページで、車椅子での来場やバリアフリー設備の案内がある催しを${evs.length}件まとめています。`], ['設備の細かい情報はどこで確かめられますか？', '段差・エレベーター・多目的トイレ・貸し出し用の車椅子などは、各催しの公式ページや会場のバリアフリー案内で確かめてください。混雑する日時は会場に問い合わせると安心です。']],
+    '/suiteru/': evs => [['東京で空いているイベントはどう探せばいいですか？', `このページに、混雑を避けやすい条件（夜間開館、会期の始まったばかり、公式の混雑状況あり）に当てはまる催しを${evs.length}件まとめています。毎日更新しています。`], ['美術展が空いている時間帯は？', '一般に、平日の開館直後と夜間開館の時間は空きやすく、会期の終わり近くと土日の昼は混みやすいと言われます。公式に混雑状況を出している美術館もあるので、各催しのページのリンクから確かめてください。']],
     '/rainy/': evs => [['雨の日に東京で行けるイベントは？', `美術館・ギャラリーの展示や屋内の催しを${evs.length}件まとめています。駅から近い会場も多く、雨の日の外出に向いています。`], ['子どもと雨の日に行ける場所は？', '子ども向けの催しは「子どもと行けるイベント」のページで、対象年齢つきで探せます。']],
   };
   const staDist = e => { const p = SPOTS[e.st]; return p ? km(p[0], p[1], e.lat, e.lng) : 9; };
   const lateNight = e => e.g !== 'live' && ((e.c >= '21:00' && e.c > e.o) || Object.values(e.late || {}).some(t => t >= '21:00') || Object.values(e.hx || {}).some(h => h[1] >= '21:00'));
   const monOpen = e => { const t0 = dnum(TODAY); for (let i = 0; i < 14; i++) { const d = isoOf(t0 + i); if (dow(d) === 1 && e.s <= d && d <= e.e && !e.off.includes(d)) return true; } return false; };
+  const quietPick = e => e.g !== 'live' && (!!e.crowd || !!e.quiet || (e.g === 'art' && lateNight(e)) || (e.g === 'art' && dnum(e.e) - dnum(e.s) >= 28 && dnum(TODAY) >= dnum(e.s) && dnum(TODAY) - dnum(e.s) <= 10));
   const priceMax = p => { p = String(p); const a = p.match(/(?:一般|大人)[^\d]{0,6}([\d,]+)\s*円/); if (a) return Number(a[1].replace(/,/g, '')); const all = [...p.matchAll(/([\d,]+)\s*円/g)]; return all.length === 1 ? Number(all[0][1].replace(/,/g, '')) : 99999; };
   const WKD = (() => { const t0 = dnum(TODAY), sat = t0 + ((6 - dow(TODAY)) % 7 + 7) % 7; return [isoOf(sat), isoOf(sat + 1)]; })();
   const COND_PAGES = [
@@ -210,6 +212,7 @@ ${lds}<script async src="https://www.googletagmanager.com/gtag/js?id=G-0T0FYH7TT
     ['/kids/rainy/', '雨の日に子どもと行ける東京のイベント', `雨の日に子どもと行ける東京のイベント｜屋内で親子で楽しめる催し（対象年齢つき）｜${NAME}`, n => `雨の日でも子どもと楽しめる東京の屋内イベントを${n}件まとめました。対象年齢、日時、料金、最寄り駅がひと目でわかります。`, e => e.kid && (e.g === 'art' || e.indoor) && !e.outdoor, '雨の日に子どもと', n => `屋内で子どもと楽しめる催しを${n}件、対象年齢つきでのせています。`],
     ['/kids/free/', '無料で子どもと行ける東京のイベント', `無料で子どもと行ける東京のイベント｜入場無料の親子の催し（対象年齢つき）｜${NAME}`, n => `入場無料で子どもと行ける東京のイベントを${n}件まとめました。対象年齢、日時、場所、最寄り駅がひと目でわかります。`, e => e.kid && e.free, '無料で子どもと', n => `入場無料で子どもが楽しめる催しを${n}件、対象年齢つきでのせています。`],
     ['/kids/weekend/', '今週末に子どもと行ける東京のイベント', `今週末に子どもと行ける東京のイベント｜親子のお出かけ（対象年齢つき）｜${NAME}`, n => `今週末に子どもと行ける東京のイベントを${n}件まとめました。対象年齢、時間、料金、最寄り駅つき。`, e => e.kid && WKD.some(d => e.s <= d && d <= e.e && !e.off.includes(d)), '今週末に子どもと', n => `今週末に開いている子ども向け・親子向けの催しを${n}件、対象年齢つきでのせています。`],
+    ['/suiteru/', '空いてる時間に行ける東京のイベント', `空いてる時間に行ける東京のイベント｜混雑を避けやすい美術展・穴場の催し（今日・今週末）｜${NAME}`, n => `混雑を避けて行きやすい東京のイベントを${n}件まとめました。平日夜の夜間開館、始まったばかりの展覧会、公式に混雑状況を出している催しなど、空いている時間をねらえる催しの日時がひと目でわかります。`, quietPick, '空いてる時間に行ける', n => `混雑を避けやすい催しを${n}件のせています。選び方は、①夜間開館のある美術展（夜は空きやすい）、②始まって10日以内の長い会期の展覧会（会期の終わりほど混みやすい）、③公式ページで混雑状況を出している催し、です。混み具合をこのサイトが保証するものではないので、当日の様子は公式ページで確かめてください。`],
     ['/parking/', '駐車場がある東京のイベント', `駐車場がある東京のイベント｜車で行ける催し（今日・今週末）｜${NAME}`, n => `会場に駐車場がある東京のイベントを${n}件まとめました。公式ページで駐車場の案内を確かめた催しです。`, e => e.parking, '駐車場あり', n => `公式ページで駐車場の案内がある催しを${n}件のせています。台数や料金は公式ページで確かめてください。`],
   ];
   // 終わった催し：次回（ser が同じで、まだ終わっていない催し）と、いま行ける近くの同じジャンルの催しを上に出す
@@ -325,7 +328,7 @@ ${sc}</body>
       <p class="lead">${esc(ev.v)}（${esc(ev.st)}駅）${ev.free ? '・無料' : ''}</p>
       ${endedBox(ev)}
       ${ev.note ? `<p>${esc(ev.note)}</p>` : ''}
-      <dl class="facts">${facts}</dl>${condLinks(ev)}
+      <dl class="facts">${facts}</dl>${ev.crowd ? `\n      <p class="cap"><a href="${esc(ev.crowd)}" target="_blank" rel="noopener">公式の混雑状況を見る</a></p>` : ''}${condLinks(ev)}
       <p class="cap">${ev.ig ? '日程の変更や中止は、主催者のインスタグラムで確かめてください。' : '休みの日や最終入場の時刻は、公式ページで確かめてください。'}</p>
       <div class="row"><a class="go pri" href="${esc(ev.url)}" target="_blank" rel="noopener">${ev.ig ? 'インスタの告知で確かめる' : '公式ページで確かめる'}</a><a class="go" href="${maps}" target="_blank" rel="noopener">地図でひらく</a></div>
       <h2>主な駅からの近さ</h2>

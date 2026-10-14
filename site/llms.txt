@@ -84,4 +84,5 @@
 - [雨の日に子どもと行ける東京のイベント](https://kyochika.jp/kids/rainy/)
 - [無料で子どもと行ける東京のイベント](https://kyochika.jp/kids/free/)
 - [今週末に子どもと行ける東京のイベント](https://kyochika.jp/kids/weekend/)
+- [空いてる時間に行ける東京のイベント](https://kyochika.jp/suiteru/)
 - [駐車場がある東京のイベント](https://kyochika.jp/parking/)
