@@ -293,6 +293,9 @@ ${sc}</body>
       <p class="cap">距離は直線、時間はおおよその目安です。</p>
       <h2>近くでやっているほかの催し</h2>
       <ul class="near">${near}</ul>
+      <h2>近くでごはん・カフェ</h2>
+      <div class="row">${[['レストラン', 'レストラン'], ['カフェ', 'カフェ'], ['居酒屋', '居酒屋']].map(([n, q]) => `<a class="go" href="https://www.google.com/maps/search/${encodeURIComponent(q)}/@${ev.lat},${ev.lng},17z" target="_blank" rel="noopener">${n}</a>`).join('')}</div>
+      <p class="cap">会場のまわりのお店を Google マップで探せます。</p>
       ${affBox(ev)}
       ${cap}
       <p class="upd">${ymd(TODAY)}に${ev.ig ? '主催者のインスタグラムの告知' : '公式ページ'}で確認した内容です。</p>
