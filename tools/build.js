@@ -170,6 +170,8 @@ ${lds}<script async src="https://www.googletagmanager.com/gtag/js?id=G-0T0FYH7TT
   const CURRENT = EV.filter(e => !ended(e));
   const order = evs => [...evs].sort((a, b) => cmp(a.e, b.e) || cmp(a.s, b.s) || cmp(a.o, b.o));
   const LIVE_AREAS = AREAS.filter(([, , sts]) => CURRENT.filter(e => sts.includes(e.st)).length >= 2);
+  const DOG_ST = ['渋谷', '代官山', '二子玉川', '吉祥寺', '中目黒', '表参道', '自由が丘', '恵比寿', '下北沢', '豊洲', '清澄白河', '代々木公園'];
+  const DOG_EXTRA = `  <section class="dogeat"><h2>愛犬と入れるお店をエリアで探す</h2><p class="cap">食べログの「ペット可」のお店を、駅のまわりで探せます（食べログのページがひらきます）。</p><div class="row eat">${DOG_ST.map(st => `<a class="go" href="https://tabelog.com/rst/rstsearch?sk=${encodeURIComponent(st + '駅')}&amp;SrtT=trend&amp;ChkPet=1" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','eat_click',{eat_type:'dogpage_${st}'})">${st}</a>`).join('')}</div></section>\n`;
   const COND_FAQ = {
     '/kids/workshop/': evs => [['子どもと行けるワークショップは東京のどこで探せますか？', `このページに、子どもが参加できる東京のワークショップ・工作・ものづくり体験を${evs.length}件、対象年齢つきでまとめています。毎日更新しています。`], ['予約は必要ですか？', '多くのワークショップは事前予約や先着順です。各催しのページの料金・説明と公式ページで、申し込み方法を確かめてください。'], ['何歳から参加できますか？', '催しごとに対象年齢が決まっています。一覧の「子ども」の印に、公式ページに書かれた対象年齢をのせています。']],
     '/stroller/': evs => [['ベビーカーで行ける東京のイベントは？', `公式ページでベビーカーでの来場について案内がある催しを${evs.length}件まとめています。子ども向けの催しは「子どもと行けるイベント」のページで対象年齢つきで探せます。`], ['ベビーカーで行くときの注意は？', '混雑する時間帯はベビーカーをたたむようお願いされることがあります。エレベーターやベビーカー置き場の場所は、各催しの公式ページで確かめてください。']],
@@ -333,7 +335,7 @@ ${sc}</body>
   }
 
   // ── 一覧ページ（ジャンル・無料・エリア・今週末） ──
-  const listPage = (path, h1, title, desc, evs0, crumbName, intro, faq = []) => {
+  const listPage = (path, h1, title, desc, evs0, crumbName, intro, faq = [], extra = '') => {
     const evs = order(evs0);
     const [cr, crLd] = crumbs([['トップ', '/'], [crumbName, null]]);
     const cards = evs.map((e, i) => card(e, i < 2, i)).join('');
@@ -341,7 +343,7 @@ ${sc}</body>
   <p class="intro">${esc(intro)}</p>
   <div class="board"><span>終わりが近い順</span><b>${evs.length}件</b></div>
   <ul class="list">${cards}</ul>
-${faq.length ? `  <section class="faq"><h2>よくある質問</h2>${faq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}</section>\n` : ''}  <p class="upd">${ymd(TODAY)}時点の掲載分です。行く日や出発する駅からさがすときは、<a href="/">トップページ</a>が便利です。</p>
+${extra}${faq.length ? `  <section class="faq"><h2>よくある質問</h2>${faq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}</section>\n` : ''}  <p class="upd">${ymd(TODAY)}時点の掲載分です。行く日や出発する駅からさがすときは、<a href="/">トップページ</a>が便利です。</p>
   <a class="igcta" href="https://www.instagram.com/kyochika.tokyo/" target="_blank" rel="noopener"><b>週末どこ行く？をインスタでも</b><span>キョウチカのインスタ @kyochika.tokyo をフォローすると、東京の催しのおすすめが届きます →</span></a>
 `;
     const faqLd = faq.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }] : [];
@@ -364,7 +366,7 @@ ${faq.length ? `  <section class="faq"><h2>よくある質問</h2>${faq.map(([q,
   // 条件のページ（10/14〜）。公式ページに書いてあることだけで印を付ける（bf・dog・indoor）。雨の日は美術展（屋内）と indoor:true。
   for (const [path, h1, title, desc, test, cname, intro] of COND_PAGES) {
     const evs = CURRENT.filter(test);
-    if (evs.length >= 3) listPage(path, h1, title, desc(evs.length), evs, cname, intro(evs.length), (COND_FAQ[path] || (() => []))(evs));
+    if (evs.length >= (path === '/dog/' ? 1 : 3)) listPage(path, h1, title, desc(evs.length), evs, cname, intro(evs.length), (COND_FAQ[path] || (() => []))(evs), path === '/dog/' ? DOG_EXTRA : '');
   }
 
   for (const [p, h1, lo, hi, n] of KIDP) {
