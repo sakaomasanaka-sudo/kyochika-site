@@ -1,6 +1,6 @@
 # キョウチカ（kyochika.jp）
 
-> 東京の美術展・ライブ・フードイベント・マーケット・祭り・ポップアップ・子ども向けの催しを、会場や主催者の公式情報から毎日集めてまとめ、行く日と駅から近い順に探せるサイト。日本語・英語・中国語。2026-10-14更新、掲載422件。日付・時間・料金・対象年齢は公式ページで確かめたものだけを載せています。
+> 東京の美術展・ライブ・フードイベント・マーケット・祭り・ポップアップ・子ども向けの催しを、会場や主催者の公式情報から毎日集めてまとめ、行く日と駅から近い順に探せるサイト。日本語・英語・中国語。2026-10-14更新、掲載458件。日付・時間・料金・対象年齢は公式ページで確かめたものだけを載せています。
 
 ## よく使うページ
 - 今日・行く日と駅から探す: https://kyochika.jp/
@@ -50,6 +50,7 @@
 - 表参道ヒルズ: https://kyochika.jp/place/omotesando-hills/
 - 日暮里駅前: https://kyochika.jp/place/nippori-ekimae/
 - 二子玉川ライズ: https://kyochika.jp/place/futakotamagawa-rise/
+- 池袋サンシャインシティ: https://kyochika.jp/place/sunshine-city/
 - 渋谷ヒカリエ: https://kyochika.jp/place/shibuya-hikarie/
 - 東京国際フォーラム: https://kyochika.jp/place/tokyo-intl-forum/
 - 恵比寿ガーデンプレイス: https://kyochika.jp/place/ebisu-garden-place/
@@ -64,13 +65,17 @@
 ## 条件から探す
 - [雨の日でも行ける東京のイベント](https://kyochika.jp/rainy/)
 - [車椅子で行ける東京のイベント](https://kyochika.jp/barrierfree/)
+- [ベビーカーで行ける東京のイベント](https://kyochika.jp/stroller/)
 - [駅から徒歩5分以内で行ける東京のイベント](https://kyochika.jp/ekichika/)
 - [夜9時まで開いている東京のイベント](https://kyochika.jp/night/)
+- [予約なしで行ける東京のイベント](https://kyochika.jp/noreserve/)
 - [月曜日も開いている東京の美術展](https://kyochika.jp/monday/)
 - [まもなく終わる東京の展覧会](https://kyochika.jp/lastchance/)
 - [今週から始まる東京のイベント](https://kyochika.jp/new/)
 - [1,000円以下で行ける東京のイベント](https://kyochika.jp/cheap/)
 - [朝から行ける東京のイベント](https://kyochika.jp/morning/)
+- [アニメ・推し活の東京のイベント](https://kyochika.jp/anime/)
 - [東京の蚤の市・骨董市・古着市](https://kyochika.jp/flea/)
 - [東京のワークショップ・体験イベント](https://kyochika.jp/workshop/)
 - [子どもと行けるワークショップ（東京）](https://kyochika.jp/kids/workshop/)
+- [駐車場がある東京のイベント](https://kyochika.jp/parking/)
