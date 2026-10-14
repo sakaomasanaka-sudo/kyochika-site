@@ -4,6 +4,7 @@
 const KYOCHIKA_AFF = { rakuten: '584eca7f.b482ba06.584eca80.649f3027', klook: '138663', klookAd: '1493145' };
 function kyochikaIntl(D, T, L, TODAY, VER) {
   const { EV, SPOTS, GENRES, CRED, HOLIDAYS } = D;
+  const KDV = (() => { let h = 5381; const t = JSON.stringify(EV); for (let i = 0; i < t.length; i++) h = ((h * 33) ^ t.charCodeAt(i)) >>> 0; return h.toString(36); })(); // data.js を毎回読み直させる
   const BASE = 'https://kyochika.jp', NAME = 'キョウチカ', P = '/' + L, EN = L === 'en', ZH = L === 'zh', li = ZH ? 1 : 0;
   const ALL = KYOCHIKA_LANGS, LOC = { en: 'en-US', zh: 'zh-CN', es: 'es-ES', th: 'th-TH', id: 'id-ID' }[L];
   const HL = KYOCHIKA_HL, LANGNAME = KYOCHIKA_LANGNAME;
@@ -257,7 +258,7 @@ ${ld.map(x => `<script type="application/ld+json">${JSON.stringify(x)}</script>\
   <p class="foot">${S.foot}${affOn ? ' ' + S.affFoot : ''}</p>
   <nav class="nav"><a href="${P}/">${S.navFind}</a><a href="${P}/app/">${S.navApp}</a><a href="https://www.instagram.com/kyochika.tokyo/" target="_blank" rel="noopener">Instagram @kyochika.tokyo</a><a href="${P}/about/">${S.navAbout}</a></nav>
 </div>
-${scripts.map(s => `<script src="/${s}?v=${VER}"></script>\n`).join('')}</body>
+${scripts.map(s => `<script src="/${s}?v=${VER}${/^(data|i18n)/.test(s) ? '.' + KDV : ''}"></script>\n`).join('')}</body>
 </html>
 `;
   const pic = (ev, eager) => ev.ph ? `<div class="pic"><img src="/photos/${ev.ph}.jpg" alt="${S.alt}" width="384" height="216"${eager ? '' : ' loading="lazy"'}><span class="kind">${S.G[ev.g][0]}</span></div>` : `<div class="pic none"><span class="kind">${S.G[ev.g][0]}</span></div>`;

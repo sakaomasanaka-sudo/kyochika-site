@@ -257,3 +257,6 @@ h1.pt{font-weight:700;font-size:clamp(26px,6.6vw,40px);line-height:1.35;margin:0
 ul.dots{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
 ul.dots li{position:relative;padding-left:1.1em}
 ul.dots li::before{content:"";position:absolute;left:.15em;top:.62em;width:.42em;height:.42em;border-radius:50%;background:var(--dot)}
+.areas{display:flex;flex-direction:column;gap:6px}
+.areas .lab{font-size:13px;font-weight:700;color:var(--ink-2)}
+.areas a.chip{text-decoration:none;white-space:nowrap}

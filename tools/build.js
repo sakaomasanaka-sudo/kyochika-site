@@ -1,6 +1,7 @@
 // キョウチカのページをまとめて作る。ブラウザでも node でも動く。
 function kyochikaBuild(D, aboutMain, TODAY, VER) {
   const { EV, SPOTS, GENRES, CRED, HOLIDAYS } = D;
+  const KDV = (() => { let h = 5381; const t = JSON.stringify(EV); for (let i = 0; i < t.length; i++) h = ((h * 33) ^ t.charCodeAt(i)) >>> 0; return h.toString(36); })(); // data.js を毎回読み直させる
   const BASE = 'https://kyochika.jp', NAME = 'キョウチカ';
   const ids = new Set(EV.map(e => e.id));
   if (ids.size !== EV.length) throw new Error('id が重なっています');
@@ -231,7 +232,7 @@ ${lds}<script async src="https://www.googletagmanager.com/gtag/js?id=G-0T0FYH7TT
 
   const FOOT_NOTE = '掲載しているのは、会場や主催者の公式ページ、または公式のインスタグラムで確認できた催しです。内容は変わることがあり、売り切れや休館もあるので、出かける前に公式ページを確認してください。距離は直線、所要時間はおおよその目安です。写真は会場やその周辺のイメージで、催しそのものの写真ではありません。';
   const foot = (scripts = ['pages.js']) => {
-    const sc = scripts.map(s => `<script src="/${s}?v=${VER}"></script>\n`).join('');
+    const sc = scripts.map(s => `<script src="/${s}?v=${VER}${/^(data|i18n)/.test(s) ? '.' + KDV : ''}"></script>\n`).join('');
     return `  <p class="follow">毎週木曜、東京の週末のまとめをインスタグラム <a href="https://www.instagram.com/kyochika.tokyo/" target="_blank" rel="noopener">@kyochika.tokyo</a> で配信しています。<a href="/app/">ホーム画面に追加</a>すると、アプリのように開けます。</p>
   <p class="foot">${FOOT_NOTE}${affOn ? '当サイトはアフィリエイト広告（PR）を含みます。' : ''}</p>
   <nav class="nav"><a href="/">催しをさがす</a><a href="/app/">アプリのように使う</a><a href="/drama/">連続アニメ『東京、あと80日』</a><a href="https://www.instagram.com/kyochika.tokyo/" target="_blank" rel="noopener">インスタグラム @kyochika.tokyo</a><a href="/about.html">このサイトについて・運営者情報・写真の出典</a></nav>
@@ -499,12 +500,12 @@ ${faq.length ? `  <section class="faq"><h2>よくある質問</h2>${faq.map(([q,
     const desc = `東京の美術展・ライブ・フードイベント・マーケット・祭りを、公式サイトをまわらずにまとめて見られます。行く日と出発する駅から近い順に探せて、無料や夜までの催しにもしぼれます。いま${CURRENT.length}件を掲載中。`;
     const siteLd = { '@context': 'https://schema.org', '@type': 'WebSite', name: NAME, alternateName: 'KYO-CHIKA TOKYO', url: BASE + '/', inLanguage: 'ja', description: desc, sameAs: ['https://www.instagram.com/kyochika.tokyo/'] };
     const body = `  <section class="ctl" aria-label="さがす条件">
-    <div><span class="lab">いつ行く？</span><div class="days" id="days"></div><label class="other">ほかの日 <input type="date" id="otherDay"></label></div>
     <div><span class="lab">どこから？（近い順にならべます）</span><div class="chips scroll" id="from"></div></div>
+    <div><span class="lab">いつ行く？</span><div class="days" id="days"></div><label class="other">ほかの日 <input type="date" id="otherDay"></label></div>
     <div><span class="lab">ジャンル</span><div class="chips" id="genres"></div></div>
-    <div><span class="lab">しぼりこみ</span><div class="chips scroll" id="filters"></div></div>
+    <div><span class="lab">しぼりこみ</span><div class="chips" id="filters"></div></div>
   </section>
-
+<!--ctlend-->
   <div class="board" id="board" aria-live="polite"><span>掲載中の催し</span><b>${CURRENT.length}件</b></div>
   <ul class="list" id="list">${order(CURRENT).map((e, i) => card(e, i < 2, i)).join('')}</ul>
 
@@ -531,6 +532,7 @@ ${faq.length ? `  <section class="faq"><h2>よくある質問</h2>${faq.map(([q,
     </div>
     <p class="sub">美術展、ライブ、フードフェス、蚤の市、祭り。${nv}か所の会場や主催者の公式情報から集めた${CURRENT.length}件を、あなたの駅から近い順にならべます。</p>
     <nav class="lines" aria-label="ジャンル">${lines}${kidLine}</nav>
+    <nav class="areas" aria-label="エリアからさがす"><span class="lab">エリアから</span><div class="chips scroll">${LIVE_AREAS.map(([sl, n]) => `<a class="chip" href="/area/${sl}/">${esc(n)}</a>`).join('')}</div></nav>
   </section>
 `;
     const dramaBan = `  <a class="dban" href="/drama/" style="display:flex;align-items:center;gap:12px;border:2px solid var(--ink);border-radius:4px;padding:8px 14px;margin:12px 0;text-decoration:none;color:inherit;background:#fff8cc"><img src="/photos/chara/pochika.png?v=${VER}" alt="" width="56" style="flex:none;height:auto"><span><b>連続アニメ『東京、あと80日』</b><br><small>ミカは東京に残る？ 帰る？ 登場人物とあらすじ →</small></span></a>
@@ -542,7 +544,7 @@ ${faq.length ? `  <section class="faq"><h2>よくある質問</h2>${faq.map(([q,
     <a class="pc-ig" href="https://www.instagram.com/kyochika.tokyo/" target="_blank" rel="noopener">ポチカとミカのアニメは、インスタで3日おきに更新中 → @kyochika.tokyo</a>
   </section>
 `;
-    write('/', head(title, desc, '/', [siteLd, itemList(order(CURRENT))]) + sign(null, '/') + hero + pochi + dramaBan + body + ways() + foot(['config.js', 'data.js', 'app.js']));
+    write('/', head(title, desc, '/', [siteLd, itemList(order(CURRENT))]) + sign(null, '/') + hero + body.split('<!--ctlend-->')[0] + pochi + dramaBan + body.split('<!--ctlend-->')[1] + ways() + foot(['config.js', 'data.js', 'app.js']));
   }
 
   // ── 連続アニメ『東京、あと80日』とキャラクター ──
