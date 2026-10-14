@@ -534,7 +534,7 @@ ${extra}${faq.length ? `  <section class="faq"><h2>よくある質問</h2>${faq.
       <div class="pl-band"><button type="button" id="plPrev" data-act="dstep" aria-label="前の日"><span id="plPrevT"></span></button><button type="button" id="plNext" data-act="dstep" aria-label="次の日"><span id="plNextT">あした</span></button></div>
     </div>
     <p class="sub">美術展、ライブ、フードフェス、蚤の市、祭り。${nv}か所の会場や主催者の公式情報から集めた${CURRENT.length}件を、あなたの駅から近い順にならべます。</p>
-    <nav class="lines" aria-label="ジャンル">${lines}${kidLine}${nIg ? `<button type="button" class="kidline igline" data-act="igline" aria-pressed="false" style="--c:#c13584"><i>I</i>インスタだけの告知<b>${nIg}</b></button>` : ''}</nav>
+    <nav class="lines" aria-label="ジャンル">${lines}${kidLine}${nIg ? `<a href="/instagram/" style="--c:#c13584"><i>I</i>インスタだけの告知<b>${nIg}</b></a>` : ''}</nav>
     <nav class="areas" aria-label="エリアからさがす"><span class="lab">エリアから（えらぶと下の一覧がそのエリアだけになります）</span><div class="chips scroll"><button class="chip reset" type="button" data-act="area" data-k="" aria-pressed="true">すべてのエリア</button>${LIVE_AREAS.map(([sl, n]) => `<button class="chip" type="button" data-act="area" data-k="${sl}" aria-pressed="false">${esc(n)}</button>`).join('')}</div><script>const AREAS_UI=${JSON.stringify(Object.fromEntries(LIVE_AREAS.map(([sl, , sts]) => [sl, sts])))};</script></nav>
   </section>
 `;
