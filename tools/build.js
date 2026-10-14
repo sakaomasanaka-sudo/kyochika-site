@@ -523,6 +523,7 @@ ${extra}${faq.length ? `  <section class="faq"><h2>よくある質問</h2>${faq.
     const lines = cnt.map(([g, n]) => `<a href="/${GENRE_PAGES[g][0]}/" style="--c:var(--${g})"><i>${LT[g]}</i>${SHORT[g]}<b>${n}</b></a>`).join('');
     // 子どもと：押すと年齢をえらんで、下の一覧をしぼりこむ（app.js の kidopen / kidage）
     const nKid = CURRENT.filter(e => e.kid).length;
+    const nIg = CURRENT.filter(e => e.ig).length;
     const kidLine = nKid ? `<button type="button" class="kidline" data-act="kidopen" aria-expanded="false" aria-controls="kidAges" style="--c:var(--kid)"><i>K</i>子どもと<b>${nKid}</b></button><div class="kidages" id="kidAges" hidden><span>何歳の子と行く？</span><button type="button" class="chip" data-act="kidage" data-k="kA" aria-pressed="false">0〜2歳</button><button type="button" class="chip" data-act="kidage" data-k="kB" aria-pressed="false">3〜6歳</button><button type="button" class="chip" data-act="kidage" data-k="kC" aria-pressed="false">小学生</button><button type="button" class="chip" data-act="kidage" data-k="all" aria-pressed="false">年齢を問わず</button><p class="kidnote" id="kidNote" hidden></p><a href="/kids/">子どもと行ける催しの一覧 →</a></div>` : '';
     const nv = new Set(CURRENT.map(e => e.v)).size;
     const hero = `  <section class="hero">
@@ -533,7 +534,7 @@ ${extra}${faq.length ? `  <section class="faq"><h2>よくある質問</h2>${faq.
       <div class="pl-band"><button type="button" id="plPrev" data-act="dstep" aria-label="前の日"><span id="plPrevT"></span></button><button type="button" id="plNext" data-act="dstep" aria-label="次の日"><span id="plNextT">あした</span></button></div>
     </div>
     <p class="sub">美術展、ライブ、フードフェス、蚤の市、祭り。${nv}か所の会場や主催者の公式情報から集めた${CURRENT.length}件を、あなたの駅から近い順にならべます。</p>
-    <nav class="lines" aria-label="ジャンル">${lines}${kidLine}</nav>
+    <nav class="lines" aria-label="ジャンル">${lines}${kidLine}${nIg ? `<button type="button" class="kidline igline" data-act="igline" aria-pressed="false" style="--c:#c13584"><i>I</i>インスタだけの告知<b>${nIg}</b></button>` : ''}</nav>
     <nav class="areas" aria-label="エリアからさがす"><span class="lab">エリアから（えらぶと下の一覧がそのエリアだけになります）</span><div class="chips scroll"><button class="chip reset" type="button" data-act="area" data-k="" aria-pressed="true">すべてのエリア</button>${LIVE_AREAS.map(([sl, n]) => `<button class="chip" type="button" data-act="area" data-k="${sl}" aria-pressed="false">${esc(n)}</button>`).join('')}</div><script>const AREAS_UI=${JSON.stringify(Object.fromEntries(LIVE_AREAS.map(([sl, , sts]) => [sl, sts])))};</script></nav>
   </section>
 `;

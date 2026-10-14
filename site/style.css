@@ -260,3 +260,4 @@ ul.dots li::before{content:"";position:absolute;left:.15em;top:.62em;width:.42em
 .areas{display:flex;flex-direction:column;gap:6px}
 .areas .lab{font-size:13px;font-weight:700;color:var(--ink-2)}
 .areas a.chip{text-decoration:none;white-space:nowrap}
+.lines .igline[aria-pressed="true"]{color:#c13584}
