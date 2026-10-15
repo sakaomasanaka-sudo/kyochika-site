@@ -314,3 +314,4 @@ details.fold>summary::-webkit-details-marker{display:none}
 details.fold>summary::after{content:"▼";font-size:12px}
 details.fold[open]>summary::after{content:"▲"}
 details.fold .ctl{border-top:1px solid var(--rule)}
+.page .pic.fl{aspect-ratio:auto;background:none;margin:0}.page .pic.fl img{width:100%;height:auto;max-height:80vh;object-fit:contain;filter:none;border-radius:4px}.page .pic.fl figcaption{font-size:12px;color:var(--ink-2);margin-top:4px}

@@ -261,7 +261,7 @@ ${ld.map(x => `<script type="application/ld+json">${JSON.stringify(x)}</script>\
 ${scripts.map(s => `<script src="/${s}?v=${VER}${/^(data|i18n)/.test(s) ? '.' + KDV : ''}"></script>\n`).join('')}</body>
 </html>
 `;
-  const pic = (ev, eager) => ev.ph ? `<div class="pic"><img src="/photos/${ev.ph}.jpg" alt="${S.alt}" width="384" height="216"${eager ? '' : ' loading="lazy"'}><span class="kind">${S.G[ev.g][0]}</span></div>` : `<div class="pic none"><span class="kind">${S.G[ev.g][0]}</span></div>`;
+  const pic = (ev, eager) => ev.fl ? `<div class="pic fl"><img src="/fl/${ev.id}.jpg" alt=""${eager ? '' : ' loading="lazy"'}></div>` : ev.ph ? `<div class="pic"><img src="/photos/${ev.ph}.jpg" alt="${S.alt}" width="384" height="216"${eager ? '' : ' loading="lazy"'}><span class="kind">${S.G[ev.g][0]}</span></div>` : `<div class="pic none"><span class="kind">${S.G[ev.g][0]}</span></div>`;
   const LTM = { art: 'A', live: 'L', food: 'F', market: 'M', festival: 'S', popup: 'P' };
   const card = (ev, eager, i = 0) => `<li class="ev" style="--c:var(--${ev.g})" data-e="${ev.e}"><span class="sn" aria-hidden="true"><b>${LTM[ev.g] || 'E'}</b>${String(i + 1).padStart(2, '0')}</span>`
     + `<div class="hd"><p class="kd">${S.G[ev.g][0]}</p><h2><a href="${P}/event/${ev.id}/">${esc(tt(ev))}</a></h2><p class="where">${esc(tv(ev))}${esc(S.staP(ts(ev.st)))}</p></div>`

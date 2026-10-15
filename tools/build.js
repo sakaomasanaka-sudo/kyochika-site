@@ -306,7 +306,7 @@ ${sc}</body>
   const card = (ev, eager = false, i = 0) =>
     `<li class="ev" style="--c:var(--${ev.g})" data-e="${ev.e}"><span class="sn" aria-hidden="true"><b>${LTM[ev.g] || 'E'}</b>${String(i + 1).padStart(2, '0')}</span>`
     + `<div class="hd"><p class="kd">${GENRES[ev.g].n}</p><h2><a href="/event/${ev.id}/">${esc(ev.t)}</a></h2><p class="where">${esc(ev.v)}（${esc(ev.st)}駅）</p></div>`
-    + (ev.ph ? `<a class="th" href="/event/${ev.id}/" tabindex="-1" aria-hidden="true"><img src="/photos/${ev.ph}.jpg" alt="" width="384" height="216"${eager ? '' : ' loading="lazy"'}></a>` : '')
+    + (ev.fl ? `<a class="th" href="/event/${ev.id}/" tabindex="-1" aria-hidden="true"><img src="/fl/${ev.id}.jpg" alt="" width="384" height="216"${eager ? '' : ' loading="lazy"'}></a>` : ev.ph ? `<a class="th" href="/event/${ev.id}/" tabindex="-1" aria-hidden="true"><img src="/photos/${ev.ph}.jpg" alt="" width="384" height="216"${eager ? '' : ' loading="lazy"'}></a>` : '')
     + `<div class="rest"><p class="when">${when(ev)}</p><p class="meta"><span class="price">${esc(ev.price)}</span>${ev.free ? '<span class="bd free">無料</span>' : ''}${ev.ig ? '<span class="bd ig">インスタで告知</span>' : ''}${ev.kid ? `<span class="bd kid">子ども ${kidTxt(ev.kid)}</span>` : ''}${ev.bf ? '<span class="bd bf">車椅子OK</span>' : ''}${ev.dog ? '<span class="bd dog">犬連れOK</span>' : ''}</p>`
     + (ev.note ? `<p class="note">${esc(ev.note)}</p>` : '')
     + `<a class="off" href="${esc(ev.url)}" target="_blank" rel="noopener">${ev.ig ? 'インスタの告知' : '公式ページ'}</a></div></li>`;
@@ -326,6 +326,7 @@ ${sc}</body>
     };
     if (ev.kid) { ld.typicalAgeRange = ev.kid[1] >= 99 ? `${ev.kid[0]}-` : `${ev.kid[0]}-${ev.kid[1]}`; ld.audience = { '@type': 'PeopleAudience', suggestedMinAge: ev.kid[0], ...(ev.kid[1] < 99 ? { suggestedMaxAge: ev.kid[1] } : {}) }; }
     if (ev.ph) ld.image = [`${BASE}/photos/${ev.ph}.jpg`];
+    if (ev.fl) ld.image = [`${BASE}/fl/${ev.id}.jpg`].concat(ld.image || []);
     { const og = ogUrl(ev); if (og) ld.image = (ld.image || []).concat([og.replace(/\?.*$/, '')]); }
     // 料金（Google の検索のイベント枠に出るため）。無料か、一般・大人の料金が読めるときだけ。
     { const pm = ev.free ? 0 : priceMax(ev.price); if (pm < 99999) ld.offers = { '@type': 'Offer', price: pm, priceCurrency: 'JPY', url: ev.url, availability: 'https://schema.org/InStock', validFrom: `${ev.s}T00:00:00+09:00` }; }
@@ -375,7 +376,7 @@ ${sc}</body>
       return q;
     })();
     const body = `${cr}  <main class="page" style="--c:var(--${ev.g})" data-e="${ev.e}" data-detail>
-    ${!ev.ph && ogUrl(ev) ? `<div class="pic og"><img src="/og/${ev.id}.jpg?v=${OGDONE[ev.id]}" alt="${esc(ev.t)}（日程と会場のカード）" width="1200" height="630"><span class="kind">${GENRES[ev.g].n}</span></div>` : pic(ev, true)}
+    ${ev.fl ? `<figure class="pic fl"><img src="/fl/${ev.id}.jpg" alt="${esc(ev.t)}の告知画像" loading="eager"><figcaption>告知画像：${esc(ev.flby || '主催者')}（掲載の許可をいただいています）</figcaption></figure>` : !ev.ph && ogUrl(ev) ? `<div class="pic og"><img src="/og/${ev.id}.jpg?v=${OGDONE[ev.id]}" alt="${esc(ev.t)}（日程と会場のカード）" width="1200" height="630"><span class="kind">${GENRES[ev.g].n}</span></div>` : pic(ev, true)}
     <div class="body">
       <h1 class="pt">${esc(ev.t)}</h1>
       <p class="lead">${esc(ev.v)}（${esc(ev.st)}駅）${ev.free ? '・無料' : ''}</p>
@@ -403,7 +404,7 @@ ${sc}</body>
     </div>
   </main>
 `;
-    write(path, head(title, desc, path, [eventLd(ev), crLd].concat(evFaq.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: evFaq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }] : []), false, ogUrl(ev)) + sign(null, path) + body + ways() + foot());
+    write(path, head(title, desc, path, [eventLd(ev), crLd].concat(evFaq.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: evFaq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }] : []), false, ev.fl ? `${BASE}/fl/${ev.id}.jpg` : ogUrl(ev)) + sign(null, path) + body + ways() + foot());
   }
 
   // ── 一覧ページ（ジャンル・無料・エリア・今週末） ──
@@ -655,12 +656,12 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
     const nv = new Set(CURRENT.map(e => e.v)).size;
     // きょう行ける：今日開いている催しを、ジャンルがばらけるように最大8件。会場の写真かシェア用画像があるものだけ。
     const todayRail = (() => {
-      const ok = CURRENT.filter(e => activeOn(e, TODAY) && (e.ph || ogUrl(e)));
+      const ok = CURRENT.filter(e => activeOn(e, TODAY) && (e.fl || e.ph || ogUrl(e)));
       const seen = new Set(), pick = [];
       const order0 = ['market', 'food', 'art', 'festival', 'popup', 'live'];
       for (let r = 0; r < 3 && pick.length < 8; r++) for (const g of order0) { const e = ok.filter(x => x.g === g && !seen.has(x.id)).sort((a, b) => (b.free - a.free) || (a.e < b.e ? -1 : 1))[0]; if (e && pick.length < 8) { seen.add(e.id); pick.push(e); } }
       if (pick.length < 3) return '';
-      const img = e => e.ph ? `/photos/${e.ph}.jpg` : `/og/${e.id}.jpg?v=${OGDONE[e.id]}`;
+      const img = e => e.fl ? `/fl/${e.id}.jpg` : e.ph ? `/photos/${e.ph}.jpg` : `/og/${e.id}.jpg?v=${OGDONE[e.id]}`;
       return `    <section class="today" aria-labelledby="todayH"><h2 id="todayH">きょう行ける <a href="/date/${TODAY}/">もっと見る →</a></h2><div class="rail">${pick.map((e, k) => `<a class="tcard" style="--c:var(--${e.g})" href="/event/${e.id}/"><img src="${img(e)}" alt="" width="1200" height="630" loading="${k < 2 ? 'eager' : 'lazy'}"><div><span class="tag">${SHORT[e.g]}${e.free ? '・無料' : ''}</span><b>${esc(e.t)}</b><small>${esc(e.st)}駅・${esc(e.o)}${e.g === 'live' ? '開演' : '〜' + esc(e.c)}</small></div></a>`).join('')}</div></section>\n`;
     })();
     const hero = `  <section class="hero">
