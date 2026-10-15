@@ -284,7 +284,7 @@ ${lds}<script async src="https://www.googletagmanager.com/gtag/js?id=G-0T0FYH7TT
     const sc = scripts.map(s => `<script src="/${s}?v=${VER}${/^(data|i18n)/.test(s) ? '.' + KDV : ''}"></script>\n`).join('');
     return `  <p class="follow">毎週木曜、東京の週末のまとめをインスタグラム <a href="https://www.instagram.com/kyochika.tokyo/" target="_blank" rel="noopener">@kyochika.tokyo</a> で配信しています。<a href="/app/">ホーム画面に追加</a>すると、アプリのように開けます。</p>
   <p class="foot">${FOOT_NOTE}${affOn ? '当サイトはアフィリエイト広告（PR）を含みます。' : ''}</p>
-  <nav class="nav"><a href="/">催しをさがす</a><a href="/app/">アプリのように使う</a><a href="/drama/">連続アニメ『東京、あと80日』</a><a href="https://www.instagram.com/kyochika.tokyo/" target="_blank" rel="noopener">インスタグラム @kyochika.tokyo</a><a href="/about.html">このサイトについて・運営者情報・写真の出典</a></nav>
+  <nav class="nav"><a href="/">催しをさがす</a><a href="/app/">アプリのように使う</a><a href="/drama/">連続アニメ『東京、あと80日』</a><a href="https://www.instagram.com/kyochika.tokyo/" target="_blank" rel="noopener">インスタグラム @kyochika.tokyo</a><a href="/about.html">このサイトについて・運営者情報・写真の出典</a><a href="/about.html#contact">お問い合わせ</a></nav>
 </div>
 ${sc}</body>
 </html>
