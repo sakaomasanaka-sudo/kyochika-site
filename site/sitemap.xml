@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://kyochika.jp/event/tokyo-tower-voice-of-earth-ten-2026/</loc><lastmod>2026-10-15</lastmod><priority>0.6</priority></url>
   <url><loc>https://kyochika.jp/event/nippori-dokan-matsuri-2026/</loc><lastmod>2026-10-15</lastmod><priority>0.6</priority></url>
   <url><loc>https://kyochika.jp/event/arakawa-koryu-toshi-fair-2026/</loc><lastmod>2026-10-15</lastmod><priority>0.6</priority></url>
   <url><loc>https://kyochika.jp/event/edogawa-tokimeki-fair-28/</loc><lastmod>2026-10-15</lastmod><priority>0.6</priority></url>
@@ -995,6 +996,7 @@
   <url><loc>https://kyochika.jp/area/ikebukuro/</loc><lastmod>2026-10-15</lastmod><priority>0.8</priority></url>
   <url><loc>https://kyochika.jp/area/shimokitazawa/</loc><lastmod>2026-10-15</lastmod><priority>0.8</priority></url>
   <url><loc>https://kyochika.jp/area/kichijoji/</loc><lastmod>2026-10-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://kyochika.jp/area/shirokane/</loc><lastmod>2026-10-15</lastmod><priority>0.8</priority></url>
   <url><loc>https://kyochika.jp/area/kiyosumi/</loc><lastmod>2026-10-15</lastmod><priority>0.8</priority></url>
   <url><loc>https://kyochika.jp/area/odaiba/</loc><lastmod>2026-10-15</lastmod><priority>0.8</priority></url>
   <url><loc>https://kyochika.jp/area/arakawa/</loc><lastmod>2026-10-15</lastmod><priority>0.8</priority></url>
@@ -1005,6 +1007,7 @@
   <url><loc>https://kyochika.jp/drama/</loc><lastmod>2026-10-15</lastmod><priority>0.8</priority></url>
   <url><loc>https://kyochika.jp/about.html</loc><lastmod>2026-10-15</lastmod><priority>0.8</priority></url>
   <url><loc>https://kyochika.jp/app/</loc><lastmod>2026-10-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://kyochika.jp/en/event/tokyo-tower-voice-of-earth-ten-2026/</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/en/event/nippori-dokan-matsuri-2026/</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/en/event/arakawa-koryu-toshi-fair-2026/</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/en/event/edogawa-tokimeki-fair-28/</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>
@@ -1806,6 +1809,7 @@
   <url><loc>https://kyochika.jp/en/</loc><lastmod>2026-10-15</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/en/about/</loc><lastmod>2026-10-15</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/en/app/</loc><lastmod>2026-10-15</lastmod><priority>0.7</priority></url>
+  <url><loc>https://kyochika.jp/zh/event/tokyo-tower-voice-of-earth-ten-2026/</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/zh/event/nippori-dokan-matsuri-2026/</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/zh/event/arakawa-koryu-toshi-fair-2026/</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/zh/event/edogawa-tokimeki-fair-28/</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>
@@ -2607,6 +2611,7 @@
   <url><loc>https://kyochika.jp/zh/</loc><lastmod>2026-10-15</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/zh/about/</loc><lastmod>2026-10-15</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/zh/app/</loc><lastmod>2026-10-15</lastmod><priority>0.7</priority></url>
+  <url><loc>https://kyochika.jp/es/event/tokyo-tower-voice-of-earth-ten-2026/</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/es/event/nippori-dokan-matsuri-2026/</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/es/event/arakawa-koryu-toshi-fair-2026/</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/es/event/edogawa-tokimeki-fair-28/</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>
@@ -3408,6 +3413,7 @@
   <url><loc>https://kyochika.jp/es/</loc><lastmod>2026-10-15</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/es/about/</loc><lastmod>2026-10-15</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/es/app/</loc><lastmod>2026-10-15</lastmod><priority>0.7</priority></url>
+  <url><loc>https://kyochika.jp/th/event/tokyo-tower-voice-of-earth-ten-2026/</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/th/event/nippori-dokan-matsuri-2026/</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/th/event/arakawa-koryu-toshi-fair-2026/</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/th/event/edogawa-tokimeki-fair-28/</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>
@@ -4209,6 +4215,7 @@
   <url><loc>https://kyochika.jp/th/</loc><lastmod>2026-10-15</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/th/about/</loc><lastmod>2026-10-15</lastmod><priority>0.7</priority></url>
   <url><loc>https://kyochika.jp/th/app/</loc><lastmod>2026-10-15</lastmod><priority>0.7</priority></url>
+  <url><loc>https://kyochika.jp/id/event/tokyo-tower-voice-of-earth-ten-2026/</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/id/event/nippori-dokan-matsuri-2026/</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/id/event/arakawa-koryu-toshi-fair-2026/</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>
   <url><loc>https://kyochika.jp/id/event/edogawa-tokimeki-fair-28/</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>

@@ -1,6 +1,6 @@
 # キョウチカ（kyochika.jp）
 
-> 東京の美術展・ライブ・フードイベント・マーケット・祭り・ポップアップ・子ども向けの催しを、会場や主催者の公式情報から毎日集めてまとめ、行く日と駅から近い順に探せるサイト。日本語・英語・中国語。2026-10-15更新、掲載728件。日付・時間・料金・対象年齢は公式ページで確かめたものだけを載せています。
+> 東京の美術展・ライブ・フードイベント・マーケット・祭り・ポップアップ・子ども向けの催しを、会場や主催者の公式情報から毎日集めてまとめ、行く日と駅から近い順に探せるサイト。日本語・英語・中国語。2026-10-15更新、掲載729件。日付・時間・料金・対象年齢は公式ページで確かめたものだけを載せています。
 
 ## よく使うページ
 - 今日・行く日と駅から探す: https://kyochika.jp/
@@ -30,6 +30,7 @@
 - 池袋: https://kyochika.jp/area/ikebukuro/
 - 下北沢: https://kyochika.jp/area/shimokitazawa/
 - 吉祥寺・高円寺: https://kyochika.jp/area/kichijoji/
+- 白金・麻布・東京タワー: https://kyochika.jp/area/shirokane/
 - 清澄白河: https://kyochika.jp/area/kiyosumi/
 - お台場: https://kyochika.jp/area/odaiba/
 - 荒川区（町屋・日暮里・南千住）: https://kyochika.jp/area/arakawa/
