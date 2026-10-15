@@ -626,12 +626,14 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
     const title = `${NAME}｜東京のイベントをまとめて、きょう・近くで探す｜美術展・ライブ・フード・マーケット・祭り`;
     const desc = `東京の美術展・ライブ・フードイベント・マーケット・祭りを、公式サイトをまわらずにまとめて見られます。行く日と出発する駅から近い順に探せて、無料や夜までの催しにもしぼれます。いま${CURRENT.length}件を掲載中。`;
     const siteLd = { '@context': 'https://schema.org', '@type': 'WebSite', name: NAME, alternateName: 'KYO-CHIKA TOKYO', url: BASE + '/', inLanguage: 'ja', description: desc, sameAs: ['https://www.instagram.com/kyochika.tokyo/'] };
-    const body = `  <section class="ctl" aria-label="さがす条件">
+    const body = `  <details class="fold"><summary>日付・駅・ジャンル・エリアでしぼる</summary>
+    <nav class="areas" aria-label="エリアからさがす"><span class="lab">エリアから（えらぶと下の一覧がそのエリアだけになります）</span><div class="chips scroll"><button class="chip reset" type="button" data-act="area" data-k="" aria-pressed="true">すべてのエリア</button>${LIVE_AREAS.map(([sl, n]) => `<button class="chip" type="button" data-act="area" data-k="${sl}" aria-pressed="false">${esc(n)}</button>`).join('')}</div><script>const AREAS_UI=${JSON.stringify(Object.fromEntries(LIVE_AREAS.map(([sl, , sts]) => [sl, sts])))};</script></nav>
+  <section class="ctl" aria-label="さがす条件">
     <div><span class="lab">どこから？（近い順にならべます）</span><div class="chips scroll" id="from"></div></div>
     <div><span class="lab">いつ行く？</span><div class="days" id="days"></div><label class="other">ほかの日 <input type="date" id="otherDay"></label></div>
     <div><span class="lab">ジャンル</span><div class="chips" id="genres"></div></div>
     <div><span class="lab">しぼりこみ</span><div class="chips" id="filters"></div></div>
-  </section>
+  </section></details>
 <!--ctlend-->
   <div class="board" id="board" aria-live="polite"><span>掲載中の催し</span><b>${CURRENT.length}件</b></div>
   <ul class="list" id="list">${order(CURRENT).map((e, i) => card(e, i < 2, i)).join('')}</ul>
@@ -651,16 +653,29 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
     const nIg = CURRENT.filter(e => e.ig).length;
     const kidLine = nKid ? `<button type="button" class="kidline" data-act="kidopen" aria-expanded="false" aria-controls="kidAges" style="--c:var(--kid)"><i>K</i>子どもと<b>${nKid}</b></button><div class="kidages" id="kidAges" hidden><span>何歳の子と行く？</span><button type="button" class="chip" data-act="kidage" data-k="kA" aria-pressed="false">0〜2歳</button><button type="button" class="chip" data-act="kidage" data-k="kB" aria-pressed="false">3〜6歳</button><button type="button" class="chip" data-act="kidage" data-k="kC" aria-pressed="false">小学生</button><button type="button" class="chip" data-act="kidage" data-k="all" aria-pressed="false">年齢を問わず</button><p class="kidnote" id="kidNote" hidden></p><a href="/kids/">子どもと行ける催しの一覧 →</a></div>` : '';
     const nv = new Set(CURRENT.map(e => e.v)).size;
+    // きょう行ける：今日開いている催しを、ジャンルがばらけるように最大8件。会場の写真かシェア用画像があるものだけ。
+    const todayRail = (() => {
+      const ok = CURRENT.filter(e => activeOn(e, TODAY) && (e.ph || ogUrl(e)));
+      const seen = new Set(), pick = [];
+      const order0 = ['market', 'food', 'art', 'festival', 'popup', 'live'];
+      for (let r = 0; r < 3 && pick.length < 8; r++) for (const g of order0) { const e = ok.filter(x => x.g === g && !seen.has(x.id)).sort((a, b) => (b.free - a.free) || (a.e < b.e ? -1 : 1))[0]; if (e && pick.length < 8) { seen.add(e.id); pick.push(e); } }
+      if (pick.length < 3) return '';
+      const img = e => e.ph ? `/photos/${e.ph}.jpg` : `/og/${e.id}.jpg?v=${OGDONE[e.id]}`;
+      return `    <section class="today" aria-labelledby="todayH"><h2 id="todayH">きょう行ける <a href="/date/${TODAY}/">もっと見る →</a></h2><div class="rail">${pick.map((e, k) => `<a class="tcard" style="--c:var(--${e.g})" href="/event/${e.id}/"><img src="${img(e)}" alt="" width="1200" height="630" loading="${k < 2 ? 'eager' : 'lazy'}"><div><span class="tag">${SHORT[e.g]}${e.free ? '・無料' : ''}</span><b>${esc(e.t)}</b><small>${esc(e.st)}駅・${esc(e.o)}${e.g === 'live' ? '開演' : '〜' + esc(e.c)}</small></div></a>`).join('')}</div></section>\n`;
+    })();
     const hero = `  <section class="hero">
     <h1>きょう、東京でどこ行く？</h1>
-    <div class="plate" aria-label="行く日">
-      <p class="pl-big" id="plBig">きょう</p>
+    <div class="pl-hang" aria-hidden="true"><img class="pl-bird" src="/photos/chara/pochika.png?v=${VER}" alt="" width="58" height="53"></div>
+    <div class="plate eki" aria-label="行く日">
+      <div class="pl-top"><span class="pl-no">KC<b id="plNo">${Number(TODAY.slice(8))}</b></span><span class="pl-ward"><i>東</i><i>京</i></span></div>
+      <p class="pl-hira" id="plHira">きょう</p>
+      <p class="pl-big" id="plBig">今日</p>
+      <p class="pl-kr"><span id="plRoma">Kyo</span></p>
       <p class="pl-sub" id="plSub"></p>
       <div class="pl-band"><button type="button" id="plPrev" data-act="dstep" aria-label="前の日"><span id="plPrevT"></span></button><button type="button" id="plNext" data-act="dstep" aria-label="次の日"><span id="plNextT">あした</span></button></div>
+      <div class="pl-romas"><span id="plPrevR"></span><span id="plNextR">Ashita</span></div>
     </div>
-    <p class="sub">美術展、ライブ、フードフェス、蚤の市、祭り。${nv}か所の会場や主催者の公式情報から集めた${CURRENT.length}件を、あなたの駅から近い順にならべます。</p>
-    <nav class="lines" aria-label="ジャンル">${lines}${kidLine}${nIg ? `<a href="/instagram/" style="--c:#c13584"><i>I</i>インスタだけの告知<b>${nIg}</b></a>` : ''}</nav>
-    <nav class="areas" aria-label="エリアからさがす"><span class="lab">エリアから（えらぶと下の一覧がそのエリアだけになります）</span><div class="chips scroll"><button class="chip reset" type="button" data-act="area" data-k="" aria-pressed="true">すべてのエリア</button>${LIVE_AREAS.map(([sl, n]) => `<button class="chip" type="button" data-act="area" data-k="${sl}" aria-pressed="false">${esc(n)}</button>`).join('')}</div><script>const AREAS_UI=${JSON.stringify(Object.fromEntries(LIVE_AREAS.map(([sl, , sts]) => [sl, sts])))};</script></nav>
+${todayRail}    <nav class="lines" aria-label="ジャンル">${lines}${kidLine}${nIg ? `<a href="/instagram/" style="--c:#c13584"><i>I</i>インスタだけの告知<b>${nIg}</b></a>` : ''}</nav>
   </section>
 `;
     const dramaBan = `  <a class="dban" href="/drama/" style="display:flex;align-items:center;gap:12px;border:2px solid var(--ink);border-radius:4px;padding:8px 14px;margin:12px 0;text-decoration:none;color:inherit;background:#fff8cc"><img src="/photos/chara/pochika.png?v=${VER}" alt="" width="56" style="flex:none;height:auto"><span><b>連続アニメ『東京、あと80日』</b><br><small>ミカは東京に残る？ 帰る？ 登場人物とあらすじ →</small></span></a>

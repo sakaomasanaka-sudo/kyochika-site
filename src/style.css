@@ -8,7 +8,7 @@ img{max-width:100%}
   --paper:#ffffff; --ink:#000000; --ink-2:#5a5a5a; --rule:#d6d6d6; --wash:#f3f3f3; --sign:#ffd100;
   --art:#00a7db; --live:#e60012; --food:#f39700; --market:#009944; --festival:#c1a470; --popup:#9b7cb6; --kid:#c2337a;
   --go:#009944; --soon:#e60012; --dot:#ff4a1c;
-  --f:"BIZ UDPGothic","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;
+  --f:"BIZ UDPGothic","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Noto Sans JP","Noto Sans CJK JP",sans-serif;
   --fn:var(--f);
 }
 *{box-sizing:border-box}
@@ -271,3 +271,46 @@ table.stats{border-collapse:collapse;width:100%;margin:8px 0 20px}table.stats th
 .rainbar{display:block;margin:12px 0;padding:12px 14px;background:#e8f2ff;border-left:6px solid #2b6fd6;color:#0b2e66;font-weight:700;text-decoration:none;border-radius:4px}
 .pick{margin:28px 0}.pick h2{font-size:1.2em;margin:0 0 8px}.pick img{width:100%;height:auto;border:1px solid #ddd;display:block}.pick .why{display:inline-block;margin:8px 0 4px;background:#ffd100;padding:2px 8px;font-weight:700;font-size:.9em}
 .igf{margin:18px 0;padding:14px 16px;border:2px solid #c13584;border-radius:8px}.igf p{margin:0 0 10px;line-height:1.6}.go.igbtn{background:#c13584;border-color:#c13584;color:#fff}
+/* トップの駅名標（10/15〜、坂尾さん「駅っぽく」「上からぶら下がってる」「バーにキャラクター」） */
+.pl-hang{height:30px;margin:44px -16px -16px;border-top:5px solid #6b7177;position:relative}
+.pl-hang::before,.pl-hang::after{content:"";position:absolute;top:0;bottom:0;width:5px;background:#8a9096}
+.pl-hang::before{left:calc(16px + 14%)}.pl-hang::after{right:calc(16px + 14%)}
+.pl-bird{position:absolute;right:calc(16px + 26%);bottom:calc(100% + 1px);width:58px;height:auto;transform:rotate(-4deg)}
+.plate.eki{position:relative;border:3px solid #333;border-radius:4px;padding:0;overflow:hidden}
+.plate.eki,.plate.eki *{font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Noto Sans CJK JP",sans-serif}
+.eki .pl-top{display:flex;align-items:flex-start;justify-content:space-between;padding:10px 12px 0}
+.eki .pl-no{display:inline-grid;place-items:center;width:44px;height:44px;border:4px solid #ff4a1c;border-radius:7px;font-weight:900;line-height:1;font-size:10px;letter-spacing:.05em}
+.eki .pl-no b{font-size:17px;display:block;margin-top:1px}
+.eki .pl-ward{display:flex;gap:4px}.eki .pl-ward i{font-style:normal;border:1.5px solid #333;font-size:11px;font-weight:700;width:20px;height:20px;display:grid;place-items:center}
+.eki .pl-hira{margin:-30px 0 0;font-size:21px;font-weight:700;letter-spacing:.42em;padding-left:.42em;transform:scaleX(1.1)}
+.eki .pl-big{font-size:96px;margin-top:-6px;font-weight:700;letter-spacing:.16em;padding-left:.16em;transform:scaleX(1.07);-webkit-text-stroke:1.2px currentColor}
+.eki .pl-big.dt{font-size:72px;letter-spacing:.02em;padding-left:0}
+.eki .pl-kr{display:flex;justify-content:center;margin:-6px 0 2px;min-height:1.2em}
+.eki .pl-kr span{font-size:25px;font-weight:500;letter-spacing:.03em;display:inline-block;transform:scaleX(1.04)}
+.eki .pl-sub{margin:4px 0 12px;font-size:13px}
+.eki .pl-band{border-top:0;background:#ff4a1c;color:#fff}
+.eki .pl-band button{color:#fff;font-size:17px;padding:8px 14px 2px;min-height:40px;font-weight:700;letter-spacing:.12em}
+.eki .pl-romas{display:grid;grid-template-columns:1fr 1fr;background:#ff4a1c;color:#fff;font-size:12px;font-weight:500;letter-spacing:.04em;padding:0 14px 8px;min-height:1.6em}
+.eki .pl-romas span:last-child{text-align:right}
+/* きょう行ける */
+.today{margin:4px -16px 0}
+.today h2{font-size:17px;margin:0 16px 10px;display:flex;justify-content:space-between;align-items:baseline}.today h2 a{font-size:13px;font-weight:700}
+.today .rail{display:flex;gap:12px;overflow-x:auto;padding:0 16px 6px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.today .rail::-webkit-scrollbar{display:none}
+.tcard{flex:none;width:250px;scroll-snap-align:start;text-decoration:none;color:inherit;border-radius:8px;overflow:hidden;border:1px solid #ddd;background:#fff}
+.tcard img{display:block;width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover}
+.tcard div{padding:8px 10px 10px;border-top:5px solid var(--c)}
+.tcard b{display:block;font-size:14px;line-height:1.4;max-height:2.8em;overflow:hidden}
+.tcard small{display:block;color:#555;margin-top:4px;font-size:12px}
+.tcard .tag{display:inline-block;background:var(--c);color:#fff;font-size:11px;font-weight:700;padding:1px 7px;border-radius:3px;margin-bottom:5px}
+@media (min-width:700px){.today{margin-inline:0}.today h2{margin-inline:0}.today .rail{padding-inline:0}}
+/* ジャンルのボタンに色 */
+.hero .lines{gap:8px}
+.hero .lines a,.hero .lines .kidline{background:color-mix(in srgb,var(--c) 14%,#fff);border:2px solid var(--c);border-radius:999px;padding:6px 12px 6px 6px}
+/* 選択欄の折りたたみ */
+details.fold{border:2px solid var(--ink);border-radius:6px;padding:0 14px;margin:8px 0 14px}
+details.fold>summary{font-weight:700;padding:12px 0;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary::after{content:"▼";font-size:12px}
+details.fold[open]>summary::after{content:"▲"}
+details.fold .ctl{border-top:1px solid var(--rule)}

@@ -27,7 +27,8 @@
   function render(){
     const isToday=st.day===todayIso;
     if($('plBig')){const i=dayNum(st.day)-dayNum(todayIso);$('plBig').textContent=i===0?U.today:i===1?U.tomorrow:day(st.day);$('plSub').textContent=LG==='ja'?(Number(st.day.slice(5,7))+'月'+Number(st.day.slice(8))+'日 '+DOWS[dowOf(st.day)]+'曜日'+(HOLIDAYS[st.day]?'・'+HOLIDAYS[st.day]:'')):day(st.day);
-      const pv=isoOf(dayNum(st.day)-1),nx=isoOf(dayNum(st.day)+1);$('plPrev').disabled=i<=0;$('plPrev').dataset.d=pv;$('plNext').dataset.d=nx;$('plPrevT').textContent=i<=0?'':(i===1?U.today:dshort(pv)+' '+Number(pv.slice(8)));$('plNextT').textContent=i===0?U.tomorrow:dshort(nx)+' '+Number(nx.slice(8));}
+      const pv=isoOf(dayNum(st.day)-1),nx=isoOf(dayNum(st.day)+1);$('plPrev').disabled=i<=0;$('plPrev').dataset.d=pv;$('plNext').dataset.d=nx;$('plPrevT').textContent=i<=0?'':(i===1?U.today:dshort(pv)+' '+Number(pv.slice(8)));$('plNextT').textContent=i===0?U.tomorrow:dshort(nx)+' '+Number(nx.slice(8));
+      if($('plHira')){const big=$('plBig');big.textContent=i===0?'今日':i===1?'明日':Number(st.day.slice(5,7))+'/'+Number(st.day.slice(8));big.classList.toggle('dt',i>1);$('plHira').textContent=i===0?'きょう':i===1?'あした':DOWS[dowOf(st.day)]+'曜日';$('plRoma').textContent=i===0?'Kyo':i===1?'Ashita':'';$('plNo').textContent=Number(st.day.slice(8));$('plPrevR').textContent=i===1?'Kyo':'';$('plNextR').textContent=i===0?'Ashita':'';}}
     $('days').innerHTML=DAYS.map(d=>`<button class="day" type="button" data-act="day" data-d="${d}" aria-pressed="${st.day===d}"><b>${Number(d.slice(8))}</b><span class="${HOLIDAYS[d]||dowOf(d)===0?'hol':''}">${d===todayIso?U.today:dshort(d)}</span></button>`).join('');
     if(document.activeElement!==$('otherDay'))$('otherDay').value=DAYS.includes(st.day)?'':st.day;
     const chips=POP.filter(k=>SPOTS[k]); if(st.from!=='__here'&&!chips.includes(st.from)) chips.push(st.from);
