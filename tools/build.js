@@ -290,6 +290,8 @@ ${sc}</body>
 `;
   };
 
+  // インスタのフォローへの案内（10/15〜、坂尾さん「フォロワー100人が勝負」）。日本語のページだけ。クリックは GA の ig_follow_click。
+  const igFollow = where => `<aside class="igf"><p><b>インスタの告知もお知らせ。</b>Googleに出てこない東京の催しを、毎週まとめて届ける。</p><a class="go igbtn" href="https://www.instagram.com/kyochika.tokyo/" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','ig_follow_click',{where:'${where}'})">@kyochika.tokyo をフォロー</a></aside>`;
   const pic = (ev, eager = false) => {
     const g = GENRES[ev.g].n;
     if (ev.ph) return `<div class="pic"><img src="/photos/${ev.ph}.jpg" alt="${esc(CRED[ev.ph][0])}の写真" width="384" height="216"${eager ? '' : ' loading="lazy"'}><span class="kind">${g}</span></div>`;
@@ -382,6 +384,7 @@ ${sc}</body>
       <p class="cap">${ev.ig ? '日程の変更や中止は、主催者のインスタグラムで確かめてください。' : '休みの日や最終入場の時刻は、公式ページで確かめてください。'}</p>
       <div class="row"><a class="go pri" href="${esc(ev.url)}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','official_click',{ev_id:'${ev.id}'})">${ev.ig ? 'インスタの告知で確かめる' : '公式ページで確かめる'}</a><a class="go" href="${maps}" target="_blank" rel="noopener">地図でひらく</a></div>
       <div class="row share"><a class="go line" href="https://social-plugins.line.me/lineit/share?url=${quote(url(path))}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','share',{method:'line',ev_id:'${ev.id}'})">LINEで友だちに送る</a><a class="go" href="https://x.com/intent/post?text=${quote(ev.t + '（' + span(ev) + '・' + ev.st + '駅）')}&amp;url=${quote(url(path))}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','share',{method:'x',ev_id:'${ev.id}'})">Xでポスト</a><button class="go fav" type="button" data-fav="${ev.id}">☆ 行きたいに保存</button><a class="go" href="${calUrl(ev)}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','calendar_add',{ev_id:'${ev.id}'})">カレンダーに追加</a></div>
+      ${igFollow('event')}
       <p class="cap" id="favlink" hidden><a href="/plan/">行きたいリストから週末プランを作る →</a></p>
       <section class="faq"><h2>よくある質問</h2>${evFaq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}</section>
       <h2>主な駅からの近さ</h2>
@@ -418,6 +421,7 @@ ${sc}</body>
   <ul class="list">${cards}</ul>
 ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length ? `  <section class="faq"><h2>よくある質問</h2>${faq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}</section>\n` : ''}  <p class="upd">${ymd(TODAY)}時点の掲載分です。行く日や出発する駅からさがすときは、<a href="/">トップページ</a>が便利です。</p>
   <div class="row share"><a class="go line" href="https://social-plugins.line.me/lineit/share?url=${quote(url(path))}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','share',{method:'line',page:'${path}'})">このページをLINEで送る</a></div>
+  ${igFollow('list')}
   <a class="igcta" href="https://www.instagram.com/kyochika.tokyo/" target="_blank" rel="noopener"><b>週末どこ行く？をインスタでも</b><span>キョウチカのインスタ @kyochika.tokyo をフォローすると、東京の催しのおすすめが届きます →</span></a>
 `;
     const faqLd = faq.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }] : [];
@@ -781,6 +785,7 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
   <p class="intro">今週末に東京で開いている${CURRENT.filter(e => WKD.some(d => e.s <= d && d <= e.e && !(e.off || []).includes(d))).length}件の催しから、無料のもの、まもなく終わるもの、この週末だけのもの、子どもと行けるもの、インスタだけで告知されたものを選び、ジャンルとエリアがばらけるように${pickEvs.length}件にしました（${ymd(TODAY)}時点）。</p>
 ${items}
   <div class="row share"><a class="go line" href="https://social-plugins.line.me/lineit/share?url=${quote(url(PICK_PATH))}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','share',{method:'line',page:'pick'})">この記事をLINEで送る</a><a class="go" href="/weekend/">今週末の催しを全部見る</a></div>
+  ${igFollow('pick')}
   <p class="cap">日程・時間・料金は会場や主催者の公式ページで確かめたものです。出かける前に、各催しの公式ページで最新の情報を確かめてください。</p>
   </div></main>
 `;
