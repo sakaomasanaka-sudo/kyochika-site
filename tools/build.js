@@ -372,7 +372,7 @@ ${sc}</body>
       return q;
     })();
     const body = `${cr}  <main class="page" style="--c:var(--${ev.g})" data-e="${ev.e}" data-detail>
-    ${pic(ev, true)}
+    ${!ev.ph && ogUrl(ev) ? `<div class="pic og"><img src="/og/${ev.id}.jpg?v=${OGDONE[ev.id]}" alt="${esc(ev.t)}（日程と会場のカード）" width="1200" height="630"><span class="kind">${GENRES[ev.g].n}</span></div>` : pic(ev, true)}
     <div class="body">
       <h1 class="pt">${esc(ev.t)}</h1>
       <p class="lead">${esc(ev.v)}（${esc(ev.st)}駅）${ev.free ? '・無料' : ''}</p>
