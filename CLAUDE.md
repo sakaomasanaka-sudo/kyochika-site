@@ -139,6 +139,7 @@
 - 画像の取り込み方：Mac の内蔵ブラウザ（インスタにログイン中）で投稿の画像を縮小して「ダウンロード」に保存 → device_stage_files で取り込む。OKのない画像は使わない。
 - 10/15 時点のOK：代官山 蚤の市（daikanyama-nominoichi-26）、WISH LESS gallery（wishless-soeda-yo）。
 - 10/16 OK：ポジティブ・フリマルシェ（positive-flea-marche-higashiginza-2026-10、@positive_fleamarche）。
+- 10/16 OK：studio144 企画展「be free from」（studio144-be-free-from-2026、@studio144_tokyo）。
 - 10/16 坂尾さん「インスタに返信きたら自動で使って」→ 定期タスク「キョウチカ 主催者のOK返信を見て告知画像を載せる」（毎日 9:17・12:17・15:17・18:17・21:17、Mac 必須）が、写真のお願いリスト（targets）の DM 先の返信を読み、はっきりOKなら告知投稿の画像を fl で載せて status を ok にする。断り→ng、条件つき・あいまい→坂尾さんに報告。DM の送信・お礼の返信はしない（送信は自動の安全チェックで止まるので坂尾さんが押す）。
 - 10/16 インスタだけの告知8件の主催者にお願いの行 t15〜t22 を足した（DM 文は「キョウチカです・営業の連絡ではございません・Google などの検索から毎日見られているサイトです」の形）。
 
