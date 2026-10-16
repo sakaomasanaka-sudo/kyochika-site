@@ -433,8 +433,13 @@ ${sc}</body>
   const searchBar = (defSt = '渋谷') => {
     const d0 = dnum(TODAY), jd = iso => { const p = iso.split('-').map(Number); return `${p[1]}/${p[2]}（${DOWS[dow(iso)]}${iso in HOLIDAYS ? '・祝' : ''}）`; };
     const days = Array.from({ length: 7 }, (_, i) => isoOf(d0 + i)).map((d, i) => `<option value="${d}">${i === 0 ? 'きょう ' : i === 1 ? 'あした ' : ''}${jd(d)}</option>`).join('');
-    const sts = ['渋谷', '新宿', '池袋', '東京', '銀座', '上野', '表参道', '六本木', '恵比寿', '下北沢', '吉祥寺', '品川'].concat(defSt && !['渋谷'].includes(defSt) ? [defSt] : []).filter((x, i, a) => a.indexOf(x) === i && SPOTS[x]);
-    return `  <form class="qbar" action="/" method="get" onsubmit="window.gtag&&gtag('event','qbar_search',{page:location.pathname})"><b>東京のイベントをさがす</b><label>いつ<select name="d">${days}</select></label><label>どこから<select name="s">${sts.map(x => `<option${x === defSt ? ' selected' : ''}>${esc(x)}</option>`).join('')}</select></label><label>条件<select name="c"><option value="">指定なし</option><option value="free">無料</option><option value="dog">愛犬と</option><option value="kid">子どもと</option><option value="bf">車椅子OK</option><option value="stroller">ベビーカーOK</option><option value="night">夜19時以降も</option></select></label><button type="submit">近い順に見る</button></form>\n`;
+    // どこから：駅のグループごとに全部（SPOT_GROUPS）。グループにない駅は「そのほかの駅」に五十音順。
+    const SG = (D.SPOT_GROUPS || []).map(g => [g[0], g[3].filter(x => SPOTS[x])]).filter(g => g[1].length);
+    const inG = new Set(SG.flatMap(g => g[1]));
+    const rest = Object.keys(SPOTS).filter(x => !inG.has(x) && !x.startsWith('__')).sort((a, b) => a.localeCompare(b, 'ja'));
+    const opt = x => `<option${x === defSt ? ' selected' : ''}>${esc(x)}</option>`;
+    const stOpts = SG.map(([n, xs]) => `<optgroup label="${esc(n)}">${xs.map(opt).join('')}</optgroup>`).join('') + (rest.length ? `<optgroup label="そのほかの駅">${rest.map(opt).join('')}</optgroup>` : '');
+    return `  <form class="qbar" action="/" method="get" onsubmit="window.gtag&&gtag('event','qbar_search',{page:location.pathname})"><b>東京のイベントをさがす</b><label>いつ<select name="d">${days}</select></label><label>どこから<select name="s">${stOpts}</select></label><label>条件<select name="c"><option value="">指定なし</option><option value="free">無料</option><option value="dog">愛犬と</option><option value="kid">子どもと</option><option value="bf">車椅子OK</option><option value="stroller">ベビーカーOK</option><option value="night">夜19時以降も</option></select></label><button type="submit">近い順に見る</button></form>\n`;
   };
   const listPage = (path, h1, title, desc, evs0, crumbName, intro, faq = [], extra = '', top = '', og = null, pre = '') => {
     const evs = order(evs0);

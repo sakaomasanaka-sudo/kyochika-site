@@ -4,7 +4,7 @@ const fs = require('fs'), path = require('path');
 const R = path.join(__dirname, '..');
 const build = require('./build.js'); const { kyochikaIntl, kyochikaAll } = require('./intl.js');
 const src = f => fs.readFileSync(path.join(R, 'src', f), 'utf8');
-const D = new Function(src('data.js') + ';return {EV,SPOTS,GENRES,CRED,HOLIDAYS};')();
+const D = new Function(src('data.js') + ';return {EV,SPOTS,GENRES,CRED,HOLIDAYS,SPOT_GROUPS};')();
 const T = JSON.parse(src('tr.json'));
 T.x = {}; for (const l of ['es', 'th', 'id']) { try { T.x[l] = JSON.parse(src(`tr_${l}.json`)); } catch (e) { T.x[l] = null; } }
 try { D.GUIDES = JSON.parse(src('guides.json')); } catch (e) { D.GUIDES = []; }
