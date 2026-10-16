@@ -49,6 +49,10 @@ function kyochika_stats($home, $out) {
     $D['top'][$p] = ($D['top'][$p] ?? 0) + 1;
     $s = null;
     if (strpos($p, 'utm_source=chatgpt') !== false || stripos($ref, 'chatgpt') !== false) $s = 'chatgpt';
+    elseif (stripos($ref, 'gemini.google') !== false || stripos($ref, 'bard.google') !== false) $s = 'gemini';
+    elseif (stripos($ref, 'perplexity') !== false) $s = 'perplexity';
+    elseif (stripos($ref, 'copilot.microsoft') !== false) $s = 'copilot';
+    elseif (stripos($ref, 'claude.ai') !== false) $s = 'claude';
     elseif (stripos($ref, 'google.') !== false) $s = 'google';
     elseif (stripos($ref, 'yahoo') !== false) $s = 'yahoo';
     elseif (stripos($ref, 'bing.') !== false) $s = 'bing';
