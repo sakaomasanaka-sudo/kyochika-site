@@ -78,6 +78,19 @@ function kyochikaBuild(D, aboutMain, TODAY, VER) {
   const ogData = ev => ({ t: ev.t, d: span(ev) + (ev.g === 'live' ? ` ${ev.o}開演` : ` ${ev.o}〜${ev.c}`), v: ev.v, st: ev.st, p: ev.free ? '無料' : String(ev.price).slice(0, 40), c: OGCOL[ev.g] || '#000', k: ev.kid ? '子どもと' : '', dog: !!ev.dog });
   const ogHash = ev => { let h = 5381; const t = JSON.stringify(ogData(ev)) + '|1'; for (let i = 0; i < t.length; i++) h = ((h * 33) ^ t.charCodeAt(i)) >>> 0; return h.toString(36); };
   const OGDONE = D.OGDONE || {};
+  const FEATURES = [
+    { slug: 'thats-fashion-weekend-2026', main: 'thats-fashion-weekend-2026-market', also: ['tokyo-tower-voice-of-earth-ten-2026'], until: '2026-10-18',
+      h1: "THAT'S FASHION WEEKEND 2026｜東京タワーで人気ブランドが70〜90%オフ、入場無料",
+      title: `THAT'S FASHION WEEKEND 2026｜東京タワーのチャリティファッションマーケット（10/16〜18・入場無料）｜${NAME}`,
+      desc: `10月16日〜18日、東京タワーで人気ブランドの服 約7,000着が70〜90%オフになるチャリティマーケット「THAT'S FASHION WEEKEND 2026」（入場無料）。日程、時間、会場、行き方、あわせて行ける近くの催しをまとめました。`,
+      crumb: "THAT'S FASHION WEEKEND 2026",
+      lead: '人気ブランドの服 約7,000着が70〜90%オフになるチャリティマーケットが、10月16日（金）〜18日（日）に東京タワーで開かれます。入場は無料です。',
+      img: ['/feature/tfw/logo.jpg', 800, 572, "THAT'S FASHION WEEKEND supported by SENSE TRUST"], credit: "THAT'S FASHION WEEKEND",
+      facts: [['日程', '10月16日（金）・17日（土）11:00〜21:00、18日（日）10:00〜15:30'], ['会場', '東京タワー タワーホールA（東京都港区芝公園4-2-8）'], ['最寄り駅', '芝公園・赤羽橋・神谷町'], ['入場', '無料（主催者に確認済み）']],
+      points: [['70〜90%オフ', '人気ブランドの倉庫に眠っていた商品、デッドストック、ビンテージ、B品、サンプル品など約7,000着。'], ['買うと寄付になる', '1着買うごとに、新品の服1着が熊本の被災地に寄付される。'], ['チャリティフリマも', '著名人や文化人が私物を出品するチャリティフリーマーケットを同時開催。売上は熊本支援に。']],
+      faq: [['入場料はかかる？', '入場は無料です（主催者に確認済み）。'], ['何時まで開いている？', '16日・17日は21:00まで、最終日の18日は15:30までです。'], ['最寄り駅は？', '都営三田線の芝公園駅、大江戸線の赤羽橋駅、日比谷線の神谷町駅が近くです。'], ['同じ時期に東京タワーで見られるものは？', 'TOWER GALLERY の VOICE OF EARTH展、MAIN DECK 1F Club333 の Jeff Hamilton展（9:00〜23:00）がいずれも10/18まで開かれています。']],
+      official: 'https://thatsfashionweekend.com/', area: ['shirokane', '白金・麻布・東京タワー'], station: ['shibakoen', '芝公園'] },
+  ];
   const calUrl = ev => { const d = x => x.replace(/-/g, ''); const nx = iso => isoOf(dnum(iso) + 1).replace(/-/g, ''); const dates = oneDay(ev) && /^\d\d:\d\d$/.test(ev.o) && /^\d\d:\d\d$/.test(ev.c) && ev.c > ev.o ? `${d(ev.s)}T${ev.o.replace(':', '')}00/${d(ev.s)}T${ev.c.replace(':', '')}00` : `${d(ev.s)}/${nx(ev.e)}`; return `https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=${quote(ev.t)}&amp;dates=${dates}&amp;ctz=Asia/Tokyo&amp;location=${quote(ev.v + '（' + ev.st + '駅）')}&amp;details=${quote(url('/event/' + ev.id + '/'))}`; };
   const ogUrl = ev => OGDONE[ev.id] === ogHash(ev) ? `${BASE}/og/${ev.id}.jpg?v=${OGDONE[ev.id]}` : null;
   const when = ev => ev.g === 'live' ? `${span(ev)} ${ev.o} 開演` : `${span(ev)} ${ev.o}〜${ev.c}`;
@@ -386,7 +399,7 @@ ${sc}</body>
       <p class="cap">${ev.ig ? '日程の変更や中止は、主催者のインスタグラムで確かめてください。' : '休みの日や最終入場の時刻は、公式ページで確かめてください。'}</p>
       <div class="row"><a class="go pri" href="${esc(ev.url)}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','official_click',{ev_id:'${ev.id}'})">${ev.ig ? 'インスタの告知で確かめる' : '公式ページで確かめる'}</a><a class="go" href="${maps}" target="_blank" rel="noopener">地図でひらく</a></div>
       <div class="row share"><a class="go line" href="https://social-plugins.line.me/lineit/share?url=${quote(url(path))}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','share',{method:'line',ev_id:'${ev.id}'})">LINEで友だちに送る</a><a class="go" href="https://x.com/intent/post?text=${quote(ev.t + '（' + span(ev) + '・' + ev.st + '駅）')}&amp;url=${quote(url(path))}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','share',{method:'x',ev_id:'${ev.id}'})">Xでポスト</a><button class="go fav" type="button" data-fav="${ev.id}">☆ 行きたいに保存</button><a class="go" href="${calUrl(ev)}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','calendar_add',{ev_id:'${ev.id}'})">カレンダーに追加</a></div>
-      ${ev.ser === 'thats-fashion-weekend' && TODAY <= '2026-10-18' ? `<a class="igcta" href="/feature/thats-fashion-weekend-2026/"><b>特集：THAT'S FASHION WEEKEND 2026</b><span>日程・会場・同じ時期の東京タワーの展示をまとめて見る →</span></a>` : ''}
+      ${(() => { const F = FEATURES.find(f => (f.main === ev.id || (f.also || []).includes(ev.id)) && TODAY <= f.until); return F ? `<a class="igcta feat-in" href="/feature/${F.slug}/" onclick="window.gtag&&gtag('event','feature_in',{feature:'${F.slug}',from:'event'})"><b>特集：${esc(F.crumb)}</b><span>日程・行き方・あわせて行ける近くの催しをまとめて見る →</span></a>` : ''; })()}
       ${igFollow('event')}
       <p class="cap" id="favlink" hidden><a href="/plan/">行きたいリストから週末プランを作る →</a></p>
       <section class="faq"><h2>よくある質問</h2>${evFaq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}</section>
@@ -447,31 +460,36 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
     return `  <section class="more" id="more"><h2>ほかのイベントもさがす</h2><div class="more-g">${L.map(([h, n, s]) => `<a href="${h}"><b>${esc(n)}</b><span>${esc(s)}</span></a>`).join('')}</div></section>\n`;
   };
 
-  // 特集：THAT'S FASHION WEEKEND 2026（10/16、主催者の確認済み。画像は人物の写っていないものだけ）
-  {
-    const evs = CURRENT.filter(e => ['thats-fashion-weekend-2026-market', 'tokyo-tower-voice-of-earth-ten-2026'].includes(e.id) );
-    if (evs.length && TODAY <= '2026-10-18') {
-      const top = `  <section class="feat">
-    <figure><img src="/feature/tfw/logo.jpg" width="800" height="572" alt="THAT'S FASHION WEEKEND supported by SENSE TRUST"></figure>
-    <dl class="feat-dl">
-      <dt>日程</dt><dd>2026年10月16日（金）・17日（土）11:00〜21:00、18日（日）10:00〜15:30</dd>
-      <dt>会場</dt><dd>東京タワー タワーホールA（東京都港区芝公園4-2-8）</dd>
-      <dt>最寄り駅</dt><dd>芝公園・赤羽橋・神谷町</dd>
-      <dt>入場</dt><dd>無料（主催者に確認済み）</dd>
-      <dt>中身</dt><dd>人気ブランドの倉庫に眠っていた商品、デッドストック、ビンテージ、B品、サンプル品など約7,000着を70〜90%オフで販売。チャリティフリーマーケットも同時開催。</dd>
-      <dt>寄付</dt><dd>1着買うごとに、新品の服1着が熊本の被災地に寄付される。</dd>
-      <dt>同じ時期の東京タワー</dt><dd>VOICE OF EARTH展（TOWER GALLERY）、Jeff Hamilton展（MAIN DECK 1F Club333、9:00〜23:00）。いずれも10/18まで。</dd>
-    </dl>
-    <p class="feat-note">画像提供：THAT'S FASHION WEEKEND（掲載の許可をいただいています）。最新の情報は<a href="https://thatsfashionweekend.com/" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','official_click',{ev_id:'thats-fashion-weekend-2026-market'})">公式サイト</a>で確かめてください。</p>
+  // 特集（2026-10-16〜、坂尾さん「特集ページは将来売る大事なページ。間違いなく効果が出る形を今から」）
+  // 型：検索欄 → 見出し → 画像 → ひと目でわかる表 → 行動ボタン（公式・行き方・カレンダー・LINE）→ ここがいい3つ → 催し → あわせて行ける近くの催し → よくある質問 → ほかのイベントもさがす。
+  // 効果は GA の feature_cta（feature＝slug、type＝official/route/calendar/line/near/more）と official_click で数える（主催者に見せる数字）。
+  const ACTIVE_FEATURES = [];
+  for (const F of FEATURES) {
+    const main = EV.find(e => e.id === F.main);
+    if (!main || TODAY > F.until) continue;
+    const evs = CURRENT.filter(e => e.id === F.main || (F.also || []).includes(e.id));
+    const ga = t => `onclick="window.gtag&&gtag('event','feature_cta',{feature:'${F.slug}',type:'${t}'})"`;
+    const days = []; for (let d = dnum(TODAY > main.s ? TODAY : main.s); d <= dnum(main.e); d++) days.push(isoOf(d));
+    const near = CURRENT.filter(e => e.id !== F.main && !(F.also || []).includes(e.id) && days.some(d => activeOn(e, d)) && km(main.lat, main.lng, e.lat, e.lng) <= 1.5)
+      .sort((a, b) => km(main.lat, main.lng, a.lat, a.lng) - km(main.lat, main.lng, b.lat, b.lng)).slice(0, 6);
+    const route = `https://www.google.com/maps/dir/?api=1&amp;travelmode=transit&amp;destination=${main.lat},${main.lng}`;
+    const top = `  <section class="feat">
+    <figure><img src="${F.img[0]}" width="${F.img[1]}" height="${F.img[2]}" alt="${esc(F.img[3])}"></figure>
+    <dl class="feat-dl">${F.facts.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
+    <div class="feat-cta">
+      <a class="c1" href="${F.official}" target="_blank" rel="noopener" onclick="window.gtag&&(gtag('event','feature_cta',{feature:'${F.slug}',type:'official'}),gtag('event','official_click',{ev_id:'${main.id}'}))">公式サイトを見る</a>
+      <a href="${route}" target="_blank" rel="noopener" ${ga('route')}>行き方（地図）</a>
+      <a href="${calUrl(main)}" target="_blank" rel="noopener" ${ga('calendar')}>カレンダーに追加</a>
+      <a href="https://social-plugins.line.me/lineit/share?url=${quote(url('/feature/' + F.slug + '/'))}" target="_blank" rel="noopener" ${ga('line')}>LINEで送る</a>
+    </div>
+    <h2 class="feat-h">ここがいい</h2>
+    <ol class="feat-pt">${F.points.map(([a, b]) => `<li><b>${esc(a)}</b><span>${esc(b)}</span></li>`).join('')}</ol>
+    ${F.credit ? `<p class="feat-note">画像提供：${esc(F.credit)}（掲載の許可をいただいています）。最新の情報は公式サイトで確かめてください。</p>` : ''}
   </section>
 `;
-      listPage('/feature/thats-fashion-weekend-2026/', "THAT'S FASHION WEEKEND 2026｜東京タワーで人気ブランドが70〜90%オフ、入場無料",
-        `THAT'S FASHION WEEKEND 2026｜東京タワーのチャリティファッションマーケット（10/16〜18・入場無料）｜${NAME}`,
-        `10月16日〜18日、東京タワーで人気ブランドの服 約7,000着が70〜90%オフになるチャリティマーケット「THAT'S FASHION WEEKEND 2026」（入場無料）。日程、時間、会場、最寄り駅、同じ時期の東京タワーの展示をまとめました。`,
-        evs, "THAT'S FASHION WEEKEND 2026",
-        `人気ブランドの服 約7,000着が70〜90%オフになるチャリティマーケットが、10月16日（金）〜18日（日）に東京タワーで開かれます。入場は無料です。1着買うごとに新品の服1着が熊本の被災地に寄付される仕組みです。`,
-        [], moreBox(['shirokane', '白金・麻布・東京タワー'], ['shibakoen', '芝公園']), `  <p class="more-top"><a href="#more">ほかのイベントは、行く日と駅からさがせる ↓</a></p>\n` + top, url('/feature/tfw/logo.jpg'), searchBar('芝公園'));
-    }
+    const nearHtml = near.length ? `  <section class="feat-near"><h2 class="feat-h">あわせて行ける近くの催し</h2><ul class="list">${near.map((e, i) => card(e, false, i)).join('').replace(/<a /g, `<a ${ga('near')} `)}</ul></section>\n` : '';
+    listPage(`/feature/${F.slug}/`, F.h1, F.title, F.desc, evs, F.crumb, F.lead, F.faq || [], nearHtml + moreBox(F.area, F.station).replace(/<a /g, `<a ${ga('more')} `), `  <p class="more-top"><a href="#more">ほかのイベントは、行く日と駅からさがせる ↓</a></p>\n` + top, url(F.img[0]), searchBar(F.station ? F.station[1] : '渋谷'));
+    ACTIVE_FEATURES.push(F);
   }
 
   for (const [g, [slug, gname]] of Object.entries(GENRE_PAGES)) {
@@ -720,7 +738,7 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
       <div class="pl-band"><button type="button" id="plPrev" data-act="dstep" aria-label="前の日"><span id="plPrevT"></span></button><button type="button" id="plNext" data-act="dstep" aria-label="次の日"><span id="plNextT">あした</span></button></div>
       <div class="pl-romas"><span id="plPrevR"></span><span id="plNextR">Ashita</span></div>
     </div>
-${todayRail}    <nav class="lines" aria-label="ジャンル">${lines}${kidLine}${nIg ? `<a href="/instagram/" style="--c:#c13584"><i>I</i>インスタだけの告知<b>${nIg}</b></a>` : ''}</nav>
+${ACTIVE_FEATURES.length ? `    <section class="featrail" aria-labelledby="featH"><h2 id="featH">特集</h2>${ACTIVE_FEATURES.map(F => `<a href="/feature/${F.slug}/" onclick="window.gtag&&gtag('event','feature_in',{feature:'${F.slug}',from:'top'})"><img src="${F.img[0]}" alt="" width="${F.img[1]}" height="${F.img[2]}"><div><b>${esc(F.crumb)}</b><span>${esc(F.facts[0][1])}</span></div></a>`).join('')}</section>\n` : ''}${todayRail}    <nav class="lines" aria-label="ジャンル">${lines}${kidLine}${nIg ? `<a href="/instagram/" style="--c:#c13584"><i>I</i>インスタだけの告知<b>${nIg}</b></a>` : ''}</nav>
   </section>
 `;
     const dramaBan = `  <a class="dban" href="/drama/" style="display:flex;align-items:center;gap:12px;border:2px solid var(--ink);border-radius:4px;padding:8px 14px;margin:12px 0;text-decoration:none;color:inherit;background:#fff8cc"><img src="/photos/chara/pochika.png?v=${VER}" alt="" width="56" style="flex:none;height:auto"><span><b>連続アニメ『東京、あと80日』</b><br><small>ミカは東京に残る？ 帰る？ 登場人物とあらすじ →</small></span></a>

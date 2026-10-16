@@ -337,3 +337,15 @@ details.fold .ctl{border-top:1px solid var(--rule)}
 .brands span{padding:9px 14px;border:1.5px solid #111;border-radius:6px;font-family:"Helvetica Neue",Arial,"Noto Sans CJK JP",sans-serif;font-weight:800;font-size:14px;letter-spacing:.06em;background:#fff}
 .brands span.etc{border-style:dashed;color:#6b6f76;letter-spacing:0}
 .brands.sm span{font-size:13px;padding:6px 11px;border-width:1px;letter-spacing:0;font-weight:700}
+.feat-cta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 18px}
+.feat-cta a{display:block;text-align:center;padding:13px 8px;border-radius:12px;border:1.5px solid #111;font-weight:800;font-size:15px;text-decoration:none;color:#111;background:#fff}
+.feat-cta a.c1{grid-column:1/-1;background:#ff4a1c;border-color:#ff4a1c;color:#fff;font-size:17px}
+.feat-pt{list-style:none;margin:0 0 14px;padding:0;counter-reset:p}
+.feat-pt li{counter-increment:p;position:relative;padding:12px 12px 12px 52px;margin:0 0 8px;border-radius:14px;background:#fafaf8;border:1px solid #ecebe7}
+.feat-pt li::before{content:counter(p);position:absolute;left:12px;top:12px;width:28px;height:28px;border-radius:50%;background:#111;color:#fff;font-weight:900;display:grid;place-items:center;font-size:14px}
+.feat-pt b{display:block;font-size:16px}.feat-pt span{font-size:14px;color:#444;line-height:1.6}
+.feat-near{margin:20px 0}
+.featrail{margin:18px 0 6px}.featrail h2{font-size:18px;margin:0 0 10px}
+.featrail a{display:flex;gap:12px;align-items:center;padding:10px;border-radius:16px;border:2px solid #111;background:#fff;color:#111;text-decoration:none;margin:0 0 8px}
+.featrail img{width:96px;height:auto;border-radius:10px;flex:none}
+.featrail b{display:block;font-size:15px;line-height:1.35}.featrail span{font-size:12px;color:#6b6f76}
