@@ -28,7 +28,7 @@ function kyochikaBuild(D, aboutMain, TODAY, VER) {
   const GENRE_PAGES = { art: ['art', '美術展・アート展'], live: ['live', 'ライブ・コンサート'], food: ['food', 'フードイベント'], market: ['market', 'マーケット・蚤の市'], festival: ['festival', '祭り・地域の催し'], popup: ['popup', 'ポップアップ・期間限定の店'] };
   const SHORT = { art: '美術展', live: 'ライブ', food: 'フード', market: 'マーケット', festival: '祭り', popup: 'ポップアップ' };
   const GKEYS = Object.keys(GENRE_PAGES);
-  const GNAV = GKEYS.map(g => [`/${GENRE_PAGES[g][0]}/`, SHORT[g]]).concat([['/free/', '無料'], ['/weekend/', '今週末']], EV.some(e => e.kid && e.e >= TODAY) ? [['/kids/', '子どもと']] : [], EV.some(e => e.ig && e.e >= TODAY) ? [['/instagram/', 'インスタ']] : []);
+  const GNAV = GKEYS.map(g => [`/${GENRE_PAGES[g][0]}/`, SHORT[g]]).concat([['/today/', '今日'], ['/free/', '無料'], ['/weekend/', '今週末']], EV.some(e => e.kid && e.e >= TODAY) ? [['/kids/', '子どもと']] : [], EV.some(e => e.ig && e.e >= TODAY) ? [['/instagram/', 'インスタ']] : []);
   // 子どもと：年齢の重なりで集める。2件以上のときだけページにする（/kids/ は1件から）。
   const KIDP0 = [['/kids/', '東京の子どもと行けるイベント', 0, 99, '子どもと'], ['/kids/baby/', '東京の赤ちゃん（0〜2歳）と行けるイベント', 0, 2, '0〜2歳と'], ['/kids/preschool/', '東京の未就学児（3〜6歳）と行けるイベント', 3, 6, '3〜6歳と'], ['/kids/elementary/', '東京の小学生と行けるイベント', 6, 12, '小学生と']];
   const KIDP = KIDP0.filter(([p, , lo, hi]) => EV.filter(e => e.kid && e.e >= TODAY && e.kid[0] <= hi && e.kid[1] >= lo).length >= (p === '/kids/' ? 1 : 2));
@@ -128,7 +128,7 @@ function kyochikaBuild(D, aboutMain, TODAY, VER) {
   // ほかの言語の同じページ。D.LANGS があるときだけ使う。エリアのページと404にはない。
   const LANGS = D.LANGS || [];
   const HREFLANG = { en: 'en', zh: 'zh-Hans', es: 'es', th: 'th', id: 'id' }, LANGNAME = { en: 'English', zh: '中文', es: 'Español', th: 'ไทย', id: 'Indonesia' };
-  const altPath = (l, path) => (path.startsWith('/area/') || path.startsWith('/station/') || path === '/plan/' || path === '/stats/' || path.startsWith('/pick/') || path.startsWith('/kids/') || path.startsWith('/place/') || path === '/404.html' || path === '/drama/' || path === '/christmas/' || path === '/illumination/' || path === '/halloween/' || path === '/newyear/' || path === '/koyo/' || path === '/torinoichi/' || path === '/rainy/' || path === '/barrierfree/' || path === '/dog/' || path === '/stroller/' || path === '/ekichika/' || path === '/night/' || path === '/noreserve/' || path === '/kids/workshop/' || path === '/kids/rainy/' || path === '/suiteru/' || path === '/bento/' || path === '/cashless/' || path === '/kids/bento/' || path === '/kids/free/' || path === '/kids/weekend/' || ['/monday/','/lastchance/','/new/','/cheap/','/morning/','/photo-ok/','/anime/','/cat/','/sake/','/flea/','/workshop/','/parking/'].includes(path) || path.startsWith('/date/') || /^\/weekend\/\d/.test(path)) ? null : `/${l}` + (path === '/about.html' ? '/about/' : path);
+  const altPath = (l, path) => (path.startsWith('/area/') || path.startsWith('/station/') || path === '/plan/' || path === '/stats/' || path.startsWith('/pick/') || path.startsWith('/kids/') || path.startsWith('/place/') || path === '/404.html' || path === '/drama/' || path === '/christmas/' || path === '/illumination/' || path === '/halloween/' || path === '/newyear/' || path === '/koyo/' || path === '/torinoichi/' || path === '/rainy/' || path === '/barrierfree/' || path === '/dog/' || path === '/stroller/' || path === '/ekichika/' || path === '/night/' || path === '/noreserve/' || path === '/kids/workshop/' || path === '/kids/rainy/' || path === '/suiteru/' || path === '/bento/' || path === '/cashless/' || path === '/kids/bento/' || path === '/kids/free/' || path === '/kids/weekend/' || ['/monday/','/lastchance/','/new/','/cheap/','/morning/','/photo-ok/','/anime/','/cat/','/sake/','/flea/','/workshop/','/parking/'].includes(path) || path.startsWith('/date/') || path === '/today/' || /^\/weekend\/\d/.test(path)) ? null : `/${l}` + (path === '/about.html' ? '/about/' : path);
   const head = (title, desc, path, ld = [], noindex = false, og = null) => {
     const alts = (noindex || !LANGS.length || !altPath('en', path)) ? '' : `<link rel="alternate" hreflang="ja" href="${url(path)}">\n` + LANGS.map(l => `<link rel="alternate" hreflang="${HREFLANG[l]}" href="${url(altPath(l, path))}">\n`).join('') + `<link rel="alternate" hreflang="x-default" href="${url(path)}">\n`;
     const lds = ld.map(x => `<script type="application/ld+json">${pyjson(x)}</script>\n`).join('');
@@ -455,7 +455,7 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
   const moreBox = (area, station) => {
     const t = TODAY, sat = (() => { let d = dnum(t); while (dow(isoOf(d)) !== 6) d++; return isoOf(d); })();
     const jd = iso => { const p = iso.split('-').map(Number); return `${p[1]}/${p[2]}`; };
-    const L = [['/', '駅から近い順にさがす', '行く日と駅を選ぶだけ'], [`/date/${t}/`, `今日（${jd(t)}）行ける`, '開いている催しだけ'], [`/weekend/${sat}/`, `今週末（${jd(sat)}〜）`, '土日に行ける催し'], ['/free/', '無料で行ける', '入場無料の催し'], ['/dog/', '愛犬と行ける', 'ペット同伴OKの催し']]
+    const L = [['/', '駅から近い順にさがす', '行く日と駅を選ぶだけ'], ['/today/', `今日（${jd(t)}）行ける`, '開いている催しだけ'], [`/weekend/${sat}/`, `今週末（${jd(sat)}〜）`, '土日に行ける催し'], ['/free/', '無料で行ける', '入場無料の催し'], ['/dog/', '愛犬と行ける', 'ペット同伴OKの催し']]
       .concat(area ? [[`/area/${area[0]}/`, area[1], 'このあたりの催し']] : []).concat(station ? [[`/station/${station[0]}/`, `${station[1]}駅の近く`, '駅が最寄りの催し']] : []).concat([['/night/', '夜21時以降も', '仕事帰りに行ける']]);
     return `  <section class="more" id="more"><h2>ほかのイベントもさがす</h2><div class="more-g">${L.map(([h, n, s]) => `<a href="${h}"><b>${esc(n)}</b><span>${esc(s)}</span></a>`).join('')}</div></section>\n`;
   };
@@ -572,6 +572,18 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
       listPage(`/weekend/${d}/`, `${jd(d)}・${jd(sun)}の週末 東京のイベント`, `${jd(d)}・${jd(sun)}の週末 東京のイベント${evs.length}件｜${NAME}`,
         `${ymd(d)}（土）と${jd(sun)}（日）の週末に東京で行ける美術展・ライブ・フード・マーケット・祭りを${evs.length}件まとめました。`,
         evs, `${jd(d)}の週末`, `${jd(d)}（土）・${jd(sun)}（日）に東京で開いている催しを${evs.length}件のせています。`);
+    }
+    // 「今日 イベント 東京」向けの固定ページ。中身は毎回の書き出しでその日のものに入れかわる（URL は変わらないので評価がたまる）。
+    {
+      const d = TODAY, evs = CURRENT.filter(e => activeOn(e, d));
+      if (evs.length >= 3) {
+        const w = DOWS[dow(d)] + (d in HOLIDAYS ? '・祝' : '');
+        const freeN = evs.filter(e => e.free).length, nightN = evs.filter(e => (e.c || '') >= '20:00' || e.late).length, kidN = evs.filter(e => e.kid).length;
+        const faqT = [['今日、東京で行けるイベントは？', `${ymd(d)}（${w}）に東京で開いている催しは${evs.length}件です。美術展・ライブ・フードイベント・マーケット・祭りを、このページにまとめています。`], ['今日、無料で行けるイベントは？', `今日開いている催しのうち、入場無料は${freeN}件です。無料の催しだけを見るときは「無料で行ける」のページから探せます。`], ['今日の夜に行けるイベントは？', `20時以降も開いている催しが${nightN}件あります。夜遅くまで開いている催しは「夜に行ける」のページにまとめています。`], ['今日、子どもと行けるイベントは？', `子どもと行ける催しが${kidN}件あります。年齢で探すときは「子どもと行ける」のページから選べます。`], ['近くのイベントを探すには？', 'トップページで今日の日付と出発する駅を選ぶと、駅から近い順にならびます。']];
+        listPage('/today/', `今日（${jd(d)}・${w}）東京で行けるイベント`, `今日 東京のイベント ${jd(d)}（${w}）${evs.length}件｜無料・夜・子どもと｜${NAME}`,
+          `今日${jd(d)}（${w}）に東京で行けるイベント${evs.length}件。無料${freeN}件、夜20時以降も開いている${nightN}件、子どもと行ける${kidN}件。美術展・ライブ・フード・マーケット・祭りの時間、料金、最寄り駅がわかります。毎日更新。`,
+          evs, '今日のイベント', `今日（${ymd(d)}・${w}）に東京で開いている催しを${evs.length}件のせています。無料は${freeN}件、夜20時以降も開いているのは${nightN}件、子どもと行けるのは${kidN}件。毎日、その日の催しに入れかわります。`, faqT);
+      }
     }
     if (made.length) {
       const [cr, crLd] = crumbs([['トップ', '/'], ['日付からさがす', null]]);
@@ -725,7 +737,7 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
       for (let r = 0; r < 3 && pick.length < 8; r++) for (const g of order0) { const e = ok.filter(x => x.g === g && !seen.has(x.id)).sort((a, b) => (b.free - a.free) || (a.e < b.e ? -1 : 1))[0]; if (e && pick.length < 8) { seen.add(e.id); pick.push(e); } }
       if (pick.length < 3) return '';
       const img = e => e.fl ? `/fl/${e.id}.jpg` : e.ph ? `/photos/${e.ph}.jpg` : `/og/${e.id}.jpg?v=${OGDONE[e.id]}`;
-      return `    <section class="today" aria-labelledby="todayH"><h2 id="todayH">きょう行ける <a href="/date/${TODAY}/">もっと見る →</a></h2><div class="rail">${pick.map((e, k) => `<a class="tcard" style="--c:var(--${e.g})" href="/event/${e.id}/"><img src="${img(e)}" alt="" width="1200" height="630" loading="${k < 2 ? 'eager' : 'lazy'}"><div><span class="tag">${SHORT[e.g]}${e.free ? '・無料' : ''}</span><b>${esc(e.t)}</b><small>${esc(e.st)}駅・${esc(e.o)}${e.g === 'live' ? '開演' : '〜' + esc(e.c)}</small></div></a>`).join('')}</div></section>\n`;
+      return `    <section class="today" aria-labelledby="todayH"><h2 id="todayH">きょう行ける <a href="/today/">もっと見る →</a></h2><div class="rail">${pick.map((e, k) => `<a class="tcard" style="--c:var(--${e.g})" href="/event/${e.id}/"><img src="${img(e)}" alt="" width="1200" height="630" loading="${k < 2 ? 'eager' : 'lazy'}"><div><span class="tag">${SHORT[e.g]}${e.free ? '・無料' : ''}</span><b>${esc(e.t)}</b><small>${esc(e.st)}駅・${esc(e.o)}${e.g === 'live' ? '開演' : '〜' + esc(e.c)}</small></div></a>`).join('')}</div></section>\n`;
     })();
     const hero = `  <section class="hero">
     <h1>きょう、東京でどこ行く？</h1>
