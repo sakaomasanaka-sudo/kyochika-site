@@ -222,7 +222,7 @@ ${noJa(path) ? '' : `<link rel="alternate" hreflang="ja" href="${url(jaPath(path
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap">
 <link rel="stylesheet" href="/style.css?v=${VER}">
 ${ld.map(x => `<script type="application/ld+json">${JSON.stringify(x)}</script>\n`).join('')}<script async src="https://www.googletagmanager.com/gtag/js?id=G-0T0FYH7TTZ"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-0T0FYH7TTZ");</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-0T0FYH7TTZ");document.addEventListener("DOMContentLoaded",function(){var a=location.pathname.split("/").filter(Boolean),L=/^(en|zh|es|th|id)$/.test(a[0])?a.shift():"ja",c={lang:L,pt:a[0]||"top"};if(a[0]==="station")c.st=a[1]||"";else if(a[0]==="area"){c.area=a[1]||"";c.g=a[2]||""}else if(a[0]&&a[0]!=="event")c.g=a.slice(0,2).join("/");window.gtag&&gtag("event","ctx_view",c)});</script>
 </head>
 <body>
 <div class="wrap">

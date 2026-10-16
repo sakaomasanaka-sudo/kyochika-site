@@ -166,7 +166,7 @@ ${canon}${alts}<meta property="og:type" content="website">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap">
 <link rel="stylesheet" href="/style.css?v=${VER}">
 ${lds}<script async src="https://www.googletagmanager.com/gtag/js?id=G-0T0FYH7TTZ"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-0T0FYH7TTZ");</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-0T0FYH7TTZ");document.addEventListener("DOMContentLoaded",function(){var a=location.pathname.split("/").filter(Boolean),L=/^(en|zh|es|th|id)$/.test(a[0])?a.shift():"ja",m=document.querySelector("main[data-cg]"),c={lang:L,pt:a[0]||"top"};if(m){c.st=m.dataset.cst||"";c.area=m.dataset.car||"";c.g=m.dataset.cg;c.venue=m.dataset.cv}else if(a[0]==="station")c.st=a[1]||"";else if(a[0]==="area"){c.area=a[1]||"";c.g=a[2]||""}else if(a[0]&&a[0]!=="event")c.g=a.slice(0,2).join("/");window.gtag&&gtag("event","ctx_view",c)});</script>
 </head>
 <body>
 <div class="wrap">
@@ -390,7 +390,7 @@ ${sc}</body>
       if (ev.pay && ev.pay.length) q.push([`${t}で使える支払いは？`, payTxt(ev) + '。']);
       return q;
     })();
-    const body = `${cr}  <main class="page" style="--c:var(--${ev.g})" data-e="${ev.e}" data-detail>
+    const body = `${cr}  <main class="page" style="--c:var(--${ev.g})" data-e="${ev.e}" data-detail data-cst="${stSlug(ev.st)}" data-car="${aslug || ''}" data-cg="${ev.g}" data-cv="${esc(ev.v)}">
     ${ev.fl ? `<figure class="pic fl"><img src="/fl/${ev.id}.jpg" alt="${esc(ev.t)}の告知画像" loading="eager"><figcaption>告知画像：${esc(ev.flby || '主催者')}（掲載の許可をいただいています）</figcaption></figure>` : !ev.ph && ogUrl(ev) ? `<div class="pic og"><img src="/og/${ev.id}.jpg?v=${OGDONE[ev.id]}" alt="${esc(ev.t)}（日程と会場のカード）" width="1200" height="630"><span class="kind">${GENRES[ev.g].n}</span></div>` : pic(ev, true)}
     <div class="body">
       <h1 class="pt">${esc(ev.t)}</h1>
