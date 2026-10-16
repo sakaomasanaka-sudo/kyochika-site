@@ -457,18 +457,19 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
       <dt>日程</dt><dd>2026年10月16日（金）・17日（土）11:00〜21:00、18日（日）10:00〜15:30</dd>
       <dt>会場</dt><dd>東京タワー タワーホールA（東京都港区芝公園4-2-8）</dd>
       <dt>最寄り駅</dt><dd>芝公園・赤羽橋・神谷町</dd>
+      <dt>入場</dt><dd>無料（主催者に確認済み）</dd>
       <dt>中身</dt><dd>人気ブランドの服 約7,000着を70〜90%オフで販売。JIL SANDER、RICK OWENS、DRIES VAN NOTEN などが参加。チャリティフリーマーケットも同時開催。</dd>
       <dt>寄付</dt><dd>1着買うごとに、新品の服1着が熊本の被災地に寄付される。</dd>
       <dt>同じ時期の東京タワー</dt><dd>VOICE OF EARTH展（TOWER GALLERY）、Jeff Hamilton展（MAIN DECK 1F Club333、9:00〜23:00）。いずれも10/18まで。</dd>
     </dl>
-    <p class="feat-note">画像提供：THAT'S FASHION WEEKEND（掲載の許可をいただいています）。入場料や最新の情報は<a href="https://thatsfashionweekend.com/" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','official_click',{ev_id:'thats-fashion-weekend-2026-market'})">公式サイト</a>で確かめてください。</p>
+    <p class="feat-note">画像提供：THAT'S FASHION WEEKEND（掲載の許可をいただいています）。最新の情報は<a href="https://thatsfashionweekend.com/" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','official_click',{ev_id:'thats-fashion-weekend-2026-market'})">公式サイト</a>で確かめてください。</p>
   </section>
 `;
-      listPage('/feature/thats-fashion-weekend-2026/', "THAT'S FASHION WEEKEND 2026｜東京タワーで人気ブランドが70〜90%オフ",
-        `THAT'S FASHION WEEKEND 2026｜東京タワーのチャリティファッションマーケット（10/16〜18）｜${NAME}`,
-        `10月16日〜18日、東京タワーで人気ブランドの服 約7,000着が70〜90%オフになるチャリティマーケット「THAT'S FASHION WEEKEND 2026」。日程、時間、会場、最寄り駅、同じ時期の東京タワーの展示をまとめました。`,
+      listPage('/feature/thats-fashion-weekend-2026/', "THAT'S FASHION WEEKEND 2026｜東京タワーで人気ブランドが70〜90%オフ、入場無料",
+        `THAT'S FASHION WEEKEND 2026｜東京タワーのチャリティファッションマーケット（10/16〜18・入場無料）｜${NAME}`,
+        `10月16日〜18日、東京タワーで人気ブランドの服 約7,000着が70〜90%オフになるチャリティマーケット「THAT'S FASHION WEEKEND 2026」（入場無料）。日程、時間、会場、最寄り駅、同じ時期の東京タワーの展示をまとめました。`,
         evs, "THAT'S FASHION WEEKEND 2026",
-        `人気ブランドの服 約7,000着が70〜90%オフになるチャリティマーケットが、10月16日（金）〜18日（日）に東京タワーで開かれます。1着買うごとに新品の服1着が熊本の被災地に寄付される仕組みです。`,
+        `人気ブランドの服 約7,000着が70〜90%オフになるチャリティマーケットが、10月16日（金）〜18日（日）に東京タワーで開かれます。入場は無料です。1着買うごとに新品の服1着が熊本の被災地に寄付される仕組みです。`,
         [], moreBox(['shirokane', '白金・麻布・東京タワー'], ['shibakoen', '芝公園']), `  <p class="more-top"><a href="#more">ほかのイベントは、行く日と駅からさがせる ↓</a></p>\n` + top, url('/feature/tfw/logo.jpg'), searchBar('芝公園'));
     }
   }
