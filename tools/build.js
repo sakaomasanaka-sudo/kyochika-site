@@ -537,7 +537,26 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
   ];
   for (const [k, path, h1, title, desc, cname, intro, re] of SEASONS) {
     const evs = CURRENT.filter(e => (e.k || []).includes(k) || (re && re.test(e.t)));
-    if (evs.length >= (re ? 3 : 1)) listPage(path, h1, title, desc(evs.length), evs, cname, intro(evs.length));
+    if (evs.length < (re ? 3 : 1)) continue;
+    // 冬の3つは「比べられる表」と絞り込み、よくある質問を付ける（12月の大きな検索向け）。
+    const TBL = { illumi: ['点灯', 'イルミネーション'], xmas: ['時間', 'クリスマスマーケット'], newyear: ['時間', '年末年始の催し'] }[k];
+    let top = '', faq = [];
+    if (TBL && evs.length >= 5) {
+      const so = [...evs].sort((a, b) => a.s < b.s ? -1 : a.s > b.s ? 1 : a.t < b.t ? -1 : 1);
+      const sh = iso => { const p = iso.split('-').map(Number); return `${p[1]}/${p[2]}`; };
+      const rows = so.map(e => `<tr data-s="${e.s}" data-e="${e.e}" data-free="${e.free ? 1 : 0}" data-in="${e.indoor ? 1 : 0}" data-kid="${e.kid ? 1 : 0}" data-late="${(e.c || '') >= '22:00' || (e.c || '') < '05:00' ? 1 : 0}" data-dog="${e.dog ? 1 : 0}"><td><a href="/event/${e.id}/">${esc(e.t.replace(/（[^）]*）$/, ''))}</a><small>${esc(e.v)}</small></td><td>${sh(e.s)}〜${sh(e.e)}</td><td>${esc(e.o)}〜${esc(e.c)}</td><td>${e.free ? '無料' : esc((e.price || '').replace(/は公式ページで確認/, '：公式で確認').slice(0, 18))}</td><td>${esc(e.st)}</td></tr>`).join('');
+      const chips = [['tonight', '今夜見られる'], ['free', '無料'], ['late', '22時以降も'], ['in', '屋内・雨でも'], ['kid', '子どもと'], ['dog', '愛犬と']].filter(([c]) => c === 'tonight' || so.some(e => ({ free: e.free, late: (e.c || '') >= '22:00' || (e.c || '') < '05:00', in: e.indoor, kid: e.kid, dog: e.dog })[c])).map(([c, n]) => `<button type="button" class="chip" data-f="${c}" aria-pressed="false">${n}</button>`).join('');
+      top = `  <section class="cmp"><h2>${TBL[1]}を比べる（${so.length}件・始まる順）</h2><div class="chips" role="group" aria-label="しぼる">${chips}</div><p class="cmp-n" aria-live="polite"></p><div class="cmp-w"><table class="cmp-t"><thead><tr><th>名前・場所</th><th>期間</th><th>${TBL[0]}</th><th>料金</th><th>駅</th></tr></thead><tbody>${rows}</tbody></table></div><p class="cap">期間・時間・料金は公式の発表で確かめたものです。日によって時間が変わるものは、各ページで確かめてください。</p></section>
+  <script>(()=>{const S=document.querySelector('.cmp'),on=new Set(),d=new Date(),t=new Date(d.getTime()+(d.getTimezoneOffset()+540)*6e4).toISOString().slice(0,10);const f=()=>{let n=0;S.querySelectorAll('tbody tr').forEach(r=>{const D=r.dataset;let ok=true;for(const c of on){if(c==='tonight'?!(D.s<=t&&t<=D.e):D[c]!=='1')ok=false}r.hidden=!ok;if(ok)n++});S.querySelector('.cmp-n').textContent=on.size?n+'件':''};S.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{const c=b.dataset.f;on.has(c)?on.delete(c):on.add(c);b.setAttribute('aria-pressed',on.has(c));f();window.gtag&&gtag('event','season_filter',{page:location.pathname,f:c})})})();</script>
+`;
+      const nf = so.filter(e => e.free).length, nl = so.filter(e => (e.c || '') >= '22:00' || (e.c || '') < '05:00').length;
+      const first = so[0], lastE = [...so].sort((a, b) => a.e < b.e ? 1 : -1)[0];
+      const nm = e => e.t.replace(/（[^）]*）$/, '');
+      faq = k === 'illumi' ? [['東京のイルミネーションはいつから始まりますか？', `このページにのせている中では、いちばん早いのは${nm(first)}の${ymd(first.s)}からです。多くは11月上旬〜中旬に点灯が始まり、12月25日まで、または1月〜2月まで続きます。`], ['無料で見られるイルミネーションは？', `${so.length}件のうち${nf}件が無料です。上の表の「無料」を押すと、無料のものだけにしぼれます。`], ['夜遅くまで見られるイルミネーションは？', `22時以降も点灯しているのは${nl}件です。表の「22時以降も」でしぼれます。`], ['いちばん遅くまで続くイルミネーションは？', `${nm(lastE)}が${ymd(lastE.e)}まで続きます。`]]
+        : k === 'xmas' ? [['東京のクリスマスマーケットはいつから？', `このページにのせている中では、いちばん早いのは${nm(first)}の${ymd(first.s)}からです。多くは11月中旬〜12月25日に開かれます。`], ['入場無料のクリスマスマーケットは？', `${so.length}件のうち${nf}件が入場無料です。表の「無料」でしぼれます（飲食は別料金です）。`], ['雨の日でも行けるクリスマスマーケットは？', `屋内の会場のものは、表の「屋内・雨でも」でしぼれます。屋外のマーケットは、雨の日の営業を各公式ページで確かめてください。`], ['子どもと行けるクリスマスマーケットは？', '表の「子どもと」を押すと、公式に子ども向けの案内がある催しにしぼれます。']]
+        : [['東京の年末年始に行けるイベントは？', `カウントダウン、年の市、初詣、正月の催しなど${so.length}件をまとめています。始まる順にならべた表で、期間と時間を比べられます。`], ['無料で行ける年末年始の催しは？', `${so.length}件のうち${nf}件が無料です。表の「無料」でしぼれます。`], ['年末年始に遅くまで開いている催しは？', `22時以降も開いているのは${nl}件です。表の「22時以降も」でしぼれます。`]];
+    }
+    listPage(path, h1, title, desc(evs.length), evs, cname, intro(evs.length), faq, '', top);
   }
   for (const [key, y, m, evs] of JMONTHS) {
     const nf = evs.filter(e => e.free).length, nk = evs.filter(e => e.kid).length;
