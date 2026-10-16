@@ -23,6 +23,8 @@
   const save=()=>{try{localStorage.setItem('kyochika',JSON.stringify({from:st.from}));}catch(e){}};
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const isIso=v=>/^\d{4}-\d{2}-\d{2}$/.test(v)&&isoOf(dayNum(v))===v;
+  // ほかのページの検索欄から来たとき（/?d=日付&s=駅）。10/16〜
+  try{const q=new URLSearchParams(location.search),qd=q.get('d'),qs=q.get('s');if(qd&&isIso(qd)&&DAYS.includes(qd))st.day=qd;if(qs&&SPOTS[qs]){st.from=qs;save();}}catch(e){}
 
   function render(){
     const isToday=st.day===todayIso;

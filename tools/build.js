@@ -414,11 +414,18 @@ ${sc}</body>
   const ASO_CRAFT = ASO_ALL + '&leisureId=grp4&leisureType=categoryGroup';
   const ASO = { '/workshop/': [ASO_CRAFT, '東京のものづくり体験（陶芸・ガラス・レザークラフトなど）をアソビューで探す'], '/kids/workshop/': [ASO_CRAFT, '親子で行ける東京のものづくり体験をアソビューで探す'], '/kids/': [ASO_ALL, '子どもと行ける東京の遊び・チケットをアソビューで探す'], '/kids/rainy/': [ASO_ALL, '雨の日に子どもと行ける東京の遊び・チケットをアソビューで探す'], '/kids/weekend/': [ASO_ALL, '今週末に子どもと行ける東京の遊び・チケットをアソビューで探す'], '/rainy/': [ASO_ALL, '雨の日の東京の遊び・体験をアソビューで探す'], '/weekend/': [ASO_ALL, '今週末の東京の遊び・体験・チケットをアソビューで探す'] };
   const asoBox = (key, label, tag) => { const w = vcWrap(key, 'asoview'); return `  <section class="aso"><a class="go" href="${esc(w[0])}" target="_blank" rel="${w[1] ? 'sponsored ' : ''}noopener" onclick="window.gtag&&gtag('event','aso_click',{aso_type:'${tag}'})">${esc(label)} →</a><p class="cap">${w[1] ? 'PR・' : ''}アソビュー！のページがひらきます。前売りや予約ができる施設・体験が見つかります。</p></section>\n`; };
-  const listPage = (path, h1, title, desc, evs0, crumbName, intro, faq = [], extra = '', top = '', og = null) => {
+  // いつもの検索（行く日×駅）を一覧ページの上にも。送るとトップが /?d=&s= で開く（app.js が読む）。10/16 坂尾さん「いつも通りの検索できるところがトップにないと離脱が増える」
+  const searchBar = (defSt = '渋谷') => {
+    const d0 = dnum(TODAY), jd = iso => { const p = iso.split('-').map(Number); return `${p[1]}/${p[2]}（${DOWS[dow(iso)]}${iso in HOLIDAYS ? '・祝' : ''}）`; };
+    const days = Array.from({ length: 7 }, (_, i) => isoOf(d0 + i)).map((d, i) => `<option value="${d}">${i === 0 ? 'きょう ' : i === 1 ? 'あした ' : ''}${jd(d)}</option>`).join('');
+    const sts = ['渋谷', '新宿', '池袋', '東京', '銀座', '上野', '表参道', '六本木', '恵比寿', '下北沢', '吉祥寺', '品川'].concat(defSt && !['渋谷'].includes(defSt) ? [defSt] : []).filter((x, i, a) => a.indexOf(x) === i && SPOTS[x]);
+    return `  <form class="qbar" action="/" method="get" onsubmit="window.gtag&&gtag('event','qbar_search',{page:location.pathname})"><b>東京のイベントをさがす</b><label>いつ<select name="d">${days}</select></label><label>どこから<select name="s">${sts.map(x => `<option${x === defSt ? ' selected' : ''}>${esc(x)}</option>`).join('')}</select></label><button type="submit">近い順に見る</button></form>\n`;
+  };
+  const listPage = (path, h1, title, desc, evs0, crumbName, intro, faq = [], extra = '', top = '', og = null, pre = '') => {
     const evs = order(evs0);
     const [cr, crLd] = crumbs([['トップ', '/'], [crumbName, null]]);
     const cards = evs.map((e, i) => card(e, i < 2, i)).join('');
-    const body = `${cr}  <h1 class="pt">${esc(h1)}</h1>
+    const body = `${cr}${pre || searchBar((path.startsWith('/station/') && Object.keys(SPOTS).find(x => stSlug(x) === path.split('/')[2])) || '渋谷')}  <h1 class="pt">${esc(h1)}</h1>
   <p class="intro">${esc(intro)}</p>
 ${top}  <div class="board"><span>終わりが近い順</span><b>${evs.length}件</b></div>
   <ul class="list">${cards}</ul>
@@ -454,7 +461,6 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
       <dt>寄付</dt><dd>1着買うごとに、新品の服1着が熊本の被災地に寄付される。</dd>
       <dt>同じ時期の東京タワー</dt><dd>VOICE OF EARTH展（TOWER GALLERY）、Jeff Hamilton展（MAIN DECK 1F Club333、9:00〜23:00）。いずれも10/18まで。</dd>
     </dl>
-    <figure><img src="/feature/tfw/tower.jpg" width="800" height="1200" alt="夜の東京タワー" loading="lazy"></figure>
     <p class="feat-note">画像提供：THAT'S FASHION WEEKEND（掲載の許可をいただいています）。入場料や最新の情報は<a href="https://thatsfashionweekend.com/" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','official_click',{ev_id:'thats-fashion-weekend-2026-market'})">公式サイト</a>で確かめてください。</p>
   </section>
 `;
@@ -463,7 +469,7 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
         `10月16日〜18日、東京タワーで人気ブランドの服 約7,000着が70〜90%オフになるチャリティマーケット「THAT'S FASHION WEEKEND 2026」。日程、時間、会場、最寄り駅、同じ時期の東京タワーの展示をまとめました。`,
         evs, "THAT'S FASHION WEEKEND 2026",
         `人気ブランドの服 約7,000着が70〜90%オフになるチャリティマーケットが、10月16日（金）〜18日（日）に東京タワーで開かれます。1着買うごとに新品の服1着が熊本の被災地に寄付される仕組みです。`,
-        [], moreBox(['shirokane', '白金・麻布・東京タワー'], ['shibakoen', '芝公園']), `  <p class="more-top"><a href="#more">ほかのイベントは、行く日と駅からさがせる ↓</a></p>\n` + top, url('/feature/tfw/logo.jpg'));
+        [], moreBox(['shirokane', '白金・麻布・東京タワー'], ['shibakoen', '芝公園']), `  <p class="more-top"><a href="#more">ほかのイベントは、行く日と駅からさがせる ↓</a></p>\n` + top, url('/feature/tfw/logo.jpg'), searchBar('芝公園'));
     }
   }
 
