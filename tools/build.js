@@ -139,6 +139,7 @@ function kyochikaBuild(D, aboutMain, TODAY, VER) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="msvalidate.01" content="BED3DDA80BBB9FC04817B4096368D5E1">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
 ${robots}
