@@ -714,6 +714,7 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
     // 子どもと：押すと年齢をえらんで、下の一覧をしぼりこむ（app.js の kidopen / kidage）
     const nKid = CURRENT.filter(e => e.kid).length;
     const nIg = CURRENT.filter(e => e.ig).length;
+    const nDog = CURRENT.filter(e => e.dog).length;
     const kidLine = nKid ? `<button type="button" class="kidline" data-act="kidopen" aria-expanded="false" aria-controls="kidAges" style="--c:var(--kid)"><i>K</i>子どもと<b>${nKid}</b></button><div class="kidages" id="kidAges" hidden><span>何歳の子と行く？</span><button type="button" class="chip" data-act="kidage" data-k="kA" aria-pressed="false">0〜2歳</button><button type="button" class="chip" data-act="kidage" data-k="kB" aria-pressed="false">3〜6歳</button><button type="button" class="chip" data-act="kidage" data-k="kC" aria-pressed="false">小学生</button><button type="button" class="chip" data-act="kidage" data-k="all" aria-pressed="false">年齢を問わず</button><p class="kidnote" id="kidNote" hidden></p><a href="/kids/">子どもと行ける催しの一覧 →</a></div>` : '';
     const nv = new Set(CURRENT.map(e => e.v)).size;
     // きょう行ける：今日開いている催しを、ジャンルがばらけるように最大8件。会場の写真かシェア用画像があるものだけ。
@@ -738,7 +739,7 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
       <div class="pl-band"><button type="button" id="plPrev" data-act="dstep" aria-label="前の日"><span id="plPrevT"></span></button><button type="button" id="plNext" data-act="dstep" aria-label="次の日"><span id="plNextT">あした</span></button></div>
       <div class="pl-romas"><span id="plPrevR"></span><span id="plNextR">Ashita</span></div>
     </div>
-${ACTIVE_FEATURES.length ? `    <section class="featrail" aria-labelledby="featH"><h2 id="featH">特集</h2>${ACTIVE_FEATURES.map(F => `<a href="/feature/${F.slug}/" onclick="window.gtag&&gtag('event','feature_in',{feature:'${F.slug}',from:'top'})"><img src="${F.img[0]}" alt="" width="${F.img[1]}" height="${F.img[2]}"><div><b>${esc(F.crumb)}</b><span>${esc(F.facts[0][1])}</span></div></a>`).join('')}</section>\n` : ''}${todayRail}    <nav class="lines" aria-label="ジャンル">${lines}${kidLine}${nIg ? `<a href="/instagram/" style="--c:#c13584"><i>I</i>インスタだけの告知<b>${nIg}</b></a>` : ''}</nav>
+${ACTIVE_FEATURES.length ? `    <section class="featrail" aria-labelledby="featH"><h2 id="featH">特集</h2>${ACTIVE_FEATURES.map(F => `<a href="/feature/${F.slug}/" onclick="window.gtag&&gtag('event','feature_in',{feature:'${F.slug}',from:'top'})"><img src="${F.img[0]}" alt="" width="${F.img[1]}" height="${F.img[2]}"><div><b>${esc(F.crumb)}</b><span>${esc(F.facts[0][1])}</span></div></a>`).join('')}</section>\n` : ''}${todayRail}    <nav class="lines" aria-label="ジャンル">${lines}${kidLine}${nDog ? `<a href="/dog/" style="--c:#a0662d" onclick="window.gtag&&gtag('event','dog_line',{from:'top'})"><i>D</i>愛犬と<b>${nDog}</b></a>` : ''}${nIg ? `<a href="/instagram/" style="--c:#c13584"><i>I</i>インスタだけの告知<b>${nIg}</b></a>` : ''}</nav>
   </section>
 `;
     const dramaBan = `  <a class="dban" href="/drama/" style="display:flex;align-items:center;gap:12px;border:2px solid var(--ink);border-radius:4px;padding:8px 14px;margin:12px 0;text-decoration:none;color:inherit;background:#fff8cc"><img src="/photos/chara/pochika.png?v=${VER}" alt="" width="56" style="flex:none;height:auto"><span><b>連続アニメ『東京、あと80日』</b><br><small>ミカは東京に残る？ 帰る？ 登場人物とあらすじ →</small></span></a>
