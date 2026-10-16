@@ -386,6 +386,7 @@ ${sc}</body>
       <p class="cap">${ev.ig ? '日程の変更や中止は、主催者のインスタグラムで確かめてください。' : '休みの日や最終入場の時刻は、公式ページで確かめてください。'}</p>
       <div class="row"><a class="go pri" href="${esc(ev.url)}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','official_click',{ev_id:'${ev.id}'})">${ev.ig ? 'インスタの告知で確かめる' : '公式ページで確かめる'}</a><a class="go" href="${maps}" target="_blank" rel="noopener">地図でひらく</a></div>
       <div class="row share"><a class="go line" href="https://social-plugins.line.me/lineit/share?url=${quote(url(path))}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','share',{method:'line',ev_id:'${ev.id}'})">LINEで友だちに送る</a><a class="go" href="https://x.com/intent/post?text=${quote(ev.t + '（' + span(ev) + '・' + ev.st + '駅）')}&amp;url=${quote(url(path))}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','share',{method:'x',ev_id:'${ev.id}'})">Xでポスト</a><button class="go fav" type="button" data-fav="${ev.id}">☆ 行きたいに保存</button><a class="go" href="${calUrl(ev)}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','calendar_add',{ev_id:'${ev.id}'})">カレンダーに追加</a></div>
+      ${ev.ser === 'thats-fashion-weekend' && TODAY <= '2026-10-18' ? `<a class="igcta" href="/feature/thats-fashion-weekend-2026/"><b>特集：THAT'S FASHION WEEKEND 2026</b><span>日程・会場・同じ時期の東京タワーの展示をまとめて見る →</span></a>` : ''}
       ${igFollow('event')}
       <p class="cap" id="favlink" hidden><a href="/plan/">行きたいリストから週末プランを作る →</a></p>
       <section class="faq"><h2>よくある質問</h2>${evFaq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}</section>
@@ -413,13 +414,13 @@ ${sc}</body>
   const ASO_CRAFT = ASO_ALL + '&leisureId=grp4&leisureType=categoryGroup';
   const ASO = { '/workshop/': [ASO_CRAFT, '東京のものづくり体験（陶芸・ガラス・レザークラフトなど）をアソビューで探す'], '/kids/workshop/': [ASO_CRAFT, '親子で行ける東京のものづくり体験をアソビューで探す'], '/kids/': [ASO_ALL, '子どもと行ける東京の遊び・チケットをアソビューで探す'], '/kids/rainy/': [ASO_ALL, '雨の日に子どもと行ける東京の遊び・チケットをアソビューで探す'], '/kids/weekend/': [ASO_ALL, '今週末に子どもと行ける東京の遊び・チケットをアソビューで探す'], '/rainy/': [ASO_ALL, '雨の日の東京の遊び・体験をアソビューで探す'], '/weekend/': [ASO_ALL, '今週末の東京の遊び・体験・チケットをアソビューで探す'] };
   const asoBox = (key, label, tag) => { const w = vcWrap(key, 'asoview'); return `  <section class="aso"><a class="go" href="${esc(w[0])}" target="_blank" rel="${w[1] ? 'sponsored ' : ''}noopener" onclick="window.gtag&&gtag('event','aso_click',{aso_type:'${tag}'})">${esc(label)} →</a><p class="cap">${w[1] ? 'PR・' : ''}アソビュー！のページがひらきます。前売りや予約ができる施設・体験が見つかります。</p></section>\n`; };
-  const listPage = (path, h1, title, desc, evs0, crumbName, intro, faq = [], extra = '') => {
+  const listPage = (path, h1, title, desc, evs0, crumbName, intro, faq = [], extra = '', top = '', og = null) => {
     const evs = order(evs0);
     const [cr, crLd] = crumbs([['トップ', '/'], [crumbName, null]]);
     const cards = evs.map((e, i) => card(e, i < 2, i)).join('');
     const body = `${cr}  <h1 class="pt">${esc(h1)}</h1>
   <p class="intro">${esc(intro)}</p>
-  <div class="board"><span>終わりが近い順</span><b>${evs.length}件</b></div>
+${top}  <div class="board"><span>終わりが近い順</span><b>${evs.length}件</b></div>
   <ul class="list">${cards}</ul>
 ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length ? `  <section class="faq"><h2>よくある質問</h2>${faq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}</section>\n` : ''}  <p class="upd">${ymd(TODAY)}時点の掲載分です。行く日や出発する駅からさがすときは、<a href="/">トップページ</a>が便利です。</p>
   <div class="row share"><a class="go line" href="https://social-plugins.line.me/lineit/share?url=${quote(url(path))}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','share',{method:'line',page:'${path}'})">このページをLINEで送る</a></div>
@@ -427,8 +428,35 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
   <a class="igcta" href="https://www.instagram.com/kyochika.tokyo/" target="_blank" rel="noopener"><b>週末どこ行く？をインスタでも</b><span>キョウチカのインスタ @kyochika.tokyo をフォローすると、東京の催しのおすすめが届きます →</span></a>
 `;
     const faqLd = faq.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }] : [];
-    write(path, head(title, desc, path, [itemList(evs), crLd].concat(faqLd)) + sign(path, path) + body + ways(path) + foot());
+    write(path, head(title, desc, path, [itemList(evs), crLd].concat(faqLd), false, og) + sign(path, path) + body + ways(path) + foot());
   };
+
+  // 特集：THAT'S FASHION WEEKEND 2026（10/16、主催者の確認済み。画像は人物の写っていないものだけ）
+  {
+    const evs = CURRENT.filter(e => ['thats-fashion-weekend-2026-market', 'tokyo-tower-voice-of-earth-ten-2026'].includes(e.id) );
+    if (evs.length && TODAY <= '2026-10-18') {
+      const top = `  <section class="feat">
+    <figure><img src="/feature/tfw/logo.jpg" width="800" height="572" alt="THAT'S FASHION WEEKEND supported by SENSE TRUST"></figure>
+    <dl class="feat-dl">
+      <dt>日程</dt><dd>2026年10月16日（金）・17日（土）11:00〜21:00、18日（日）10:00〜15:30</dd>
+      <dt>会場</dt><dd>東京タワー タワーホールA（東京都港区芝公園4-2-8）</dd>
+      <dt>最寄り駅</dt><dd>芝公園・赤羽橋・神谷町</dd>
+      <dt>中身</dt><dd>人気ブランドの服 約7,000着を70〜90%オフで販売。JIL SANDER、RICK OWENS、DRIES VAN NOTEN などが参加。チャリティフリーマーケットも同時開催。</dd>
+      <dt>寄付</dt><dd>1着買うごとに、新品の服1着が熊本の被災地に寄付される。</dd>
+      <dt>同じ時期の東京タワー</dt><dd>VOICE OF EARTH展（TOWER GALLERY）、Jeff Hamilton展（MAIN DECK 1F Club333、9:00〜23:00）。いずれも10/18まで。</dd>
+    </dl>
+    <figure><img src="/feature/tfw/tower.jpg" width="800" height="1200" alt="夜の東京タワー" loading="lazy"></figure>
+    <p class="feat-note">画像提供：THAT'S FASHION WEEKEND（掲載の許可をいただいています）。入場料や最新の情報は<a href="https://thatsfashionweekend.com/" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','official_click',{ev_id:'thats-fashion-weekend-2026-market'})">公式サイト</a>で確かめてください。</p>
+  </section>
+`;
+      listPage('/feature/thats-fashion-weekend-2026/', "THAT'S FASHION WEEKEND 2026｜東京タワーで人気ブランドが70〜90%オフ",
+        `THAT'S FASHION WEEKEND 2026｜東京タワーのチャリティファッションマーケット（10/16〜18）｜${NAME}`,
+        `10月16日〜18日、東京タワーで人気ブランドの服 約7,000着が70〜90%オフになるチャリティマーケット「THAT'S FASHION WEEKEND 2026」。日程、時間、会場、最寄り駅、同じ時期の東京タワーの展示をまとめました。`,
+        evs, "THAT'S FASHION WEEKEND 2026",
+        `人気ブランドの服 約7,000着が70〜90%オフになるチャリティマーケットが、10月16日（金）〜18日（日）に東京タワーで開かれます。1着買うごとに新品の服1着が熊本の被災地に寄付される仕組みです。`,
+        [], '', top, url('/feature/tfw/logo.jpg'));
+    }
+  }
 
   for (const [g, [slug, gname]] of Object.entries(GENRE_PAGES)) {
     const evs = CURRENT.filter(e => e.g === g), freeN = evs.filter(e => e.free).length;

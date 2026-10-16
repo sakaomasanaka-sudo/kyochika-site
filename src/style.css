@@ -315,3 +315,8 @@ details.fold>summary::after{content:"▼";font-size:12px}
 details.fold[open]>summary::after{content:"▲"}
 details.fold .ctl{border-top:1px solid var(--rule)}
 .page .pic.fl{aspect-ratio:auto;background:none;margin:0}.page .pic.fl img{width:100%;height:auto;max-height:80vh;object-fit:contain;filter:none;border-radius:4px}.page .pic.fl figcaption{font-size:12px;color:var(--ink-2);margin-top:4px}
+.feat{margin:8px 0 20px}.feat figure{margin:0 0 14px}.feat img{width:100%;height:auto;border-radius:14px;display:block}
+.feat-dl{display:grid;grid-template-columns:7.5em 1fr;gap:8px 12px;margin:0 0 16px;font-size:15px;line-height:1.6}
+.feat-dl dt{font-weight:800;color:#6b6f76}.feat-dl dd{margin:0}
+.feat-note{font-size:13px;color:#6b6f76}
+@media(max-width:480px){.feat-dl{grid-template-columns:1fr}.feat-dl dt{margin-top:6px}}
