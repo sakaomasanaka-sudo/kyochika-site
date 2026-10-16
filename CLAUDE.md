@@ -179,3 +179,5 @@
 - Threads：1行目に検索ワード（今日・今週末・無料・雨・子連れ・犬連れ・夜・イルミ・クリスマスマーケット）、URL は固定ページ優先（定期タスクに反映済み）。
 - 主催者からの紹介：画像OKのお礼の DM に「よければ紹介を（任意）」を添える（下書きは定期タスクが作り、送るのは坂尾さん）。掲載の条件にはしない。
 - アクセス記録（stats）は gemini / perplexity / copilot / claude を google・chatgpt と分けて数える。
+- IndexNow（Bing など。ChatGPT の検索は Bing）：鍵は site/944453631fe0a235b0d8f649f6f8795f.txt。クラウドからも Mac の device_bash からも api.indexnow.org に届かないので、Mac の内蔵ブラウザから送る（サイトマップを window.name で api.indexnow.org のタブに渡して同一オリジンで POST）。10/16 に全5,738件を送信（200）。以後は定期タスク「キョウチカ Bing へ新しいページを知らせる（IndexNow・1日3回）」（6:53・11:53・17:53、Mac 必須）が、新しいページ＋毎日変わるページを送る（送ったものは api.indexnow.org の localStorage の kyochika_sent）。
+- 注意：サーバーの tools/kyochika-pull.php はホームに置いた手動コピーで、git から自動では更新されない（10/16 の Gemini などの数え分けは、坂尾さんがサーバーのファイルを置きかえるまで反映されない）。
