@@ -332,3 +332,8 @@ details.fold .ctl{border-top:1px solid var(--rule)}
 .qbar label{display:flex;flex-direction:column;font-size:11px;gap:3px;color:#ccc}
 .qbar select{font:inherit;font-size:15px;font-weight:700;padding:8px 10px;border-radius:10px;border:0;background:#fff;color:#111}
 .qbar button{font:inherit;font-size:15px;font-weight:900;padding:9px 16px;border-radius:10px;border:0;background:#ff4a1c;color:#fff;cursor:pointer}
+.feat-h{font-size:18px;margin:20px 0 10px}.feat-sub{font-size:13px;color:#6b6f76;margin:-4px 0 10px}
+.brands{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 8px}
+.brands span{padding:9px 14px;border:1.5px solid #111;border-radius:6px;font-family:"Helvetica Neue",Arial,"Noto Sans CJK JP",sans-serif;font-weight:800;font-size:14px;letter-spacing:.06em;background:#fff}
+.brands span.etc{border-style:dashed;color:#6b6f76;letter-spacing:0}
+.brands.sm span{font-size:13px;padding:6px 11px;border-width:1px;letter-spacing:0;font-weight:700}
