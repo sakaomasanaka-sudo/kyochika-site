@@ -128,7 +128,7 @@ function kyochikaBuild(D, aboutMain, TODAY, VER) {
   // ほかの言語の同じページ。D.LANGS があるときだけ使う。エリアのページと404にはない。
   const LANGS = D.LANGS || [];
   const HREFLANG = { en: 'en', zh: 'zh-Hans', es: 'es', th: 'th', id: 'id' }, LANGNAME = { en: 'English', zh: '中文', es: 'Español', th: 'ไทย', id: 'Indonesia' };
-  const altPath = (l, path) => (path.startsWith('/area/') || path.startsWith('/station/') || path === '/plan/' || path === '/stats/' || path.startsWith('/pick/') || path.startsWith('/kids/') || path.startsWith('/place/') || path === '/404.html' || path === '/drama/' || path === '/christmas/' || path === '/illumination/' || path === '/halloween/' || path === '/newyear/' || path === '/koyo/' || path === '/torinoichi/' || path === '/rainy/' || path === '/barrierfree/' || path === '/dog/' || path === '/stroller/' || path === '/ekichika/' || path === '/night/' || path === '/noreserve/' || path === '/kids/workshop/' || path === '/kids/rainy/' || path === '/suiteru/' || path === '/bento/' || path === '/cashless/' || path === '/kids/bento/' || path === '/kids/free/' || path === '/kids/weekend/' || ['/monday/','/lastchance/','/new/','/cheap/','/morning/','/photo-ok/','/anime/','/cat/','/sake/','/flea/','/workshop/','/parking/'].includes(path) || path.startsWith('/date/') || path === '/today/' || /^\/weekend\/\d/.test(path)) ? null : `/${l}` + (path === '/about.html' ? '/about/' : path);
+  const altPath = (l, path) => (path.startsWith('/area/') || path.startsWith('/station/') || path === '/plan/' || path === '/stats/' || path.startsWith('/pick/') || path.startsWith('/kids/') || path.startsWith('/place/') || path === '/404.html' || path === '/drama/' || path === '/christmas/' || path === '/illumination/' || path === '/halloween/' || path === '/newyear/' || path === '/koyo/' || path === '/torinoichi/' || path === '/rainy/' || path === '/barrierfree/' || path === '/dog/' || path === '/stroller/' || path === '/ekichika/' || path === '/night/' || path === '/noreserve/' || path === '/kids/workshop/' || path === '/kids/rainy/' || path === '/suiteru/' || path === '/bento/' || path === '/cashless/' || path === '/kids/bento/' || path === '/kids/free/' || path === '/kids/weekend/' || ['/monday/','/lastchance/','/new/','/cheap/','/morning/','/photo-ok/','/anime/','/cat/','/sake/','/flea/','/workshop/','/parking/'].includes(path) || path.startsWith('/date/') || path === '/today/' || path.startsWith('/guide/') || /^\/weekend\/\d/.test(path)) ? null : `/${l}` + (path === '/about.html' ? '/about/' : path);
   const head = (title, desc, path, ld = [], noindex = false, og = null) => {
     const alts = (noindex || !LANGS.length || !altPath('en', path)) ? '' : `<link rel="alternate" hreflang="ja" href="${url(path)}">\n` + LANGS.map(l => `<link rel="alternate" hreflang="${HREFLANG[l]}" href="${url(altPath(l, path))}">\n`).join('') + `<link rel="alternate" hreflang="x-default" href="${url(path)}">\n`;
     const lds = ld.map(x => `<script type="application/ld+json">${pyjson(x)}</script>\n`).join('');
@@ -283,7 +283,7 @@ ${lds}<script async src="https://www.googletagmanager.com/gtag/js?id=G-0T0FYH7TT
 
   const ways = (current = null) => {
     const a = (p, n) => `<a href="${p}"${p === current ? ' aria-current="page"' : ''}>${esc(n)}</a>`;
-    const g = Object.values(GENRE_PAGES).map(([s, n]) => a(`/${s}/`, n)).join('') + a('/free/', '無料で行ける') + COND_PAGES.filter(c => CURRENT.filter(c[4]).length >= 3).map(c => a(c[0], c[5])).join('') + (KIDP.length ? KIDP.map(([p, , , , n]) => a(p, n)).join('') : '') + a('/weekend/', '今週末') + JMONTHS.map(([k, , m]) => a(`/month/${k}/`, `${m}月のイベント`)).join('') + (pickEvs.length >= 6 ? a(PICK_PATH, '今週末のおすすめ') : '') + a('/date/', '日付から') + a('/stats/', '数字で見る東京のイベント') + a('/plan/', '行きたいリスト・週末プラン') + (EV.some(e => e.ig && !ended(e)) ? a('/instagram/', 'インスタ告知') : '') + (CURRENT.some(e => (e.k || []).includes('halloween')) ? a('/halloween/', 'ハロウィン') : '') + (CURRENT.some(e => (e.k || []).includes('newyear')) ? a('/newyear/', '年末年始') : '') + (CURRENT.some(e => (e.k || []).includes('xmas')) ? a('/christmas/', 'クリスマスマーケット') : '') + (CURRENT.some(e => (e.k || []).includes('illumi')) ? a('/illumination/', 'イルミネーション') : '') + (CURRENT.filter(e => (e.k || []).includes('koyo') || /紅葉|もみじ|モミジ|錦秋|いちょう祭|イチョウ祭|銀杏祭|黄葉/.test(e.t)).length >= 3 ? a('/koyo/', '紅葉・ライトアップ') : '') + (CURRENT.filter(e => (e.k || []).includes('torinoichi') || /酉の市|酉のまち|おとりさま/.test(e.t)).length >= 3 ? a('/torinoichi/', '酉の市') : '');
+    const g = Object.values(GENRE_PAGES).map(([s, n]) => a(`/${s}/`, n)).join('') + a('/free/', '無料で行ける') + COND_PAGES.filter(c => CURRENT.filter(c[4]).length >= 3).map(c => a(c[0], c[5])).join('') + (KIDP.length ? KIDP.map(([p, , , , n]) => a(p, n)).join('') : '') + a('/weekend/', '今週末') + JMONTHS.map(([k, , m]) => a(`/month/${k}/`, `${m}月のイベント`)).join('') + (pickEvs.length >= 6 ? a(PICK_PATH, '今週末のおすすめ') : '') + a('/today/', '今日') + a('/date/', '日付から') + ((D.GUIDES || []).some(G => (G.dates || []).some(x => x.date >= TODAY)) ? a('/guide/', '行き方・混雑ガイド') : '') + a('/stats/', '数字で見る東京のイベント') + a('/plan/', '行きたいリスト・週末プラン') + (EV.some(e => e.ig && !ended(e)) ? a('/instagram/', 'インスタ告知') : '') + (CURRENT.some(e => (e.k || []).includes('halloween')) ? a('/halloween/', 'ハロウィン') : '') + (CURRENT.some(e => (e.k || []).includes('newyear')) ? a('/newyear/', '年末年始') : '') + (CURRENT.some(e => (e.k || []).includes('xmas')) ? a('/christmas/', 'クリスマスマーケット') : '') + (CURRENT.some(e => (e.k || []).includes('illumi')) ? a('/illumination/', 'イルミネーション') : '') + (CURRENT.filter(e => (e.k || []).includes('koyo') || /紅葉|もみじ|モミジ|錦秋|いちょう祭|イチョウ祭|銀杏祭|黄葉/.test(e.t)).length >= 3 ? a('/koyo/', '紅葉・ライトアップ') : '') + (CURRENT.filter(e => (e.k || []).includes('torinoichi') || /酉の市|酉のまち|おとりさま/.test(e.t)).length >= 3 ? a('/torinoichi/', '酉の市') : '');
     const ar = LIVE_AREAS.map(([s, n]) => a(`/area/${s}/`, n)).join('') + PLACES_LIVE.map(([s, n]) => a(`/place/${s}/`, n)).join('');
     return `  <nav class="ways" aria-label="ほかのさがし方">
     <h2>ジャンル・条件からさがす</h2><div class="links">${g}</div>
@@ -491,6 +491,40 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
     const nearHtml = near.length ? `  <section class="feat-near"><h2 class="feat-h">あわせて行ける近くの催し</h2><ul class="list">${near.map((e, i) => card(e, false, i)).join('').replace(/<a /g, `<a ${ga('near')} `)}</ul></section>\n` : '';
     listPage(`/feature/${F.slug}/`, F.h1, F.title, F.desc, evs, F.crumb, F.lead, F.faq || [], nearHtml + moreBox(F.area, F.station).replace(/<a /g, `<a ${ga('more')} `), `  <p class="more-top"><a href="#more">ほかのイベントは、行く日と駅からさがせる ↓</a></p>\n` + top, url(F.img[0]), searchBar(F.station ? F.station[1] : '渋谷'));
     ACTIVE_FEATURES.push(F);
+  }
+
+  // 大型イベントの行き方・混雑ガイド（10/16〜）。src/guides.json の、公式サイトに書いてあることだけで作る。最後の日を過ぎたら作らない。
+  const GUIDES_ON = [];
+  for (const G of (D.GUIDES || [])) {
+    const ds = (G.dates || []).map(x => x.date).filter(Boolean).sort();
+    if (!ds.length || ds[ds.length - 1] < TODAY) continue;
+    const evs = CURRENT.filter(e => (G.ev || []).includes(e.id));
+    const st0 = (G.stations || [])[0];
+    const ll = evs[0] ? [evs[0].lat, evs[0].lng] : (G.lat ? [G.lat, G.lng] : (st0 && SPOTS[st0.name] ? SPOTS[st0.name] : null));
+    const ga = t => `onclick="window.gtag&&gtag('event','guide_cta',{guide:'${G.slug}',type:'${t}'})"`;
+    const jdt = x => { const p = x.date.split('-').map(Number); return `${p[1]}月${p[2]}日（${DOWS[dow(x.date)]}）${x.hours ? ' ' + x.hours.replace('-', '〜') : ''}`; };
+    const li = a => (a || []).filter(Boolean).map(t => `<li>${esc(t)}</li>`).join('');
+    const sec = (h, body) => body ? `<h2 class="feat-h">${h}</h2>${body}` : '';
+    const para = t => Array.isArray(t) ? (t.length ? `<ul class="gd-ul">${li(t)}</ul>` : '') : (t ? `<p>${esc(t)}</p>` : '');
+    const near = ll ? CURRENT.filter(e => !(G.ev || []).includes(e.id) && ds.some(d => d >= TODAY && activeOn(e, d)) && km(ll[0], ll[1], e.lat, e.lng) <= 1.5).sort((a, b) => km(ll[0], ll[1], a.lat, a.lng) - km(ll[0], ll[1], b.lat, b.lng)).slice(0, 6) : [];
+    const route = ll ? `https://www.google.com/maps/dir/?api=1&amp;travelmode=transit&amp;destination=${ll[0]},${ll[1]}` : '';
+    const top = `  <section class="feat gd">
+    <dl class="feat-dl"><dt>日程</dt><dd>${(G.dates || []).map(jdt).map(esc).join('<br>')}</dd><dt>会場</dt><dd>${esc(G.venue || '')}${G.address ? `<br><small>${esc(G.address)}</small>` : ''}</dd>${(G.stations || []).length ? `<dt>最寄り駅</dt><dd>${G.stations.map(x => esc(`${x.name}駅${x.line ? '（' + x.line + '）' : ''}${x.walk_min ? ' 徒歩' + x.walk_min + '分' : ''}`)).join('<br>')}</dd>` : ''}${G.price ? `<dt>料金</dt><dd>${esc(G.price)}</dd>` : ''}</dl>
+    <div class="feat-cta"><a class="c1" href="${esc(G.official)}" target="_blank" rel="noopener" ${ga('official')}>公式サイトを見る</a>${route ? `<a href="${route}" target="_blank" rel="noopener" ${ga('route')}>行き方（地図）</a>` : ''}<a href="https://social-plugins.line.me/lineit/share?url=${quote(url('/guide/' + G.slug + '/'))}" target="_blank" rel="noopener" ${ga('line')}>LINEで送る</a></div>
+    ${sec('チケット・入場', para(G.tickets))}${sec('混雑・並ぶとき', para(G.crowd))}${sec('持ち物・決まり', para(G.rules))}${sec('知っておくと便利', para(G.tips_official))}
+    <p class="feat-note">${esc(ymd(TODAY))}時点で、公式サイトに書かれている内容をまとめています。変更があることがあるので、行く前に公式サイトで確かめてください。</p>
+  </section>
+`;
+    const nearHtml = near.length ? `  <section class="feat-near"><h2 class="feat-h">あわせて行ける近くの催し</h2><ul class="list">${near.map((e, i) => card(e, false, i)).join('')}</ul></section>\n` : '';
+    const yr = ds[0].slice(0, 4);
+    listPage(`/guide/${G.slug}/`, `${G.name}の行き方・混雑・時間・料金`, `${G.name} ${yr}｜行き方・混雑・時間・チケット・持ち物まとめ｜${NAME}`,
+      `${G.name}（${(G.dates || []).map(x => x.date.slice(5).replace('-', '/')).join('・')}、${G.venue || ''}）の日程と時間、最寄り駅からの行き方、チケット、混雑、持ち物を公式の情報からまとめました。`,
+      evs, G.name, `${G.name}に行く前に知っておきたいことを、公式サイトの情報からまとめています。`, (G.faq || []).map(x => Array.isArray(x) ? x : [x.q, x.a]).filter(x => x[0] && x[1]), nearHtml + moreBox(evs[0] ? areaOf(evs[0])[0] : null, st0 ? st0.name : null), top);
+    GUIDES_ON.push(G);
+  }
+  if (GUIDES_ON.length) {
+    const [cr, crLd] = crumbs([['トップ', '/'], ['行き方・混雑ガイド', null]]);
+    write('/guide/', head(`東京の大型イベント 行き方・混雑ガイド｜${NAME}`, `東京の大型イベントの行き方、混雑、時間、チケット、持ち物を、公式の情報からまとめています。`, '/guide/', [crLd]) + sign(null, '/guide/') + cr + `  <main class="doc"><h1 class="pt">東京の大型イベント 行き方・混雑ガイド</h1><ul class="near">${GUIDES_ON.map(G => `<li><a href="/guide/${G.slug}/">${esc(G.name)}</a><span>${esc((G.dates || []).map(x => x.date.slice(5).replace('-', '/')).join('・'))}</span></li>`).join('')}</ul></main>\n` + ways('/guide/') + foot());
   }
 
   for (const [g, [slug, gname]] of Object.entries(GENRE_PAGES)) {

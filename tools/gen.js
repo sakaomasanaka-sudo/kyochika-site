@@ -7,6 +7,7 @@ const src = f => fs.readFileSync(path.join(R, 'src', f), 'utf8');
 const D = new Function(src('data.js') + ';return {EV,SPOTS,GENRES,CRED,HOLIDAYS};')();
 const T = JSON.parse(src('tr.json'));
 T.x = {}; for (const l of ['es', 'th', 'id']) { try { T.x[l] = JSON.parse(src(`tr_${l}.json`)); } catch (e) { T.x[l] = null; } }
+try { D.GUIDES = JSON.parse(src('guides.json')); } catch (e) { D.GUIDES = []; }
 const today = process.argv[2] || new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
 // 作り終えたシェア用画像（site/og/done.json）。ある催しだけ og:image を催しの画像にする。
 const readDone = () => { try { return JSON.parse(fs.readFileSync(path.join(R, 'site', 'og', 'done.json'), 'utf8')); } catch (e) { return {}; } };
