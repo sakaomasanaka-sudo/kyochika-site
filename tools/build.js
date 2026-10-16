@@ -305,7 +305,8 @@ ${sc}</body>
   };
 
   // インスタのフォローへの案内（10/15〜、坂尾さん「フォロワー100人が勝負」）。日本語のページだけ。クリックは GA の ig_follow_click。
-  const igFollow = where => `<aside class="igf"><p><b>インスタの告知もお知らせ。</b>Googleに出てこない東京の催しを、毎週まとめて届ける。</p><a class="go igbtn" href="https://www.instagram.com/kyochika.tokyo/" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','ig_follow_click',{where:'${where}'})">@kyochika.tokyo をフォロー</a></aside>`;
+  const lineFollow = where => AFF.line ? `<aside class="igf linef"><p><b>今週末のおすすめを、毎週金曜にLINEで。</b>無料・雨の日・子どもと行ける催しを中心に届ける。</p><a class="go line" href="https://line.me/R/ti/p/${encodeURIComponent(AFF.line)}" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','line_follow_click',{where:'${where}'})">LINEで友だち追加</a></aside>` : '';
+  const igFollow = where => lineFollow(where) + `<aside class="igf"><p><b>インスタの告知もお知らせ。</b>Googleに出てこない東京の催しを、毎週まとめて届ける。</p><a class="go igbtn" href="https://www.instagram.com/kyochika.tokyo/" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','ig_follow_click',{where:'${where}'})">@kyochika.tokyo をフォロー</a></aside>`;
   const pic = (ev, eager = false) => {
     const g = GENRES[ev.g].n;
     if (ev.ph) return `<div class="pic"><img src="/photos/${ev.ph}.jpg" alt="${esc(CRED[ev.ph][0])}の写真" width="384" height="216"${eager ? '' : ' loading="lazy"'}><span class="kind">${g}</span></div>`;
