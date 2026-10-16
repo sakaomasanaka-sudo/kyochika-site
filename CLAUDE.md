@@ -182,3 +182,5 @@
 - アクセス記録（stats）は gemini / perplexity / copilot / claude を google・chatgpt と分けて数える。
 - IndexNow（Bing など。ChatGPT の検索は Bing）：鍵は site/944453631fe0a235b0d8f649f6f8795f.txt。クラウドからも Mac の device_bash からも api.indexnow.org に届かないので、Mac の内蔵ブラウザから送る（サイトマップを window.name で api.indexnow.org のタブに渡して同一オリジンで POST）。10/16 に全5,738件を送信（200）。以後は定期タスク「キョウチカ Bing へ新しいページを知らせる（IndexNow・1日3回）」（6:53・11:53・17:53、Mac 必須）が、新しいページ＋毎日変わるページを送る（送ったものは api.indexnow.org の localStorage の kyochika_sent）。
 - 注意：サーバーの tools/kyochika-pull.php はホームに置いた手動コピーで、git から自動では更新されない（10/16 の Gemini などの数え分けは、坂尾さんがサーバーのファイルを置きかえるまで反映されない）。
+- Bing Webmaster Tools：10/16 に kyochika.jp を追加（確認はメタタグ msvalidate.01、build.js の head。消さない）、sitemap.xml を送信。坂尾さんのマイクロソフトのアカウント（内蔵ブラウザでログイン中）。同じアカウントにある hirumemo.com には触らない。
+- 検索欄（searchBar）の「どこから」は SPOT_GROUPS のまとまりごとに全駅（gen.js が SPOT_GROUPS を build に渡す）。ジャンルで絞る（トップの fold）に「無料」「アニメ・漫画」「ワンちゃんイベント」、トップのジャンル欄に「ワンちゃんイベント」「無料で行ける」「アニメ・漫画」。
