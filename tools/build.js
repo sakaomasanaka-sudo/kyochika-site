@@ -431,6 +431,15 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
     write(path, head(title, desc, path, [itemList(evs), crLd].concat(faqLd), false, og) + sign(path, path) + body + ways(path) + foot());
   };
 
+  // 特集ページ用「ほかのイベントもさがす」（10/16、坂尾さん「他の検索どこからやるのかわからない」）
+  const moreBox = (area, station) => {
+    const t = TODAY, sat = (() => { let d = dnum(t); while (dow(isoOf(d)) !== 6) d++; return isoOf(d); })();
+    const jd = iso => { const p = iso.split('-').map(Number); return `${p[1]}/${p[2]}`; };
+    const L = [['/', '駅から近い順にさがす', '行く日と駅を選ぶだけ'], [`/date/${t}/`, `今日（${jd(t)}）行ける`, '開いている催しだけ'], [`/weekend/${sat}/`, `今週末（${jd(sat)}〜）`, '土日に行ける催し'], ['/free/', '無料で行ける', '入場無料の催し']]
+      .concat(area ? [[`/area/${area[0]}/`, area[1], 'このあたりの催し']] : []).concat(station ? [[`/station/${station[0]}/`, `${station[1]}駅の近く`, '駅が最寄りの催し']] : []).concat([['/night/', '夜21時以降も', '仕事帰りに行ける']]);
+    return `  <section class="more" id="more"><h2>ほかのイベントもさがす</h2><div class="more-g">${L.map(([h, n, s]) => `<a href="${h}"><b>${esc(n)}</b><span>${esc(s)}</span></a>`).join('')}</div></section>\n`;
+  };
+
   // 特集：THAT'S FASHION WEEKEND 2026（10/16、主催者の確認済み。画像は人物の写っていないものだけ）
   {
     const evs = CURRENT.filter(e => ['thats-fashion-weekend-2026-market', 'tokyo-tower-voice-of-earth-ten-2026'].includes(e.id) );
@@ -454,7 +463,7 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
         `10月16日〜18日、東京タワーで人気ブランドの服 約7,000着が70〜90%オフになるチャリティマーケット「THAT'S FASHION WEEKEND 2026」。日程、時間、会場、最寄り駅、同じ時期の東京タワーの展示をまとめました。`,
         evs, "THAT'S FASHION WEEKEND 2026",
         `人気ブランドの服 約7,000着が70〜90%オフになるチャリティマーケットが、10月16日（金）〜18日（日）に東京タワーで開かれます。1着買うごとに新品の服1着が熊本の被災地に寄付される仕組みです。`,
-        [], '', top, url('/feature/tfw/logo.jpg'));
+        [], moreBox(['shirokane', '白金・麻布・東京タワー'], ['shibakoen', '芝公園']), `  <p class="more-top"><a href="#more">ほかのイベントは、行く日と駅からさがせる ↓</a></p>\n` + top, url('/feature/tfw/logo.jpg'));
     }
   }
 
