@@ -462,11 +462,6 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
       <dt>寄付</dt><dd>1着買うごとに、新品の服1着が熊本の被災地に寄付される。</dd>
       <dt>同じ時期の東京タワー</dt><dd>VOICE OF EARTH展（TOWER GALLERY）、Jeff Hamilton展（MAIN DECK 1F Club333、9:00〜23:00）。いずれも10/18まで。</dd>
     </dl>
-    <h2 class="feat-h">参加ブランド</h2>
-    <div class="brands"><span>JIL SANDER</span><span>EMILIO PUCCI</span><span>STELLA McCARTNEY</span><span>RICK OWENS</span><span>EMPORIO ARMANI</span><span>MACKINTOSH</span><span>Patou</span><span>AURALEE</span><span>HELMUT LANG</span><span>VICTORIA BECKHAM</span><span>JW ANDERSON</span><span>DRIES VAN NOTEN</span><span>LEINWÄNDE</span><span>FERRAGAMO</span><span>Max Mara</span><span>TOD&#39;S</span><span>COURRÈGES</span><span class="etc">ほか</span></div>
-    <h2 class="feat-h">チャリティフリーマーケットの出品者</h2>
-    <p class="feat-sub">著名人や文化人が私物を出品。売上は熊本支援のチャリティにあてられる。</p>
-    <div class="brands sm"><span>ジェフ・ハミルトン</span><span>菅野祐悟</span><span>HAYATO(XY)</span><span>Foy</span><span>南果歩</span><span>Yuko Sumida Jackson</span><span>向千鶴</span><span>高橋愛</span><span>shuco</span><span>多田野彩香</span><span>アリアナさくら</span><span>ブリッジマン遊七</span><span>笹原龍</span><span>麻生真稔</span></div>
     <p class="feat-note">画像提供：THAT'S FASHION WEEKEND（掲載の許可をいただいています）。最新の情報は<a href="https://thatsfashionweekend.com/" target="_blank" rel="noopener" onclick="window.gtag&&gtag('event','official_click',{ev_id:'thats-fashion-weekend-2026-market'})">公式サイト</a>で確かめてください。</p>
   </section>
 `;
