@@ -432,7 +432,7 @@ ${sc}</body>
     const d0 = dnum(TODAY), jd = iso => { const p = iso.split('-').map(Number); return `${p[1]}/${p[2]}（${DOWS[dow(iso)]}${iso in HOLIDAYS ? '・祝' : ''}）`; };
     const days = Array.from({ length: 7 }, (_, i) => isoOf(d0 + i)).map((d, i) => `<option value="${d}">${i === 0 ? 'きょう ' : i === 1 ? 'あした ' : ''}${jd(d)}</option>`).join('');
     const sts = ['渋谷', '新宿', '池袋', '東京', '銀座', '上野', '表参道', '六本木', '恵比寿', '下北沢', '吉祥寺', '品川'].concat(defSt && !['渋谷'].includes(defSt) ? [defSt] : []).filter((x, i, a) => a.indexOf(x) === i && SPOTS[x]);
-    return `  <form class="qbar" action="/" method="get" onsubmit="window.gtag&&gtag('event','qbar_search',{page:location.pathname})"><b>東京のイベントをさがす</b><label>いつ<select name="d">${days}</select></label><label>どこから<select name="s">${sts.map(x => `<option${x === defSt ? ' selected' : ''}>${esc(x)}</option>`).join('')}</select></label><button type="submit">近い順に見る</button></form>\n`;
+    return `  <form class="qbar" action="/" method="get" onsubmit="window.gtag&&gtag('event','qbar_search',{page:location.pathname})"><b>東京のイベントをさがす</b><label>いつ<select name="d">${days}</select></label><label>どこから<select name="s">${sts.map(x => `<option${x === defSt ? ' selected' : ''}>${esc(x)}</option>`).join('')}</select></label><label>条件<select name="c"><option value="">指定なし</option><option value="free">無料</option><option value="dog">愛犬と</option><option value="kid">子どもと</option><option value="bf">車椅子OK</option><option value="stroller">ベビーカーOK</option><option value="night">夜19時以降も</option></select></label><button type="submit">近い順に見る</button></form>\n`;
   };
   const listPage = (path, h1, title, desc, evs0, crumbName, intro, faq = [], extra = '', top = '', og = null, pre = '') => {
     const evs = order(evs0);
@@ -455,7 +455,7 @@ ${extra}${ASO[path] ? asoBox(ASO[path][0], ASO[path][1], path) : ''}${faq.length
   const moreBox = (area, station) => {
     const t = TODAY, sat = (() => { let d = dnum(t); while (dow(isoOf(d)) !== 6) d++; return isoOf(d); })();
     const jd = iso => { const p = iso.split('-').map(Number); return `${p[1]}/${p[2]}`; };
-    const L = [['/', '駅から近い順にさがす', '行く日と駅を選ぶだけ'], [`/date/${t}/`, `今日（${jd(t)}）行ける`, '開いている催しだけ'], [`/weekend/${sat}/`, `今週末（${jd(sat)}〜）`, '土日に行ける催し'], ['/free/', '無料で行ける', '入場無料の催し']]
+    const L = [['/', '駅から近い順にさがす', '行く日と駅を選ぶだけ'], [`/date/${t}/`, `今日（${jd(t)}）行ける`, '開いている催しだけ'], [`/weekend/${sat}/`, `今週末（${jd(sat)}〜）`, '土日に行ける催し'], ['/free/', '無料で行ける', '入場無料の催し'], ['/dog/', '愛犬と行ける', 'ペット同伴OKの催し']]
       .concat(area ? [[`/area/${area[0]}/`, area[1], 'このあたりの催し']] : []).concat(station ? [[`/station/${station[0]}/`, `${station[1]}駅の近く`, '駅が最寄りの催し']] : []).concat([['/night/', '夜21時以降も', '仕事帰りに行ける']]);
     return `  <section class="more" id="more"><h2>ほかのイベントもさがす</h2><div class="more-g">${L.map(([h, n, s]) => `<a href="${h}"><b>${esc(n)}</b><span>${esc(s)}</span></a>`).join('')}</div></section>\n`;
   };

@@ -24,7 +24,7 @@
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const isIso=v=>/^\d{4}-\d{2}-\d{2}$/.test(v)&&isoOf(dayNum(v))===v;
   // ほかのページの検索欄から来たとき（/?d=日付&s=駅）。10/16〜
-  try{const q=new URLSearchParams(location.search),qd=q.get('d'),qs=q.get('s');if(qd&&isIso(qd)&&DAYS.includes(qd))st.day=qd;if(qs&&SPOTS[qs]){st.from=qs;save();}}catch(e){}
+  try{const q=new URLSearchParams(location.search),qd=q.get('d'),qs=q.get('s');if(qd&&isIso(qd)&&DAYS.includes(qd))st.day=qd;if(qs&&SPOTS[qs]){st.from=qs;save();}const qc=q.get('c');if(qc==='kid'){st.kA=st.kB=st.kC=true;}else if(['free','dog','bf','stroller','night'].includes(qc)){st[qc]=true;}if(qd||qs||qc){window.__kq=qc||'';}}catch(e){}
 
   function render(){
     const isToday=st.day===todayIso;
@@ -126,6 +126,7 @@
   $('otherDay').addEventListener('change',e=>{if(isIso(e.target.value)){st.day=e.target.value;render();}});
   if($('join')&&typeof CONFIG!=='undefined'&&/^https:\/\//.test(CONFIG.registerUrl||'')){$('joinLink').href=CONFIG.registerUrl;$('join').hidden=false;}
   render();
+  if(typeof window.__kq==='string'){try{kidSync();if(window.__kq){const fd=document.querySelector('details.fold');if(fd)fd.open=true;}setTimeout(()=>{const bd=$('board');if(bd)bd.scrollIntoView({block:'start'});},200);}catch(e){}}
 })();
 
 // 雨の予報の日は、トップに「雨でも行ける」への案内を出す（Open-Meteo の予報。キーは不要。取れなければ何も出さない）
