@@ -1,7 +1,7 @@
 // 英語・中国語のページを作る。kyochikaAll が日本語のページとあわせて一式にする。
 // アフィリエイトの ID。登録が済んだらここに入れる。空なら何も表示しない。
 // rakuten: 楽天アフィリエイトID（hgc の後ろの部分）／klook: Klook の affiliate ID（aid）、klookAd: サイト Kyochika Tokyo の aff_adid（10/11 登録）
-const KYOCHIKA_AFF = { rakuten: '584eca7f.b482ba06.584eca80.649f3027', klook: '138663', klookAd: '1493145', vc: { sid: '3784604', asoview: '892726190' }, line: '@485nexlk' }; // line: LINE公式アカウントのID（'@123abcde' の形）。入れると「LINEで毎週受け取る」が出る
+const KYOCHIKA_AFF = { rakuten: '584eca7f.b482ba06.584eca80.649f3027', klook: '138663', klookAd: '1493145', vc: { sid: '3784604', asoview: '892726190' }, line: '@485nexlk', adsense: '' }; // adsense: 'ca-pub-…'（アドセンスのID）。入れると全ページに広告のコードと ads.txt が出る // line: LINE公式アカウントのID（'@123abcde' の形）。入れると「LINEで毎週受け取る」が出る
 function kyochikaIntl(D, T, L, TODAY, VER) {
   const { EV, SPOTS, GENRES, CRED, HOLIDAYS } = D;
   const KDV = (() => { let h = 5381; const t = JSON.stringify(EV); for (let i = 0; i < t.length; i++) h = ((h * 33) ^ t.charCodeAt(i)) >>> 0; return h.toString(36); })(); // data.js を毎回読み直させる
@@ -221,7 +221,7 @@ ${noJa(path) ? '' : `<link rel="alternate" hreflang="ja" href="${url(jaPath(path
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap">
 <link rel="stylesheet" href="/style.css?v=${VER}">
-${ld.map(x => `<script type="application/ld+json">${JSON.stringify(x)}</script>\n`).join('')}<script async src="https://www.googletagmanager.com/gtag/js?id=G-0T0FYH7TTZ"></script>
+${ld.map(x => `<script type="application/ld+json">${JSON.stringify(x)}</script>\n`).join('')}${KYOCHIKA_AFF.adsense ? `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${KYOCHIKA_AFF.adsense}" crossorigin="anonymous"></script>\n` : ''}<script async src="https://www.googletagmanager.com/gtag/js?id=G-0T0FYH7TTZ"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-0T0FYH7TTZ");document.addEventListener("DOMContentLoaded",function(){var a=location.pathname.split("/").filter(Boolean),L=/^(en|zh|es|th|id)$/.test(a[0])?a.shift():"ja",c={lang:L,pt:a[0]||"top"};if(a[0]==="station")c.st=a[1]||"";else if(a[0]==="area"){c.area=a[1]||"";c.g=a[2]||""}else if(a[0]&&a[0]!=="event")c.g=a.slice(0,2).join("/");window.gtag&&gtag("event","ctx_view",c)});</script>
 </head>
 <body>
