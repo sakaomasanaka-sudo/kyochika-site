@@ -199,6 +199,9 @@ h1.pt{font-weight:700;font-size:clamp(26px,6.6vw,40px);line-height:1.35;margin:0
   .hero h1{grid-column:1 / -1}
   .hero .pl-hang{grid-column:1;grid-row:2;align-self:start;margin-bottom:0}
   .hero .plate{grid-column:1;grid-row:2 / span 2;margin-top:63px}
+  .hero .featrail{grid-column:2;grid-row:2}
+  .hero .today{grid-column:1;grid-row:4}
+  .hero .lines{grid-row:3 / span 3}
   .hero .sub{grid-column:2;align-self:start}
   .hero .lines{grid-column:2;align-self:start;flex-direction:column;gap:12px}
 }
