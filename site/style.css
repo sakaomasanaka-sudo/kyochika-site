@@ -197,7 +197,8 @@ h1.pt{font-weight:700;font-size:clamp(26px,6.6vw,40px);line-height:1.35;margin:0
 @media (min-width:900px){
   .hero{display:grid;grid-template-columns:minmax(0,560px) minmax(0,1fr);column-gap:40px;row-gap:14px;align-items:start}
   .hero h1{grid-column:1 / -1}
-  .hero .plate{grid-row:2 / span 2}
+  .hero .pl-hang{grid-column:1;grid-row:2;align-self:start;margin-bottom:0}
+  .hero .plate{grid-column:1;grid-row:2 / span 2;margin-top:63px}
   .hero .sub{grid-column:2;align-self:start}
   .hero .lines{grid-column:2;align-self:start;flex-direction:column;gap:12px}
 }
