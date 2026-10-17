@@ -120,7 +120,7 @@
     if(a==='day'||a==='dstep')st.day=b.dataset.d;
     else if(a==='from'){st.from=b.dataset.k;save();}
     else if(a==='here'){const msg=$('fromMsg');if(!navigator.geolocation){msg.textContent=U.locFail;msg.hidden=false;return;}msg.textContent=U.locating;msg.hidden=false;navigator.geolocation.getCurrentPosition(p=>{SPOTS.__here=[p.coords.latitude,p.coords.longitude];st.from='__here';msg.hidden=true;render();},()=>{msg.textContent=U.locFail;msg.hidden=false;},{enableHighAccuracy:false,timeout:10000,maximumAge:300000});return;}
-    else if(a==='genre'){const k=b.dataset.k;if(st.genres.has(k)){if(st.genres.size>1)st.genres.delete(k);}else st.genres.add(k);}
+    else if(a==='genre'){const k=b.dataset.k,ALL=Object.keys(GENRES).filter(x=>EV.some(ev=>ev.g===x));if(st.genres.size>=ALL.length)st.genres=new Set([k]);else if(st.genres.has(k)){st.genres.delete(k);if(!st.genres.size)st.genres=new Set(ALL);}else st.genres.add(k);}
     else if(a==='flag')st[b.dataset.k]=!st[b.dataset.k];
     render();kidSync();
   });
